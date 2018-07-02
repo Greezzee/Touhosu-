@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Images">
+      <UniqueIdentifier>{d45287d2-826f-4162-b8cc-3259df7153b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -21,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Touhosu\Touhosu-v0.01\Touhosu\bullets.png">
-      <Filter>Файлы ресурсов</Filter>
+      <Filter>Images</Filter>
     </Image>
   </ItemGroup>
 </Project>
