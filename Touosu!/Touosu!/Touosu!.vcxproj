@@ -22,7 +22,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\Touhosu\Touhosu-v0.01\Touhosu\bullets.png" />
+    <Image Include="bullets.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

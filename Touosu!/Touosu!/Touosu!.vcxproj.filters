@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\Touhosu\Touhosu-v0.01\Touhosu\bullets.png">
+    <Image Include="bullets.png">
       <Filter>Images</Filter>
     </Image>
   </ItemGroup>
