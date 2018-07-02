@@ -23,6 +23,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="bullets.png" />
+    <Image Include="flashlight.png" />
+    <Image Include="laser.png" />
+    <Image Include="sprite.png" />
+    <Image Include="turret.png" />
+    <Image Include="zone.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

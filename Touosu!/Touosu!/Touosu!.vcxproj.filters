@@ -16,6 +16,9 @@
     <Filter Include="Images">
       <UniqueIdentifier>{d45287d2-826f-4162-b8cc-3259df7153b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SFML">
+      <UniqueIdentifier>{1f215894-a883-4d47-ad95-cb007235fe18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -24,6 +27,21 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="bullets.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="flashlight.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="laser.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="sprite.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="turret.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="zone.png">
       <Filter>Images</Filter>
     </Image>
   </ItemGroup>
