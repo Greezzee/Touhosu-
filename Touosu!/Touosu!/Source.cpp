@@ -54,7 +54,7 @@ int main() {
 		Sprite self_sprite;
 		self_sprite.setTexture(gunTexture);
 		gun g1;
-		g1.set_gun(BPM, self_sprite, allGunPlans[i]);
+		g1.set_gun(self_sprite, allGunPlans[i]);
 		allGuns.push_back(g1);
 	}
 	double offset = 0, pause = 0, time = 0;
@@ -71,6 +71,8 @@ int main() {
 		clock.restart();
 		time = time / timerCoof;
 
+
+
 		window.clear(Color(50, 50, 50));
 
 		Event event;
@@ -85,8 +87,9 @@ int main() {
 
 		mainPlayer.update(&window, time);
 
-		if (pause > 1000000){
+		if (pause > 2000000){
 			//if (offset >= 516 + 2000000 && music.getStatus() == SoundSource::Status::Stopped) music.play();
+			timeUpdate(time);
 			zones.update(&window, time);
 			for (int i = 0; i < allBullets.size(); i++) {
 				allBullets[i].update(&window, time, &mainPlayer);

@@ -1,24 +1,30 @@
 #pragma once
 #include <fstream>
 using namespace std;
+
 struct plan_exemplar {
-	// начало b_ означает время в 32 долях бита
-	int b_start_time = -1, b_end_time = -1, b_preparing_time = -1, types_of_bullets;
-	string type = "", shoot_type = "";
-	//1-16 color ID, 0 for random
-	int bulletColor = 0;
+	//a - absolute music time
+	//r - relative music time (from spawn time to action time)
+	vector<char> timeType;
+	vector<int> startTime;
+	int endTime = -1, laserPreparingEndTime = -1;
 	//'a' for absolute
 	//'r' for relative
 	//'p' for angle to player from gun
 	//'s' for angle to player from spawn pos
-	char angle_modificator = 'a';
-	char start_moving_modificator = 'a';
-	sf::Vector2f startMovingCoords;
-	long double end_pos_x = -1, end_pos_y = -1, end_angle = -1;
-	long double shoot_size = -1;
-	long double shoot_speed = 0, shoot_speed_x = 0, shoot_speed_y = 0, shoot_acceleration = 0, shoot_acceleration_x = 0, shoot_acceleration_y = 0, shoot_angle = 0;
-	long double gun_speed_x = 0, gun_speed_y = 0;
-	bool is_rotate_direction_clockwise = false;
+	char startMovingType = 'a';
+
+	vector<char> angleType;
+	vector<double> lineBulletSpeed, lineBulletAccel, shootAngle, bulletSize;
+	vector<sf::Vector2f> notLineBulletSpeed, notLineBulletAccel;
+	vector<std::string> bulletMovmentType;
+	//1-16 color ID, 0 for random
+	vector<int> bulletColor;
+
+	double gunEndAngle = 0, angleSpeed = 0;
+	sf::Vector2f startMovingCoords, endMovingCoords, gunSpeed;
+	std::string commandType;
+	bool isRotateClockwise = false;
 };
 
 class gun_plan {
@@ -31,7 +37,7 @@ public:
 		file.open("plan.txt");
 		readFile(&file, gun_id);
 		sort(plan_list.begin(), plan_list.end(), [](const plan_exemplar& plan1, const plan_exemplar& plan2) -> bool {
-			return plan1.b_start_time < plan2.b_start_time;
+			return plan1.startTime[0] < plan2.startTime[0];
 		});
 		file.close();
 	};
@@ -70,9 +76,9 @@ private:
 				if (id == gun_id)
 					for (int i = 0; i < numberOfActions; i++) {
 						plan_list.push_back(new_plan);
-						new_plan.b_start_time += deltaTime;
-						new_plan.b_end_time += deltaTime;
-						new_plan.b_preparing_time += deltaTime;
+						new_plan.startTime[0] += deltaTime;
+						new_plan.endTime += deltaTime;
+						new_plan.laserPreparingEndTime += deltaTime;
 					}
 			}
 		} while (command_type != "end");
@@ -82,89 +88,182 @@ private:
 		plan_exemplar new_plan;
 		string trash;
 		*file >> trash;
-		new_plan.b_start_time = read_time(file);
+		new_plan.startTime.push_back(read_time(file));
 		*file >> trash;
-		*file >> new_plan.type;
-		if (new_plan.type == "set") new_plan = readSet(file, new_plan);
-		else if (new_plan.type == "del");
-		else if (new_plan.type == "move") new_plan = readMove(file, new_plan);
-		else if (new_plan.type == "rotate") new_plan = readRotate(file, new_plan);
-		else if (new_plan.type == "laser_shoot") new_plan = readLaserShoot(file, new_plan);
-		else if (new_plan.type == "bullet_shoot") new_plan = readBulletShoot(file, new_plan);
+		*file >> new_plan.commandType;
+		if (new_plan.commandType == "set") new_plan = readSet(file, new_plan);
+		else if (new_plan.commandType == "del");
+		else if (new_plan.commandType == "move") new_plan = readMove(file, new_plan);
+		else if (new_plan.commandType == "rotate") new_plan = readRotate(file, new_plan);
+		else if (new_plan.commandType == "laser_shoot") new_plan = readLaserShoot(file, new_plan);
+		else if (new_plan.commandType == "bullet_shoot") new_plan = readBulletShoot(file, new_plan);
 		return new_plan;
 	}
 
 	plan_exemplar readSet(ifstream *file, plan_exemplar new_plan) {
-		*file >> new_plan.end_pos_x >> new_plan.end_pos_y >> new_plan.shoot_angle;
+		new_plan.shootAngle.push_back(0);
+		*file >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y >> new_plan.shootAngle[0];
 		return new_plan;
 	}
 	plan_exemplar readMove(ifstream *file, plan_exemplar new_plan) {
 		string trash;
 		*file >> trash;
-		new_plan.b_end_time = read_time(file);
+		new_plan.endTime = read_time(file);
 		*file >> trash;
-		*file >> new_plan.angle_modificator >> new_plan.end_pos_x >> new_plan.end_pos_y;
+		new_plan.angleType.push_back('a');
+		*file >> new_plan.angleType[0] >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y;
 		return new_plan;
 	}
 	plan_exemplar readRotate(ifstream *file, plan_exemplar new_plan) {
 		string trash;
 		*file >> trash;
-		new_plan.b_end_time = read_time(file);
+		new_plan.endTime = read_time(file);
 		*file >> trash;
-		*file >> new_plan.angle_modificator >> new_plan.end_angle >> new_plan.is_rotate_direction_clockwise;
+		new_plan.angleType.push_back('a');
+		*file >> new_plan.angleType[0] >> new_plan.gunEndAngle >> new_plan.isRotateClockwise;
 		return new_plan;
 	}
 	plan_exemplar readLaserShoot(ifstream *file, plan_exemplar new_plan) {
 		string trash;
-		*file >> trash >> new_plan.start_moving_modificator >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y;
+		*file >> trash >> new_plan.startMovingType >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y;
 		*file >> trash;
-		new_plan.b_preparing_time = read_time(file);
+		new_plan.laserPreparingEndTime = read_time(file);
 		*file >> trash;
-		new_plan.b_end_time = read_time(file);
+		new_plan.endTime = read_time(file);
 		*file >> trash;
-		*file >> new_plan.angle_modificator >> new_plan.shoot_angle >> new_plan.shoot_size;
+		new_plan.angleType.push_back('a');
+		new_plan.shootAngle.push_back(0);
+		new_plan.bulletSize.push_back(0);
+		*file >> new_plan.angleType[0] >> new_plan.shootAngle[0] >> new_plan.bulletSize[0];
 		return new_plan;
 	}
 	plan_exemplar readBulletShoot(ifstream *file, plan_exemplar new_plan) {
 		string trash;
 		string public_or_local;
-		*file >> trash >> new_plan.start_moving_modificator >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y >> public_or_local;
+		*file >> trash >> new_plan.startMovingType >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y >> public_or_local;
 		if (public_or_local == "lb") {
-			*file >> new_plan.shoot_type >> new_plan.shoot_size >> new_plan.angle_modificator >> new_plan.shoot_angle;
-			if (new_plan.shoot_type == "line") *file >> new_plan.shoot_speed >> new_plan.shoot_acceleration;
-			else if (new_plan.shoot_type == "not_line_speed") *file >> new_plan.shoot_speed_x >> new_plan.shoot_speed_y >> new_plan.shoot_acceleration;
-			else if (new_plan.shoot_type == "not_line_accel") *file >> new_plan.shoot_speed >> new_plan.shoot_acceleration_x >> new_plan.shoot_acceleration_y;
-			else if (new_plan.shoot_type == "not_line") *file >> new_plan.shoot_speed_x >> new_plan.shoot_speed_y >> new_plan.shoot_acceleration_x >> new_plan.shoot_acceleration_y;
-			*file >> trash >> new_plan.bulletColor;
+			
+			*file >> trash;
+
+			do {
+				if (new_plan.bulletMovmentType.size() != 0) {
+					char timeType;
+					*file >> timeType;
+					new_plan.timeType.push_back(timeType);
+					new_plan.startTime.push_back(read_time(file));
+					*file >> trash;
+				}
+				string bulletMovmentType;
+				char angleType;
+				double bulletSize, shootAngle;
+				int bulletColor;
+				*file >> bulletMovmentType >> bulletSize >> angleType >> shootAngle;
+				new_plan.bulletMovmentType.push_back(bulletMovmentType);
+				new_plan.bulletSize.push_back(bulletSize);
+				new_plan.angleType.push_back(angleType);
+				new_plan.shootAngle.push_back(shootAngle);
+
+				if (bulletMovmentType == "line") {
+					double lineBulletSpeed, lineBulletAccel;
+					*file >> lineBulletSpeed >> lineBulletAccel;
+					new_plan.lineBulletSpeed.push_back(lineBulletSpeed);
+					new_plan.lineBulletAccel.push_back(lineBulletAccel);
+				}
+				else if (bulletMovmentType == "not_line_speed") {
+					sf::Vector2f notLineBulletSpeed;
+					double lineBulletAccel;
+					*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> lineBulletAccel;
+					new_plan.notLineBulletSpeed.push_back(notLineBulletSpeed);
+					new_plan.lineBulletAccel.push_back(lineBulletAccel);
+				}
+				else if (bulletMovmentType == "not_line_accel") {
+					sf::Vector2f notLineBulletAccel;
+					double lineBulletSpeed;
+					*file >> lineBulletSpeed >> notLineBulletAccel.x >> notLineBulletAccel.y;
+				}
+				else if (bulletMovmentType == "not_line") {
+					sf::Vector2f notLineBulletAccel, notLineBulletSpeed;
+					*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> notLineBulletAccel.x >> notLineBulletAccel.y;
+					new_plan.notLineBulletSpeed.push_back(notLineBulletSpeed);
+					new_plan.notLineBulletAccel.push_back(notLineBulletAccel);
+				}
+				*file >> trash >> bulletColor >> trash;
+				new_plan.bulletColor.push_back(bulletColor);
+			} while (trash != "}");
+			
 		}
+
+
 		else if (public_or_local == "pb") {
-			new_plan.shoot_size = public_bullet.shoot_size;
-			new_plan.shoot_angle = public_bullet.shoot_angle;
-			new_plan.shoot_speed = public_bullet.shoot_speed;
-			new_plan.shoot_speed_x = public_bullet.shoot_speed_x;
-			new_plan.shoot_speed_y = public_bullet.shoot_speed_y;
-			new_plan.shoot_acceleration = public_bullet.shoot_acceleration;
-			new_plan.shoot_acceleration_x = public_bullet.shoot_acceleration_x;
-			new_plan.shoot_acceleration_y = public_bullet.shoot_acceleration_y;
-			new_plan.angle_modificator = public_bullet.angle_modificator;
+			new_plan.bulletSize = public_bullet.bulletSize;
+			new_plan.shootAngle = public_bullet.shootAngle;
+			new_plan.lineBulletSpeed = public_bullet.lineBulletSpeed;
+			new_plan.notLineBulletSpeed = public_bullet.notLineBulletSpeed;
+			new_plan.lineBulletAccel = public_bullet.lineBulletAccel;
+			new_plan.notLineBulletAccel = public_bullet.notLineBulletAccel;
+			new_plan.angleType = public_bullet.angleType;
 			new_plan.bulletColor = public_bullet.bulletColor;
-			new_plan.start_moving_modificator = public_bullet.start_moving_modificator;
+			new_plan.startMovingType = public_bullet.startMovingType;
 			new_plan.startMovingCoords = public_bullet.startMovingCoords;
+			new_plan.timeType = public_bullet.timeType;
+			new_plan.bulletColor = public_bullet.bulletColor;
 		}
 		return new_plan;
 	}
 
 	void setNewPublicBullet(ifstream *file) {
 		string trash;
-		*file >> trash;
 		plan_exemplar n;
 		public_bullet = n;
-		*file >> trash >> public_bullet.start_moving_modificator >> public_bullet.startMovingCoords.x >> public_bullet.startMovingCoords.y >> public_bullet.shoot_type >> public_bullet.shoot_size >> public_bullet.angle_modificator >> public_bullet.shoot_angle;
-		if (public_bullet.shoot_type == "line") *file >> public_bullet.shoot_speed >> public_bullet.shoot_acceleration;
-		else if (public_bullet.shoot_type == "not_line_speed") *file >> public_bullet.shoot_speed_x >> public_bullet.shoot_speed_y >> public_bullet.shoot_acceleration;
-		else if (public_bullet.shoot_type == "not_line_accel") *file >> public_bullet.shoot_speed >> public_bullet.shoot_acceleration_x >> public_bullet.shoot_acceleration_y;
-		else if (public_bullet.shoot_type == "not_line") *file >> public_bullet.shoot_speed_x >> public_bullet.shoot_speed_y >> public_bullet.shoot_acceleration_x >> public_bullet.shoot_acceleration_y;
-		*file >> trash >> public_bullet.bulletColor;
+		*file >> trash >> public_bullet.startMovingType >> public_bullet.startMovingCoords.x >> public_bullet.startMovingCoords.y;
+		*file >> trash;
+
+		do {
+			if (public_bullet.bulletMovmentType.size() != 0) {
+				char timeType;
+				*file >> timeType;
+				public_bullet.timeType.push_back(timeType);
+				public_bullet.startTime.push_back(read_time(file));
+			}
+			string bulletMovmentType;
+			char angleType;
+			double bulletSize, shootAngle;
+			int bulletColor;
+			*file >> bulletMovmentType >> bulletSize >> angleType >> shootAngle;
+			public_bullet.bulletMovmentType.push_back(bulletMovmentType);
+			public_bullet.bulletSize.push_back(bulletSize);
+			public_bullet.angleType.push_back(angleType);
+			public_bullet.shootAngle.push_back(shootAngle);
+
+			if (bulletMovmentType == "line") {
+				double lineBulletSpeed, lineBulletAccel;
+				*file >> lineBulletSpeed >> lineBulletAccel;
+				public_bullet.lineBulletSpeed.push_back(lineBulletSpeed);
+				public_bullet.lineBulletAccel.push_back(lineBulletAccel);
+			}
+			else if (bulletMovmentType == "not_line_speed") {
+				sf::Vector2f notLineBulletSpeed;
+				double lineBulletAccel;
+				*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> lineBulletAccel;
+				public_bullet.notLineBulletSpeed.push_back(notLineBulletSpeed);
+				public_bullet.lineBulletAccel.push_back(lineBulletAccel);
+			}
+			else if (bulletMovmentType == "not_line_accel") {
+				sf::Vector2f notLineBulletAccel;
+				double lineBulletSpeed;
+				*file >> lineBulletSpeed >> notLineBulletAccel.x >> notLineBulletAccel.y;
+				public_bullet.lineBulletSpeed.push_back(lineBulletSpeed);
+				public_bullet.notLineBulletAccel.push_back(notLineBulletAccel);
+			}
+			else if (bulletMovmentType == "not_line") {
+				sf::Vector2f notLineBulletAccel, notLineBulletSpeed;
+				*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> notLineBulletAccel.x >> notLineBulletAccel.y;
+				public_bullet.notLineBulletSpeed.push_back(notLineBulletSpeed);
+				public_bullet.notLineBulletAccel.push_back(notLineBulletAccel);
+			}
+			*file >> trash >> bulletColor >> trash;
+			public_bullet.bulletColor.push_back(bulletColor);
+		} while (trash != "}");
 	}
 
 	int read_time(ifstream *file) {
