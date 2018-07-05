@@ -3,6 +3,7 @@
 #include <vector>
 #include <iterator>
 #include <iostream>
+#include <cmath>
 #include "resourses.h"
 #include "gun_plan.h"
 #include "player.h"
@@ -19,7 +20,7 @@ int main() {
 
 	Music music;
 	music.openFromFile("audio.ogg");
-	BPM = 120;
+	BPM = 200;
 	timePerBeat = BPMtoMCSdiv600Converter / BPM;
 	RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), gameName);
 	Texture textur;

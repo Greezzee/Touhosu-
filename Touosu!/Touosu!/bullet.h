@@ -51,6 +51,7 @@ private:
 
 	void bulletTypeUpdate() {
 		size = myPlan.bulletSize[nextBulletTypeId] * 0.9;
+		self_sprite.setScale(size / 32 * SCREEN_H / GAMEBOARD_H, size / 32 * SCREEN_H / GAMEBOARD_H);
 		if (myPlan.angleType[nextBulletTypeId] == 'r') directionalAngleDegr += myPlan.shootAngle[nextBulletTypeId];
 		if (myPlan.angleType[nextBulletTypeId] == 'a') directionalAngleDegr = myPlan.shootAngle[nextBulletTypeId];
 		if (myPlan.angleType[nextBulletTypeId] == 'p') directionalAngleDegr = LeadAngleToTrigonometric(atan2(coords.y - playerCoords.y, playerCoords.x - coords.x) * 180 / PI) + myPlan.shootAngle[nextBulletTypeId];
@@ -63,26 +64,26 @@ private:
 		if (myPlan.bulletMovmentType[currentTypeNum] == "line") {
 			speed.x = GAMEBOARD_W / timePerBeat / 32 / 4 * myPlan.lineBulletSpeed[currentTypeNum] * cos(directionalAngleRad);
 			speed.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.lineBulletSpeed[currentTypeNum] * sin(directionalAngleRad);
-			acceleration.x = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.lineBulletAccel[currentTypeNum] * cos(directionalAngleRad);
-			acceleration.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.lineBulletAccel[currentTypeNum] * sin(directionalAngleRad);
+			acceleration.x = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.lineBulletAccel[currentTypeNum] * cos(directionalAngleRad);
+			acceleration.y = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.lineBulletAccel[currentTypeNum] * sin(directionalAngleRad);
 		}
 		else if (myPlan.bulletMovmentType[currentTypeNum] == "not_line_speed") {
 			speed.x = GAMEBOARD_W / timePerBeat / 32 / 4 * myPlan.notLineBulletSpeed[currentTypeNum].x;
 			speed.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.notLineBulletSpeed[currentTypeNum].y;
-			acceleration.x = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.lineBulletAccel[currentTypeNum] * cos(directionalAngleRad);
-			acceleration.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.lineBulletAccel[currentTypeNum] * sin(directionalAngleRad);
+			acceleration.x = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.lineBulletAccel[currentTypeNum] * cos(directionalAngleRad);
+			acceleration.y = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.lineBulletAccel[currentTypeNum] * sin(directionalAngleRad);
 		}
 		else if (myPlan.bulletMovmentType[currentTypeNum] == "not_line_accel") {
 			speed.x = GAMEBOARD_W / timePerBeat / 32 / 4 * myPlan.lineBulletSpeed[currentTypeNum] * cos(directionalAngleRad);
 			speed.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.lineBulletSpeed[currentTypeNum] * sin(directionalAngleRad);
-			acceleration.x = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.notLineBulletAccel[currentTypeNum].x;
-			acceleration.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.notLineBulletAccel[currentTypeNum].y;
+			acceleration.x = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.notLineBulletAccel[currentTypeNum].x;
+			acceleration.y = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.notLineBulletAccel[currentTypeNum].y;
 		}
 		else {
 			speed.x = GAMEBOARD_W / timePerBeat / 32 / 4 * myPlan.notLineBulletSpeed[currentTypeNum].x;
 			speed.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.notLineBulletSpeed[currentTypeNum].y;
-			acceleration.x = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.notLineBulletAccel[currentTypeNum].x;
-			acceleration.y = GAMEBOARD_H / timePerBeat / 32 / 4 * myPlan.notLineBulletAccel[currentTypeNum].y;
+			acceleration.x = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.notLineBulletAccel[currentTypeNum].x;
+			acceleration.y = sqrt(GAMEBOARD_H / timePerBeat / 32 / 4) * myPlan.notLineBulletAccel[currentTypeNum].y;
 		}
 	}
 
