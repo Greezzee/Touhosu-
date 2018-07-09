@@ -30,7 +30,7 @@ public:
 		playerCoords = target->playerCoords;
 
 		if (coords.x < 0 || coords.x > GAMEBOARD_W || coords.y < 0 || coords.y > GAMEBOARD_H) actionWithWalls();
-		for (int i = numberOfBeatThisTurn - 1; i >= 0; i--) tryToTypeUpdate(current_beat - i);
+		for (int i = numberOfBeatThisTurn - 1; i >= 0; i--) tryToTypeUpdate();
 
 		speed.x += time * acceleration.x;
 		speed.y += time * acceleration.y;
@@ -76,6 +76,7 @@ private:
 		setColor(myPlan.bulletColor[nextBulletTypeId]);
 		actionWithWallID = myPlan.bulletActionWithWalls[nextBulletTypeId];
 		nextBulletTypeId++;
+		prevBulletTypeTime = current_beat;
 	}
 	void updateBulletSpeedAndAccel(int currentTypeNum) {
 		if (myPlan.speedChangeType[currentTypeNum] == 'a') {
@@ -187,9 +188,9 @@ private:
 		return -rad * 180 / PI;
 	}
 
-	void tryToTypeUpdate(int currentBeat) {
+	void tryToTypeUpdate() {
 		if (nextBulletTypeId < myPlan.startTime.size()) {
-			if (myPlan.timeType[nextBulletTypeId] == 'a' && currentBeat == myPlan.startTime[nextBulletTypeId] || myPlan.timeType[nextBulletTypeId] == 'r' && currentBeat == myPlan.startTime[nextBulletTypeId] + prevBulletTypeTime)
+			if (myPlan.timeType[nextBulletTypeId] == 'a' && current_beat == myPlan.startTime[nextBulletTypeId] || myPlan.timeType[nextBulletTypeId] == 'r' && current_beat == myPlan.startTime[nextBulletTypeId] + prevBulletTypeTime)
 				bulletTypeUpdate();
 		}
 	}
