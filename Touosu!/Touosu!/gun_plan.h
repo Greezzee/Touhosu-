@@ -23,6 +23,7 @@ struct plan_exemplar {
 	//"splr" for angle to player from spawn pos (with agnle offset and player coord offset)
 	//"coord" for angle to any coordinate from gun
 	//"scoord" for angle to any coordinate from spawn pos
+	//"rand" for rangom angle (in rangle from 0 to angle)
 	vector<string> speedAngleType;
 	//"abs" for acceleration from any direction (directional angle)
 	//"rel" for acceleration from bullet speed direction (with angle offset)
@@ -32,6 +33,7 @@ struct plan_exemplar {
 	//"srel" like rel, but update every step
 	//"splr" like plr, but update every step
 	//"sabs" like abs, but use gun angle as OY
+	//"rand" for rangom angle (in rangle from 0 to angle)
 	vector<string> accelAngleType;
 
 	//'a' for absolute speed
@@ -198,27 +200,30 @@ private:
 				double bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
 				sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 				
+				*file >> timeType;
+
 				if (i != 0) {
-					*file >> timeType;
-					if (timeType != 'w' || i != 0) startTime = read_time(file);
+					if (timeType != 'w' && i != 0) startTime = read_time(file);
 					else startTime = -1;
 				}
-				else timeType = 'n';
+
+
+
 				*file >> trash >> bulletSize >> trash >> bulletActionWithWalls >> trash >> speedAngleType >> bulletSpeedAngle;
-				if (speedAngleType != "abs" && speedAngleType != "rel") *file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+				if (speedAngleType != "abs" && speedAngleType != "rel" && speedAngleType != "rand") *file >> speedOffsetCoord.x >> speedOffsetCoord.y;
 				*file >> speedChangeType >> lineBulletSpeed;
 
 				*file >> trash >> accelAngleType >> bulletAccelAngle;
-				if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel") *file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+				if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel" && accelAngleType != "rand") *file >> accelOffsetCoord.x >> accelOffsetCoord.y;
 				*file >> lineBulletAccel;
 
 				*file >> trash >> bulletColor;
 
 				if (timeType != 'n') {
-					new_plan.timeType.push_back(timeType);
 					new_plan.startTime.push_back(startTime);
 				}
 
+				new_plan.timeType.push_back(timeType);
 				new_plan.bulletActionWithWalls.push_back(bulletActionWithWalls);
 				new_plan.bulletSize.push_back(bulletSize);
 

@@ -17,12 +17,12 @@ using namespace sf;
 int main() {
 	ifstream file;
 	file.open("plan.txt");
-	int NumberOfGuns;
-	file >> BPM >> NumberOfGuns;
+	int NumberOfGuns, randomSeed;
+	file >> BPM >> NumberOfGuns >> randomSeed;
+	srand(randomSeed);
 	file.close();
 	Music music;
 	music.openFromFile("audio.ogg");
-	BPM = 120;
 	timePerBeat = BPMtoMCSdiv600Converter / BPM;
 	RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), gameName);
 	Texture textur;

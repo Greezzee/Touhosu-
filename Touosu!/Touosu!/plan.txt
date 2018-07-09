@@ -1,7 +1,72 @@
-120 1
+120 1 1
 
 g 0 - 0 0 0 0 0 0 0 0 1 - set 300 10 285
-g 0 - 1 0 0 0 0 0 0 0 0 - laser_shoot - a 50 50 - 1 1 0 0 0 0 0 0 0 - 2 0 0 0 0 0 0 0 0 - r 0 32
+
+for 40 every 0 0 0 0 1 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - a 0 55 lb {
+n - 24 - i - abs 0 a0.5 - srel 90 0.004 - 2;
+r 0 6 0 0 0 0 0 0 0 - -1 - d - rel 0 r0 - sabs 90 0.004 - 2
+}
+
+for 40 every 0 0 0 0 1 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - a 600 55 lb {
+n - 24 - i - abs 180 a0.5 - srel -90 0.004 - 2;
+r 0 6 0 0 0 0 0 0 0 - -1 - d - rel 0 r0 - sabs 90 0.004 - 2
+}
+
+for 40 every 0 0 0 0 1 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - s 45 -45 lb {
+n - 24 - i - rel 0 a0.5 - rel 90 0.004 - 2;
+r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
+r 0 3 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
+r 0 5 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
+r 0 7 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2
+}
+
+for 40 every 0 0 0 0 1 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - s 45 45 lb {
+n - 24 - i - rel 0 a0.5 - rel 90 -0.004 - 2;
+r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
+r 0 3 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
+r 0 5 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
+r 0 7 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2
+}
+g 0 - 1 0 0 0 0 0 0 0 -1 - rotate - 1 0 0 0 0 0 0 0 1 - p 0 0 0
+g 0 - 1 2 0 0 0 0 0 0 -1 - rotate - 1 2 0 0 0 0 0 0 1 - p 0 0 0
+g 0 - 2 0 0 0 0 0 0 0 -1 - rotate - 2 0 0 0 0 0 0 0 1 - p 0 0 0
+g 0 - 2 2 0 0 0 0 0 0 -1 - rotate - 2 2 0 0 0 0 0 0 1 - p 0 0 0
+g 0 - 3 0 0 0 0 0 0 0 -1 - rotate - 3 0 0 0 0 0 0 0 1 - p 0 0 0
+g 0 - 3 2 0 0 0 0 0 0 -1 - rotate - 3 2 0 0 0 0 0 0 1 - p 0 0 0
+
+g 0 - 3 2 0 0 0 0 0 0 -1 - rotate - 3 2 0 0 0 0 0 0 1 - p 0 0 0
+
+for 20 every 0 0 0 1 0 0 0 0 0 g 0 - 3 2 0 0 0 0 0 0 0 - bullet_shoot - s 45 -45 lb {
+n - 24 - b - rel 0 a0.5 - rel 90 0 - 2;
+a 4 5 0 0 0 0 0 0 0 - 24 - i - rel 0 a0 - sabs 0 0 - 6;
+a 5 4 0 0 0 0 0 0 0 - 24 - b - rel 0 r0 - rand 360 0.0003 - 6;
+w - 24 - d - rel 0 r0 - splr 0 0 0 0.0002 - 4
+}
+
+for 20 every 0 0 0 1 0 0 0 0 0 g 0 - 3 2 0 0 0 0 0 0 0 - bullet_shoot - s 45 45 lb {
+n - 24 - b - rel 0 a0.5 - rel 90 0 - 2;
+a 4 5 0 0 0 0 0 0 0 - 24 - i - rel 0 a0 - sabs 0 0 - 6;
+a 5 4 0 0 0 0 0 0 0 - 24 - b - rel 0 r0 - rand 360 0.0003 - 6;
+w - 24 - d - rel 0 r0 - splr 0 0 0 0.0002 - 4
+}
+
+for 20 every 0 0 0 0 0 1 0 0 0 g 0 - 4 5 0 0 0 0 0 0 0 - bullet_shoot - s 45 45 lb {
+n - 24 - t - rel 45 a0.8 - rel 90 0 - 2;
+w - 24 - b - rel 0 r0 - rel 90 0 - 2;
+w - 24 - t - rel 0 r0 - rel 90 0 - 2;
+w - 24 - b - rel 0 r0 - rel 90 0 - 2;
+w - 24 - t - rel 0 r0 - rel 90 0 - 2;
+w - 24 - d - rel 0 r0 - rel 90 0 - 2
+}
+
+for 20 every 0 0 0 0 0 1 0 0 0 g 0 - 4 5 0 0 0 0 0 0 0 - bullet_shoot - s 45 -45 lb {
+n - 24 - t - rel -45 a0.8 - rel 90 0 - 2;
+w - 24 - b - rel 0 r0 - rel 90 0 - 2;
+w - 24 - t - rel 0 r0 - rel 90 0 - 2;
+w - 24 - b - rel 0 r0 - rel 90 0 - 2;
+w - 24 - t - rel 0 r0 - rel 90 0 - 2;
+w - 24 - d - rel 0 r0 - rel 90 0 - 2
+}
 
 end
 
@@ -20,3 +85,6 @@ r 0 3 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
 r 0 5 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
 r 0 7 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2
 }
+
+
+
