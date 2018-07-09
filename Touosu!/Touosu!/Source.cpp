@@ -20,7 +20,7 @@ int main() {
 
 	Music music;
 	music.openFromFile("audio.ogg");
-	BPM = 200;
+	BPM = 120;
 	timePerBeat = BPMtoMCSdiv600Converter / BPM;
 	RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), gameName);
 	Texture textur;
