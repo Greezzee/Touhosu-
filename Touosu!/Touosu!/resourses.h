@@ -5,7 +5,7 @@ const double PI = 3.14159265;
 const std::string gameName = "Touhousu";
 int BPM;
 double timePerBeat;
-int SCREEN_W = 1600, SCREEN_H = 1000;
+int SCREEN_W = 800, SCREEN_H = 800;
 int GAMEBOARD_W = 600, GAMEBOARD_H = 600;
 int BOARDER = 200;
 std::string heroSpriteFile = "sprite.png";

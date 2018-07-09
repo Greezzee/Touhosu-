@@ -121,9 +121,10 @@ private:
 				else laserAngle = LeadAngleToTrigonometric(atan2(current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x) * 180 / PI) + current_action.shootAngle[0];
 			}
 			if (current_action.startMovingType == 'a') actual_laser.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, laserAngle, current_action.bulletSize[0], &s);
-			else actual_laser.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, laserAngle, current_action.bulletSize[0], &s);
+			else if (current_action.startMovingType == 'r') actual_laser.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, laserAngle, current_action.bulletSize[0], &s);
+			else if (current_action.startMovingType == 's') actual_laser.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, laserAngle, current_action.bulletSize[0], &s);
 			if (current_beat >= current_action.laserPreparingEndTime) actual_laser.activate();
-			else if (current_action.startMovingType == 'r') actual_laser.activate_animation(current_beat - current_action.startTime[0], current_action.laserPreparingEndTime - current_action.startTime[0]);
+			else actual_laser.activate_animation(current_beat - current_action.startTime[0], current_action.laserPreparingEndTime - current_action.startTime[0]);
 			all_lasers->push_back(actual_laser);
 			if (current_action.endTime == current_beat) return true;
 			else return false;
@@ -135,16 +136,9 @@ private:
 			s.setTextureRect(IntRect(64, 96, 32, 32));
 			s.setOrigin(16, 16);
 			bullet new_bullet;
-			double bulletAngle;
-			if (current_action.angleType[0] == 'a') bulletAngle = current_action.shootAngle[0];
-			else if (current_action.angleType[0] == 'r') bulletAngle = LeadAngleToTrigonometric(shoot_angle + current_action.shootAngle[0]);
-			else if (current_action.angleType[0] == 'p') bulletAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.shootAngle[0];
-			else if (current_action.angleType[0] == 's') {
-				if (current_action.startMovingType == 'r') bulletAngle = LeadAngleToTrigonometric(atan2(coords.y + current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x - coords.x) * 180 / PI) + current_action.shootAngle[0];
-				else bulletAngle = LeadAngleToTrigonometric(atan2(current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x) * 180 / PI) + current_action.shootAngle[0];
-			}
-			if (current_action.startMovingType == 'a') new_bullet.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, bulletAngle, &current_action, &s);
-			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, bulletAngle, &current_action, &s);
+			if (current_action.startMovingType == 'a') new_bullet.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, shoot_angle, coords, &current_action, &s, target);
+			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, shoot_angle, coords, &current_action, &s, target);
+			else if (current_action.startMovingType == 's') new_bullet.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, shoot_angle, coords, &current_action, &s, target);
 			all_bullets->push_back(new_bullet);
 			return true;
 		}

@@ -3,22 +3,44 @@
 using namespace std;
 
 struct plan_exemplar {
+
 	//a - absolute music time
 	//r - relative music time (from spawn time to action time)
 	//w - after touching with wall
 	vector<char> timeType;
+
 	vector<int> startTime;
 	int endTime = -1, laserPreparingEndTime = -1;
 	//'a' for absolute
-	//'r' for relative
-	//'p' for angle to player from gun
-	//'s' for angle to player from spawn pos
+	//'r' for relative without gunAngle
+	//'s' for relative with gunAngle
 	char startMovingType = 'a';
 	vector<char> angleType;
 
-	vector<double> lineBulletSpeed, lineBulletAccel, shootAngle, bulletSize;
-	vector<sf::Vector2f> notLineBulletSpeed, notLineBulletAccel;
-	vector<std::string> bulletMovmentType;
+	//"abs" for absolute angle of speed direction (need speed, directional angle)
+	//"rel" for angle relative from gun angle or prev bullet direction (need speed, directional angle)
+	//"plr" for angle to player from gun (with agnle offset and player coord offset) (need speed, angle offset, coord offset)
+	//"splr" for angle to player from spawn pos (with agnle offset and player coord offset)
+	//"coord" for angle to any coordinate from gun
+	//"scoord" for angle to any coordinate from spawn pos
+	vector<string> speedAngleType;
+	//"abs" for acceleration from any direction (directional angle)
+	//"rel" for acceleration from bullet speed direction (with angle offset)
+	//"plr" for acceleration to player coords (with angle offset and player coord offset)
+	//"coord" for acceleration to any coordinate
+	//"scoord" like coord, but update every step
+	//"srel" like rel, but update every step
+	//"splr" like plr, but update every step
+	//"sabs" like abs, but use gun angle as OY
+	vector<string> accelAngleType;
+
+	//'a' for absolute speed
+	//'r' for relative speed
+	vector<char> speedChangeType;
+
+	vector<sf::Vector2f> speedOffsetCoord, accelOffsetCoord;
+	vector<double> lineBulletSpeed, lineBulletAccel, shootAngle, bulletSize, bulletSpeedAngle, bulletAccelAngle;
+
 	//1-16 color ID, 0 for random
 	vector<int> bulletColor;
 	//'b' - bounce from walls
@@ -150,101 +172,98 @@ private:
 		if (public_or_local == "lb") {
 
 			new_plan.timeType.resize(0);
-			new_plan.bulletMovmentType.resize(0);
 			new_plan.bulletActionWithWalls.resize(0);
 			new_plan.bulletSize.resize(0);
-			new_plan.angleType.resize(0);
-			new_plan.shootAngle.resize(0);
+
+			new_plan.accelAngleType.resize(0);
+			new_plan.accelOffsetCoord.resize(0);
+			new_plan.bulletAccelAngle.resize(0);
+
+			new_plan.speedAngleType.resize(0);
+			new_plan.speedOffsetCoord.resize(0);
+			new_plan.bulletSpeedAngle.resize(0);
+			new_plan.speedChangeType.resize(0);
+
 			new_plan.lineBulletSpeed.resize(0);
 			new_plan.lineBulletAccel.resize(0);
-			new_plan.notLineBulletSpeed.resize(0);
-			new_plan.notLineBulletAccel.resize(0);
+
 			new_plan.bulletColor.resize(0);
 
 			*file >> trash;
 			int i = 0;
 			do {
-
-				new_plan.timeType.push_back('a');
-				new_plan.startTime.push_back(0);
-
-				if (new_plan.bulletMovmentType.size() != 0) {
-					char timeType;
+				int bulletColor, startTime;
+				char timeType, bulletActionWithWalls, speedChangeType;
+				string accelAngleType, speedAngleType;
+				double bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
+				sf::Vector2f accelOffsetCoord, speedOffsetCoord;
+				
+				if (i != 0) {
 					*file >> timeType;
-					new_plan.timeType[i] = timeType;
-					new_plan.startTime[i] = read_time(file);
-					*file >> trash;
+					if (timeType != 'w' || i != 0) startTime = read_time(file);
+					else startTime = -1;
+				}
+				else timeType = 'n';
+				*file >> trash >> bulletSize >> trash >> bulletActionWithWalls >> trash >> speedAngleType >> bulletSpeedAngle;
+				if (speedAngleType != "abs" && speedAngleType != "rel") *file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+				*file >> speedChangeType >> lineBulletSpeed;
+
+				*file >> trash >> accelAngleType >> bulletAccelAngle;
+				if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel") *file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+				*file >> lineBulletAccel;
+
+				*file >> trash >> bulletColor;
+
+				if (timeType != 'n') {
+					new_plan.timeType.push_back(timeType);
+					new_plan.startTime.push_back(startTime);
 				}
 
-				new_plan.bulletMovmentType.push_back("");
-				new_plan.bulletActionWithWalls.push_back('a');
-				new_plan.bulletSize.push_back(0);
-				new_plan.angleType.push_back(0);
-				new_plan.shootAngle.push_back(0);
-				new_plan.lineBulletSpeed.push_back(0);
-				new_plan.lineBulletAccel.push_back(0);
-				new_plan.notLineBulletSpeed.push_back(sf::Vector2f());
-				new_plan.notLineBulletAccel.push_back(sf::Vector2f());
-				new_plan.bulletColor.push_back(0);
+				new_plan.bulletActionWithWalls.push_back(bulletActionWithWalls);
+				new_plan.bulletSize.push_back(bulletSize);
 
-				string bulletMovmentType;
-				char angleType, bulletActionWithWalls;
-				double bulletSize, shootAngle;
-				int bulletColor;
-				*file >> bulletMovmentType >> bulletActionWithWalls >> bulletSize >> angleType >> shootAngle;
-				new_plan.bulletMovmentType[i] = bulletMovmentType;
-				new_plan.bulletActionWithWalls[i] = bulletActionWithWalls;
-				new_plan.bulletSize[i] = bulletSize;
-				new_plan.angleType[i] = angleType;
-				new_plan.shootAngle[i] = shootAngle;
+				new_plan.accelAngleType.push_back(accelAngleType);
+				new_plan.accelOffsetCoord.push_back(accelOffsetCoord);
+				new_plan.bulletAccelAngle.push_back(bulletAccelAngle);
 
-				if (bulletMovmentType == "line") {
-					double lineBulletSpeed, lineBulletAccel;
-					*file >> lineBulletSpeed >> lineBulletAccel;
-					new_plan.lineBulletSpeed[i] = lineBulletSpeed;
-					new_plan.lineBulletAccel[i] = lineBulletAccel;
-				}
-				else if (bulletMovmentType == "not_line_speed") {
-					sf::Vector2f notLineBulletSpeed;
-					double lineBulletAccel;
-					*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> lineBulletAccel;
-					new_plan.notLineBulletSpeed[i] = notLineBulletSpeed;
-					new_plan.lineBulletAccel[i] = lineBulletAccel;
-				}
-				else if (bulletMovmentType == "not_line_accel") {
-					sf::Vector2f notLineBulletAccel;
-					double lineBulletSpeed;
-					*file >> lineBulletSpeed >> notLineBulletAccel.x >> notLineBulletAccel.y;
-					new_plan.notLineBulletAccel[i] = notLineBulletAccel;
-					new_plan.lineBulletSpeed[i] = lineBulletSpeed;
-				}
-				else if (bulletMovmentType == "not_line") {
-					sf::Vector2f notLineBulletAccel, notLineBulletSpeed;
-					*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> notLineBulletAccel.x >> notLineBulletAccel.y;
-					new_plan.notLineBulletSpeed[i] = notLineBulletSpeed;
-					new_plan.notLineBulletAccel[i] = notLineBulletAccel;
-				}
-				*file >> trash >> bulletColor >> trash;
-				new_plan.bulletColor[i] = bulletColor;
+				new_plan.speedAngleType.push_back(speedAngleType);
+				new_plan.speedOffsetCoord.push_back(speedOffsetCoord);
+				new_plan.bulletSpeedAngle.push_back(bulletSpeedAngle);
+				new_plan.speedChangeType.push_back(speedChangeType);
 
+				new_plan.lineBulletSpeed.push_back(lineBulletSpeed);
+				new_plan.lineBulletAccel.push_back(lineBulletAccel);
+
+				new_plan.bulletColor.push_back(bulletColor);
+
+				*file >> trash;
 				i++;
-			} while (trash != "}");
-			
+			} while (trash != "}");	
 		}
 
 
 		else if (public_or_local == "pb") {
-			new_plan.bulletSize = public_bullet.bulletSize;
-			new_plan.shootAngle = public_bullet.shootAngle;
-			new_plan.lineBulletSpeed = public_bullet.lineBulletSpeed;
-			new_plan.notLineBulletSpeed = public_bullet.notLineBulletSpeed;
-			new_plan.lineBulletAccel = public_bullet.lineBulletAccel;
-			new_plan.notLineBulletAccel = public_bullet.notLineBulletAccel;
-			new_plan.angleType = public_bullet.angleType;
-			new_plan.bulletColor = public_bullet.bulletColor;
 			new_plan.startMovingType = public_bullet.startMovingType;
 			new_plan.startMovingCoords = public_bullet.startMovingCoords;
+
 			new_plan.timeType = public_bullet.timeType;
+			new_plan.startTime = public_bullet.startTime;
+
+			new_plan.bulletActionWithWalls = public_bullet.bulletActionWithWalls;
+			new_plan.bulletSize = public_bullet.bulletSize;
+
+			new_plan.accelAngleType = public_bullet.accelAngleType;
+			new_plan.accelOffsetCoord = public_bullet.accelOffsetCoord;
+			new_plan.bulletAccelAngle = public_bullet.bulletAccelAngle;
+
+			new_plan.speedAngleType = public_bullet.speedAngleType;
+			new_plan.speedOffsetCoord = public_bullet.speedOffsetCoord;
+			new_plan.bulletSpeedAngle = public_bullet.bulletSpeedAngle;
+			new_plan.speedChangeType = public_bullet.speedChangeType;
+
+			new_plan.lineBulletSpeed = public_bullet.lineBulletSpeed;
+			new_plan.lineBulletAccel = public_bullet.lineBulletAccel;
+
 			new_plan.bulletColor = public_bullet.bulletColor;
 		}
 		return new_plan;
@@ -258,84 +277,72 @@ private:
 		*file >> trash;
 
 		public_bullet.timeType.resize(0);
-		public_bullet.startTime.resize(0);
-		public_bullet.bulletMovmentType.resize(0);
 		public_bullet.bulletActionWithWalls.resize(0);
 		public_bullet.bulletSize.resize(0);
-		public_bullet.angleType.resize(0);
-		public_bullet.shootAngle.resize(0);
+
+		public_bullet.accelAngleType.resize(0);
+		public_bullet.accelOffsetCoord.resize(0);
+		public_bullet.bulletAccelAngle.resize(0);
+
+		public_bullet.speedAngleType.resize(0);
+		public_bullet.speedOffsetCoord.resize(0);
+		public_bullet.bulletSpeedAngle.resize(0);
+		public_bullet.speedChangeType.resize(0);
+
 		public_bullet.lineBulletSpeed.resize(0);
 		public_bullet.lineBulletAccel.resize(0);
-		public_bullet.notLineBulletSpeed.resize(0);
-		public_bullet.notLineBulletAccel.resize(0);
+
 		public_bullet.bulletColor.resize(0);
 
 		int i = 0;
 		do {
+			int bulletColor, startTime;
+			char timeType, bulletActionWithWalls, speedChangeType;
+			string accelAngleType, speedAngleType;
+			double bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
+			sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 
-			public_bullet.timeType.push_back('a');
-			public_bullet.startTime.push_back(0);
-
-			if (public_bullet.bulletMovmentType.size() != 0) {
-				char timeType;
+			if (i != 0) {
 				*file >> timeType;
+				if (timeType != 'w' || i != 0) startTime = read_time(file);
+				else startTime = -1;
+			}
+			else timeType = 'n';
+			*file >> trash >> bulletSize >> trash >> bulletActionWithWalls >> trash >> speedAngleType >> bulletSpeedAngle;
+			if (speedAngleType != "abs" && speedAngleType != "rel") *file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+			*file >> speedChangeType >> lineBulletSpeed;
+
+			*file >> trash >> accelAngleType >> bulletAccelAngle;
+			if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel") *file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+			*file >> lineBulletAccel;
+
+			*file >> bulletColor;
+
+			if (timeType != 'n') {
 				public_bullet.timeType.push_back(timeType);
-				public_bullet.startTime.push_back(read_time(file));
-				*file >> trash;
+				public_bullet.startTime.push_back(startTime);
 			}
 
-			public_bullet.bulletMovmentType.push_back("");
-			public_bullet.bulletActionWithWalls.push_back('a');
-			public_bullet.bulletSize.push_back(0);
-			public_bullet.angleType.push_back(0);
-			public_bullet.shootAngle.push_back(0);
-			public_bullet.lineBulletSpeed.push_back(0);
-			public_bullet.lineBulletAccel.push_back(0);
-			public_bullet.notLineBulletSpeed.push_back(sf::Vector2f());
-			public_bullet.notLineBulletAccel.push_back(sf::Vector2f());
-			public_bullet.bulletColor.push_back(0);
+			public_bullet.bulletActionWithWalls.push_back(bulletActionWithWalls);
+			public_bullet.bulletSize.push_back(bulletSize);
 
-			string bulletMovmentType;
-			char angleType, bulletActionWithWalls;
-			double bulletSize, shootAngle;
-			int bulletColor;
-			*file >> bulletMovmentType >> bulletActionWithWalls >> bulletSize >> angleType >> shootAngle;
-			public_bullet.bulletMovmentType[i] = bulletMovmentType;
-			public_bullet.bulletActionWithWalls[i] = bulletActionWithWalls;
-			public_bullet.bulletSize[i] = bulletSize;
-			public_bullet.angleType[i] = angleType;
-			public_bullet.shootAngle[i] = shootAngle;
+			public_bullet.accelAngleType.push_back(accelAngleType);
+			public_bullet.accelOffsetCoord.push_back(accelOffsetCoord);
+			public_bullet.bulletAccelAngle.push_back(bulletAccelAngle);
 
-			if (bulletMovmentType == "line") {
-				double lineBulletSpeed, lineBulletAccel;
-				*file >> lineBulletSpeed >> lineBulletAccel;
-				public_bullet.lineBulletSpeed[i] = lineBulletSpeed;
-				public_bullet.lineBulletAccel[i] = lineBulletAccel;
-			}
-			else if (bulletMovmentType == "not_line_speed") {
-				sf::Vector2f notLineBulletSpeed;
-				double lineBulletAccel;
-				*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> lineBulletAccel;
-				public_bullet.notLineBulletSpeed[i] = notLineBulletSpeed;
-				public_bullet.lineBulletAccel[i] = lineBulletAccel;
-			}
-			else if (bulletMovmentType == "not_line_accel") {
-				sf::Vector2f notLineBulletAccel;
-				double lineBulletSpeed;
-				*file >> lineBulletSpeed >> notLineBulletAccel.x >> notLineBulletAccel.y;
-				public_bullet.notLineBulletAccel[i] = notLineBulletAccel;
-				public_bullet.lineBulletSpeed[i] = lineBulletSpeed;
-			}
-			else if (bulletMovmentType == "not_line") {
-				sf::Vector2f notLineBulletAccel, notLineBulletSpeed;
-				*file >> notLineBulletSpeed.x >> notLineBulletSpeed.y >> notLineBulletAccel.x >> notLineBulletAccel.y;
-				public_bullet.notLineBulletSpeed[i] = notLineBulletSpeed;
-				public_bullet.notLineBulletAccel[i] = notLineBulletAccel;
-			}
-			*file >> trash >> bulletColor >> trash;
-			public_bullet.bulletColor[i] = bulletColor;
+			public_bullet.speedAngleType.push_back(speedAngleType);
+			public_bullet.speedOffsetCoord.push_back(speedOffsetCoord);
+			public_bullet.bulletSpeedAngle.push_back(bulletSpeedAngle);
+			public_bullet.speedChangeType.push_back(speedChangeType);
 
+			public_bullet.lineBulletSpeed.push_back(lineBulletSpeed);
+			public_bullet.lineBulletAccel.push_back(lineBulletAccel);
+
+			public_bullet.bulletColor.push_back(bulletColor);
+
+			*file >> trash;
 			i++;
+
 		} while (trash != "}");
 	}
 

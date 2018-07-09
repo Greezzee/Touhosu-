@@ -1,160 +1,22 @@
-g 0 - 0 0 0 0 0 0 0 0 1 - set 300 170 270
-g 0 - 1 0 0 0 0 0 0 0 0 - rotate - 76 0 0 0 0 0 0 0 0 - r 2000 0
+120 1
 
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 0 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 10 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 20 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 30 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 40 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 50 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 60 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 70 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 80 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 90 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 100 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 110 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 120 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 130 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 140 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 150 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 160 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 170 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r 180 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -10 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -20 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -30 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -40 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -50 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -60 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -70 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -80 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -90 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -100 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -110 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -120 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -130 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -140 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -150 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -160 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
-for 75 every 1 0 0 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - r 0 0 lb {
-line b 24 r -170 0.2 0 - 2;
-w 0 0 0 0 0 0 0 0 0 - line d 24 p 0 0.2 0 - 4
-}
+g 0 - 0 0 0 0 0 0 0 0 1 - set 300 10 285
+g 0 - 1 0 0 0 0 0 0 0 0 - laser_shoot - a 50 50 - 1 1 0 0 0 0 0 0 0 - 2 0 0 0 0 0 0 0 0 - r 0 32
 
 end
+
+for 75 every 0 0 1 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - s 45 -45 lb {
+- 24 - i - rel 0 a0.5 - rel 90 0.004 - 2;
+r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
+r 0 3 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
+r 0 5 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
+r 0 7 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2
+}
+
+for 75 every 0 0 1 0 0 0 0 0 0 g 0 - 1 0 0 0 0 0 0 0 0 - bullet_shoot - s 45 45 lb {
+- 24 - i - rel 0 a0.5 - rel 90 -0.004 - 2;
+r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
+r 0 3 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2;
+r 0 5 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - 2;
+r 0 7 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - 2
+}

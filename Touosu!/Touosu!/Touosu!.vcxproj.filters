@@ -19,6 +19,9 @@
     <Filter Include="SFML">
       <UniqueIdentifier>{1f215894-a883-4d47-ad95-cb007235fe18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="plans">
+      <UniqueIdentifier>{44ecd2b2-11b4-4faf-a3f9-5d66e2384050}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -73,5 +76,10 @@
     <ClInclude Include="zone.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="plan.txt">
+      <Filter>plans</Filter>
+    </Text>
   </ItemGroup>
 </Project>

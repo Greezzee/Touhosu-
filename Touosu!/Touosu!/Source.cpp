@@ -15,9 +15,11 @@
 using namespace sf;
 
 int main() {
-
-
-
+	ifstream file;
+	file.open("plan.txt");
+	int NumberOfGuns;
+	file >> BPM >> NumberOfGuns;
+	file.close();
 	Music music;
 	music.openFromFile("audio.ogg");
 	BPM = 120;
@@ -47,11 +49,11 @@ int main() {
 	zone zones;
 	zones.init(zoneSprite, BPM);
 	zones.read_zones();
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < NumberOfGuns; i++) {
 		gun_plan p(i);
 		allGunPlans.push_back(p);
 	}
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < NumberOfGuns; i++) {
 		Sprite self_sprite;
 		self_sprite.setTexture(gunTexture);
 		gun g1;
