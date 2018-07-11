@@ -49,6 +49,7 @@ struct plan_exemplar {
 	//'d' - destroy by walls
 	//'i' - ingnore walls
 	//'t' - teleport to opposive wall
+	//'c' - classic teleport to opposive wall relative center
 	vector<char> bulletActionWithWalls;
 	double gunEndAngle = 0, angleSpeed = 0;
 	sf::Vector2f startMovingCoords, endMovingCoords, gunSpeed;

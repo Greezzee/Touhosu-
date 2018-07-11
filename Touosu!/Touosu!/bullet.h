@@ -27,6 +27,8 @@ public:
 
 	void update(RenderWindow *window, long double time, player *target) {
 
+		if (isBPMUpdated) updateBulletSpeedAndAccel(nextBulletTypeId - 1);
+
 		playerCoords = target->playerCoords;
 
 		if (coords.x < 0 || coords.x > GAMEBOARD_W || coords.y < 0 || coords.y > GAMEBOARD_H) actionWithWalls();
@@ -174,6 +176,24 @@ private:
 			else if (coords.x > GAMEBOARD_W) coords.x = 0;
 			else if (coords.y < 0) coords.y = GAMEBOARD_H;
 			else if (coords.y > GAMEBOARD_H) coords.y = 0;
+			break;
+		case 'ñ':
+			if (coords.x < 0) {
+				coords.x = GAMEBOARD_W;
+				coords.y = abs(GAMEBOARD_H - coords.y);
+			}
+			else if (coords.x > GAMEBOARD_W) {
+				coords.x = 0;
+				coords.y = abs(GAMEBOARD_H - coords.y);
+			}
+			else if (coords.y < 0) {
+				coords.y = GAMEBOARD_H;
+				coords.x = abs(GAMEBOARD_W - coords.x);
+			}
+			else if (coords.y > GAMEBOARD_H) {
+				coords.y = 0;
+				coords.x = abs(GAMEBOARD_W - coords.x);
+			}
 			break;
 		}
 		if (nextBulletTypeId < myPlan.startTime.size() && myPlan.timeType[nextBulletTypeId] == 'w') 

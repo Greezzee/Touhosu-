@@ -82,4 +82,9 @@
       <Filter>plans</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="music.ogg">
+      <Filter>plans</Filter>
+    </None>
+  </ItemGroup>
 </Project>

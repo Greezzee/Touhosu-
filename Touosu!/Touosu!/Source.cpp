@@ -1,5 +1,5 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 #include <vector>
 #include <iterator>
 #include <iostream>
@@ -18,11 +18,29 @@ int main() {
 	ifstream file;
 	file.open("plan.txt");
 	int NumberOfGuns, randomSeed;
-	file >> BPM >> NumberOfGuns >> randomSeed;
+	file >> NumberOfGuns >> randomSeed;
+	string trash;
+
+	vector<double> offset, bpm;
+
+	do
+	{
+		file >> trash;
+		if (trash == "new_bpm") {
+			offset.push_back(0);
+			bpm.push_back(0);
+			file >> offset[offset.size() - 1] >> bpm[bpm.size() - 1];
+			file >> trash;
+		}
+	} while (trash != "end");
 	srand(randomSeed);
 	file.close();
-	Music music;
-	music.openFromFile("audio.ogg");
+
+
+	Music gameMusic;
+    gameMusic.openFromFile("music.ogg");
+
+
 	timePerBeat = BPMtoMCSdiv600Converter / BPM;
 	RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), gameName);
 	Texture textur;
@@ -60,17 +78,19 @@ int main() {
 		g1.set_gun(self_sprite, allGunPlans[i]);
 		allGuns.push_back(g1);
 	}
-	double offset = 0, pause = 0, time = 0;
+	double time = 0;
 	RectangleShape gameboard;
 	gameboard.setSize(Vector2f(SCREEN_H, SCREEN_H));
 	gameboard.setFillColor(Color(200, 200, 200));
 	window.draw(gameboard);
+
+	int currentBPMid = 0;
+
 	while (window.isOpen()) {
 
 		int couter = 1;
 		time = clock.getElapsedTime().asMicroseconds();
-		pause += time;
-		offset += time;
+		current_time += time;
 		clock.restart();
 		time = time / timerCoof;
 
@@ -90,9 +110,21 @@ int main() {
 
 		mainPlayer.update(&window, time);
 
-		if (pause > 2000000){
-			//if (offset >= 516 + 2000000 && music.getStatus() == SoundSource::Status::Stopped) music.play();
-			timeUpdate(time);
+		if (current_time > 0){
+			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
+				gameMusic.play();
+				current_time = 0;
+			}
+			isBPMUpdated = false;
+			if (currentBPMid < offset.size() && current_time >= offset[currentBPMid]) {
+				BPM = bpm[currentBPMid];
+				timePerBeat = BPMtoMCSdiv600Converter / BPM;
+				currentBPMid++;
+				isBPMUpdated = true;
+			}
+
+
+			if (currentBPMid > 0) timeUpdate(time);
 			zones.update(&window, time);
 			for (int i = 0; i < allBullets.size(); i++) {
 				allBullets[i].update(&window, time, &mainPlayer);

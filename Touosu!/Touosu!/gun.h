@@ -105,7 +105,7 @@ private:
 			self_sprite.move(current_action.gunSpeed.x * SCREEN_H / GAMEBOARD_H, current_action.gunSpeed.y * SCREEN_H / GAMEBOARD_H);
 			coords.x += current_action.gunSpeed.x;
 			coords.y += current_action.gunSpeed.y;
-			if (current_action.endTime == current_beat) return true;
+			if (current_action.endTime <= current_beat) return true;
 			else return false;
 		}
 		else if (current_action.commandType == "laser_shoot") {
@@ -126,7 +126,7 @@ private:
 			if (current_beat >= current_action.laserPreparingEndTime) actual_laser.activate();
 			else actual_laser.activate_animation(current_beat - current_action.startTime[0], current_action.laserPreparingEndTime - current_action.startTime[0]);
 			all_lasers->push_back(actual_laser);
-			if (current_action.endTime == current_beat) return true;
+			if (current_action.endTime <= current_beat) return true;
 			else return false;
 		}
 
@@ -147,7 +147,7 @@ private:
 				self_sprite.rotate(-current_action.angleSpeed);
 				shoot_angle += current_action.angleSpeed;
 				shoot_angle = LeadAngleToTrigonometric(shoot_angle);
-				if (current_action.endTime == current_beat) {
+				if (current_action.endTime >= current_beat) {
 					shoot_angle = current_action.gunEndAngle;
 					self_sprite.setRotation(-current_action.gunEndAngle);
 					return true;
@@ -157,7 +157,7 @@ private:
 			else {
 				shoot_angle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI);
 				self_sprite.setRotation(-shoot_angle);
-				if (current_action.endTime == current_beat) return true;
+				if (current_action.endTime <= current_beat) return true;
 				else return false;
 			}
 		}

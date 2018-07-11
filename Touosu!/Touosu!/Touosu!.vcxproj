@@ -43,6 +43,9 @@
   <ItemGroup>
     <Text Include="plan.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="music.ogg" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{BA80BD2F-3895-4129-961A-8514D5A9072E}</ProjectGuid>
