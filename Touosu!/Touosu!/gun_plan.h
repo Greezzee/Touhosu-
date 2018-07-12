@@ -211,11 +211,13 @@ private:
 
 
 				*file >> trash >> bulletSize >> trash >> bulletActionWithWalls >> trash >> speedAngleType >> bulletSpeedAngle;
-				if (speedAngleType != "abs" && speedAngleType != "rel" && speedAngleType != "rand") *file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+				if (speedAngleType != "abs" && speedAngleType != "rel" && speedAngleType != "rand") 
+					*file >> speedOffsetCoord.x >> speedOffsetCoord.y;
 				*file >> speedChangeType >> lineBulletSpeed;
 
 				*file >> trash >> accelAngleType >> bulletAccelAngle;
-				if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel" && accelAngleType != "rand") *file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+				if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel" && accelAngleType != "rand") 
+					*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
 				*file >> lineBulletAccel;
 
 				*file >> trash >> bulletColor;

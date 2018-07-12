@@ -60,7 +60,8 @@ private:
 	char actionWithWallID;
 
 	void setColor(int colorID) {
-		if (colorID == 0) self_sprite.setTextureRect(IntRect((rand() % 16) * 32, 96, 32, 32));
+		if (colorID == 0) 
+			self_sprite.setTextureRect(IntRect(((rand() % 8) * 2) * 32, 96, 32, 32));
 		else self_sprite.setTextureRect(IntRect(colorID * 32, 96, 32, 32));
 	}
 
@@ -177,7 +178,8 @@ private:
 			else if (coords.y < 0) coords.y = GAMEBOARD_H;
 			else if (coords.y > GAMEBOARD_H) coords.y = 0;
 			break;
-		case 'ñ':
+		case 'c':
+
 			if (coords.x < 0) {
 				coords.x = GAMEBOARD_W;
 				coords.y = abs(GAMEBOARD_H - coords.y);
