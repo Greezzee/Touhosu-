@@ -22,7 +22,7 @@ public:
 		current_actions.resize(0);
 	}
 
-	void update(RenderWindow *window, long double time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target) {
+	void update(RenderWindow *window, double time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target) {
 
 		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
 			while (true) {
@@ -35,7 +35,7 @@ public:
 		}
 
 		for (int i = 0; i < current_actions.size(); i++) {
-			if (action(current_actions[i], all_bullets, all_lasers, target)) {
+			if (action(current_actions[i], all_bullets, all_lasers, target, time)) {
 				current_actions.erase(current_actions.begin() + i);
 				i--;
 			}
@@ -87,7 +87,7 @@ private:
 		}
 		current_actions.push_back(next_action);
 	}
-	bool action(plan_exemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target) {
+	bool action(plan_exemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, double time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(current_action.endMovingCoords.x * SCREEN_H / GAMEBOARD_H, current_action.endMovingCoords.y * SCREEN_H / GAMEBOARD_H);
@@ -101,12 +101,18 @@ private:
 			is_visible = false;
 			return true;
 		}
-		else if (current_action.commandType == "move" && newTick) {
-			self_sprite.move(current_action.gunSpeed.x * SCREEN_H / GAMEBOARD_H, current_action.gunSpeed.y * SCREEN_H / GAMEBOARD_H);
-			coords.x += current_action.gunSpeed.x;
-			coords.y += current_action.gunSpeed.y;
+		else if (current_action.commandType == "move") {
+			if (newTick) {
+				coords.x += current_action.gunSpeed.x;
+				coords.y += current_action.gunSpeed.y;
+				self_sprite.setPosition(coords.x * (float)SCREEN_H / (float)GAMEBOARD_H, coords.y * (float)SCREEN_H / (float)GAMEBOARD_H);
+			}
+			
+			else self_sprite.move(current_action.gunSpeed.x / timePerBeat * (float)SCREEN_H / (float)GAMEBOARD_H * time, current_action.gunSpeed.y / timePerBeat * (float)SCREEN_H / (float)GAMEBOARD_H * time);
+
 			if (current_action.endTime <= current_beat) return true;
 			else return false;
+			
 		}
 		else if (current_action.commandType == "laser_shoot") {
 			Sprite s;
@@ -142,23 +148,37 @@ private:
 			all_bullets->push_back(new_bullet);
 			return true;
 		}
-		else if (current_action.commandType == "rotate" && newTick) {
-			if (current_action.angleType[0] == 'a' || current_action.angleType[0] == 'r') {
-				self_sprite.rotate(-current_action.angleSpeed);
-				shoot_angle += current_action.angleSpeed;
-				shoot_angle = LeadAngleToTrigonometric(shoot_angle);
-				if (current_action.endTime >= current_beat) {
-					shoot_angle = current_action.gunEndAngle;
-					self_sprite.setRotation(-current_action.gunEndAngle);
-					return true;
+		else if (current_action.commandType == "rotate") {
+			if (newTick) {
+				if (current_action.angleType[0] == 'a' || current_action.angleType[0] == 'r') {
+					shoot_angle += current_action.angleSpeed;
+					shoot_angle = LeadAngleToTrigonometric(shoot_angle);
+					self_sprite.setRotation(-shoot_angle);
+					if (current_action.endTime <= current_beat) {
+						shoot_angle = current_action.gunEndAngle;
+						self_sprite.setRotation(-current_action.gunEndAngle);
+						return true;
+					}
+					else return false;
 				}
-				else return false;
+				else {
+					shoot_angle = LeadAngleToTrigonometric((atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) + current_action.gunEndAngle) * 180 / PI);
+					self_sprite.setRotation(-shoot_angle);
+					if (current_action.endTime <= current_beat) return true;
+					else return false;
+				}
 			}
 			else {
-				shoot_angle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI);
-				self_sprite.setRotation(-shoot_angle);
-				if (current_action.endTime <= current_beat) return true;
-				else return false;
+				if (current_action.angleType[0] == 'a' || current_action.angleType[0] == 'r') {
+					self_sprite.rotate(-current_action.angleSpeed / timePerBeat * time);
+					return false;
+				}
+				else {
+					shoot_angle = LeadAngleToTrigonometric((atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) + current_action.gunEndAngle) * 180 / PI);
+					self_sprite.setRotation(-shoot_angle);
+					if (current_action.endTime <= current_beat) return true;
+					else return false;
+				}
 			}
 		}
 		else return false;

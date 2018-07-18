@@ -203,10 +203,10 @@ private:
 				
 				*file >> timeType;
 
-				if (i != 0) {
-					if (timeType != 'w' && i != 0) startTime = read_time(file);
-					else startTime = -1;
-				}
+				
+				if (timeType != 'w' && i != 0) startTime = read_time(file);
+				else startTime = -1;
+				
 
 
 
@@ -222,10 +222,7 @@ private:
 
 				*file >> trash >> bulletColor;
 
-				if (timeType != 'n') {
-					new_plan.startTime.push_back(startTime);
-				}
-
+				if (timeType != 'n') new_plan.startTime.push_back(startTime);
 				new_plan.timeType.push_back(timeType);
 				new_plan.bulletActionWithWalls.push_back(bulletActionWithWalls);
 				new_plan.bulletSize.push_back(bulletSize);
@@ -251,11 +248,11 @@ private:
 
 
 		else if (public_or_local == "pb") {
-			new_plan.startMovingType = public_bullet.startMovingType;
-			new_plan.startMovingCoords = public_bullet.startMovingCoords;
 
+			int startTime = new_plan.startTime[0];
 			new_plan.timeType = public_bullet.timeType;
 			new_plan.startTime = public_bullet.startTime;
+			new_plan.startTime[0] = startTime;
 
 			new_plan.bulletActionWithWalls = public_bullet.bulletActionWithWalls;
 			new_plan.bulletSize = public_bullet.bulletSize;
@@ -281,9 +278,9 @@ private:
 		string trash;
 		plan_exemplar n;
 		public_bullet = n;
-		*file >> trash >> public_bullet.startMovingType >> public_bullet.startMovingCoords.x >> public_bullet.startMovingCoords.y;
 		*file >> trash;
 
+		public_bullet.startTime.resize(0);
 		public_bullet.timeType.resize(0);
 		public_bullet.bulletActionWithWalls.resize(0);
 		public_bullet.bulletSize.resize(0);
@@ -310,27 +307,32 @@ private:
 			double bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
 			sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 
-			if (i != 0) {
-				*file >> timeType;
-				if (timeType != 'w' || i != 0) startTime = read_time(file);
-				else startTime = -1;
-			}
-			else timeType = 'n';
+			*file >> timeType;
+
+			
+			if (timeType != 'w' && i != 0) startTime = read_time(file);
+			else startTime = -1;
+			
+
+
+
 			*file >> trash >> bulletSize >> trash >> bulletActionWithWalls >> trash >> speedAngleType >> bulletSpeedAngle;
-			if (speedAngleType != "abs" && speedAngleType != "rel") *file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+			if (speedAngleType != "abs" && speedAngleType != "rel" && speedAngleType != "rand")
+				*file >> speedOffsetCoord.x >> speedOffsetCoord.y;
 			*file >> speedChangeType >> lineBulletSpeed;
 
 			*file >> trash >> accelAngleType >> bulletAccelAngle;
-			if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel") *file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+			if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel" && accelAngleType != "rand")
+				*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
 			*file >> lineBulletAccel;
 
-			*file >> bulletColor;
+			*file >> trash >> bulletColor;
 
-			if (timeType != 'n') {
-				public_bullet.timeType.push_back(timeType);
-				public_bullet.startTime.push_back(startTime);
-			}
+		
+			public_bullet.startTime.push_back(startTime);
+			
 
+			public_bullet.timeType.push_back(timeType);
 			public_bullet.bulletActionWithWalls.push_back(bulletActionWithWalls);
 			public_bullet.bulletSize.push_back(bulletSize);
 
@@ -350,8 +352,8 @@ private:
 
 			*file >> trash;
 			i++;
-
 		} while (trash != "}");
+
 	}
 
 	int read_time(ifstream *file) {

@@ -13,20 +13,10 @@ public:
 		type.resize(0);
 		active_zones.resize(0);
 		my_sprite = t;
-		current_beat = 0;
-		timer = 0;
 		point = 0;
-		time_per_beat = BPMtoMCSdiv600Converter / bpm;
 	}
 	void update(RenderWindow *window, long double time) {
-		timer += time;
-		bool a, new_tick = false;
-		if (timer >= time_per_beat) {
-			timer -= time_per_beat;
-			current_beat++;
-			new_tick = true;
-		}
-		if (new_tick) activate_zone();
+		if (newTick) activate_zone();
 		test_for_end();
 		draw(window);
 	}
@@ -41,6 +31,7 @@ public:
 			do {
 				file >> command_type;
 			} while (command_type != "zone" && command_type != "end");
+			if (command_type == "end") break;
 			file >> t;
 			sb = read_time(&file);
 			file >> trash;
@@ -64,11 +55,10 @@ private:
 	std::vector<string> type;
 	std::vector<int> active_zones;
 	Sprite my_sprite;
-	long double time_per_beat, timer;
-	int current_beat, point;
+	int point;
 
 	void activate_zone() {
-		while (start_beat[point] == current_beat) {
+		while (point < start_beat.size() && start_beat[point] == current_beat) {
 			active_zones.push_back(point);
 			point++;
 		}

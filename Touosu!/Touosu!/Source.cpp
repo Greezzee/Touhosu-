@@ -126,11 +126,13 @@ int main() {
 
 			if (currentBPMid > 0) timeUpdate(time);
 			zones.update(&window, time);
+			int totalBulletsDestroyed = 0;
 			for (int i = 0; i < allBullets.size(); i++) {
 				allBullets[i].update(&window, time, &mainPlayer);
-				if (allBullets[i].destroyed) {
+				if (totalBulletsDestroyed < 2 && allBullets[i].destroyed) {
 					allBullets.erase(allBullets.begin() + i);
 					i--;
+					totalBulletsDestroyed++;
 				}
 			}
 			for (int i = 0; i < allLasers.size(); i++) {
