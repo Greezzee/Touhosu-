@@ -40,7 +40,6 @@ int main() {
 	Music gameMusic;
     gameMusic.openFromFile("music.ogg");
 
-
 	timePerBeat = BPMtoMCSdiv600Converter / BPM;
 	RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), gameName);
 	Texture textur;
@@ -55,7 +54,7 @@ int main() {
 	bulletsHitboxTexture.loadFromFile(bulletsAndHitboxesFile);
 	Texture gunTexture;
 	gunTexture.loadFromFile(turretsFile);
-	player mainPlayer(50, 250);
+	player mainPlayer(300, 500);
 	std::vector<bullet> allBullets(0);
 	std::vector<laser> allLasers(0);
 	std::vector<gun> allGuns(0);
