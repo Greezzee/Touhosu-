@@ -111,7 +111,7 @@ int main() {
 
 		if (current_time > 0){
 			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
-				gameMusic.play();
+			//	gameMusic.play();
 				current_time = 0;
 			}
 			isBPMUpdated = false;
@@ -144,7 +144,9 @@ int main() {
 			cam.update(&window, time, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y);
 		}
 		else cam.update(&window, 0, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y);
-		//camera.setCenter(p1.x_coord, p1.y_coord);
+
+		mainPlayer.drawHitbox(&window);
+
 		window.display();
 	}
 	return 0;

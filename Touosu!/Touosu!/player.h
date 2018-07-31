@@ -43,6 +43,8 @@ public:
 		updateAnimation(time);
 		setSpritePosition();
 		window->draw(herosprite);
+	}
+	void drawHitbox(RenderWindow *window) {
 		if (isHitboxVisible) window->draw(hero_hitbox_sprite);
 	}
 	void set_hit() {

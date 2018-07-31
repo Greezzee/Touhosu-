@@ -26,11 +26,11 @@ public:
 
 		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
 			while (true) {
-				if (current_beat - j == next_action.startTime[0]) {
+				if (current_beat - j == next_action.startTime) {
 					start_action();
 					next_action = plan.get_plan();
 				}
-				if (current_beat - j != next_action.startTime[0]) break;
+				if (current_beat - j != next_action.startTime) break;
 			}
 		}
 
@@ -56,12 +56,12 @@ private:
 	void start_action() {
 		if (next_action.commandType == "move") {
 			double move_distance_x, move_distance_y;
-			int delta = next_action.endTime - next_action.startTime[0];
-			if (next_action.angleType[0] == 'a') {
+			int delta = next_action.endTime - next_action.startTime;
+			if (next_action.angleType == 'a') {
 				move_distance_x = next_action.endMovingCoords.x - coords.x;
 				move_distance_y = next_action.endMovingCoords.y - coords.y;
 			}
-			else if (next_action.angleType[0] == 'r') {
+			else if (next_action.angleType == 'r') {
 				move_distance_x = next_action.endMovingCoords.x;
 				move_distance_y = next_action.endMovingCoords.y;
 			}
@@ -69,21 +69,21 @@ private:
 			next_action.gunSpeed.y = move_distance_y / delta;
 		}
 		if (next_action.commandType == "rotate") {
-			int delta = next_action.endTime - next_action.startTime[0];
+			int delta = next_action.endTime - next_action.startTime;
 			double rotate;
-			if (next_action.angleType[0] == 'r') {
+			if (next_action.angleType == 'r') {
 				rotate = next_action.gunEndAngle;
 				if (next_action.isRotateClockwise) rotate *= -1;
 				next_action.gunEndAngle = shoot_angle + rotate;
 				next_action.gunEndAngle = LeadAngleToTrigonometric(next_action.gunEndAngle);
 			}
-			else if (next_action.angleType[0] == 'a') {
+			else if (next_action.angleType == 'a') {
 				double GunAngleInNewCoordinatesSystem = shoot_angle + 360 - next_action.gunEndAngle;
 				GunAngleInNewCoordinatesSystem = LeadAngleToTrigonometric(GunAngleInNewCoordinatesSystem);
 				if (next_action.isRotateClockwise) rotate = -GunAngleInNewCoordinatesSystem;
 				else rotate = 360 - GunAngleInNewCoordinatesSystem;
 			}
-			if (next_action.angleType[0] != 'p') next_action.angleSpeed = rotate / delta;
+			if (next_action.angleType != 'p') next_action.angleSpeed = rotate / delta;
 		}
 		current_actions.push_back(next_action);
 	}
@@ -91,8 +91,8 @@ private:
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(current_action.endMovingCoords.x * SCREEN_H / GAMEBOARD_H, current_action.endMovingCoords.y * SCREEN_H / GAMEBOARD_H);
-			self_sprite.setRotation(-current_action.shootAngle[0]);
-			shoot_angle = current_action.shootAngle[0];
+			self_sprite.setRotation(-current_action.shootAngle);
+			shoot_angle = current_action.shootAngle;
 			coords.x = current_action.endMovingCoords.x;
 			coords.y = current_action.endMovingCoords.y;
 			return true;
@@ -119,18 +119,18 @@ private:
 			s.setTexture(l_example);
 			laser actual_laser;
 			double laserAngle;
-			if (current_action.angleType[0] == 'a') laserAngle = current_action.shootAngle[0];
-			else if (current_action.angleType[0] == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.shootAngle[0]);
-			else if (current_action.angleType[0] == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.shootAngle[0];
-			else if (current_action.angleType[0] == 's') {
-				if (current_action.startMovingType == 'r') laserAngle = LeadAngleToTrigonometric(atan2(coords.y + current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x - coords.x) * 180 / PI) + current_action.shootAngle[0];
-				else laserAngle = LeadAngleToTrigonometric(atan2(current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x) * 180 / PI) + current_action.shootAngle[0];
+			if (current_action.angleType == 'a') laserAngle = current_action.shootAngle;
+			else if (current_action.angleType == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.shootAngle);
+			else if (current_action.angleType == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.shootAngle;
+			else if (current_action.angleType == 's') {
+				if (current_action.startMovingType == 'r') laserAngle = LeadAngleToTrigonometric(atan2(coords.y + current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x - coords.x) * 180 / PI) + current_action.shootAngle;
+				else laserAngle = LeadAngleToTrigonometric(atan2(current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x) * 180 / PI) + current_action.shootAngle;
 			}
-			if (current_action.startMovingType == 'a') actual_laser.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, laserAngle, current_action.bulletSize[0], &s);
-			else if (current_action.startMovingType == 'r') actual_laser.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, laserAngle, current_action.bulletSize[0], &s);
-			else if (current_action.startMovingType == 's') actual_laser.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, laserAngle, current_action.bulletSize[0], &s);
+			if (current_action.startMovingType == 'a') actual_laser.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, laserAngle, current_action.laserSize, &s);
+			else if (current_action.startMovingType == 'r') actual_laser.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, laserAngle, current_action.laserSize, &s);
+			else if (current_action.startMovingType == 's') actual_laser.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, laserAngle, current_action.laserSize, &s);
 			if (current_beat >= current_action.laserPreparingEndTime) actual_laser.activate();
-			else actual_laser.activate_animation(current_beat - current_action.startTime[0], current_action.laserPreparingEndTime - current_action.startTime[0]);
+			else actual_laser.activate_animation(current_beat - current_action.startTime, current_action.laserPreparingEndTime - current_action.startTime);
 			all_lasers->push_back(actual_laser);
 			if (current_action.endTime <= current_beat) return true;
 			else return false;
@@ -150,7 +150,7 @@ private:
 		}
 		else if (current_action.commandType == "rotate") {
 			if (newTick) {
-				if (current_action.angleType[0] == 'a' || current_action.angleType[0] == 'r') {
+				if (current_action.angleType == 'a' || current_action.angleType == 'r') {
 					shoot_angle += current_action.angleSpeed;
 					shoot_angle = LeadAngleToTrigonometric(shoot_angle);
 					self_sprite.setRotation(-shoot_angle);
@@ -169,7 +169,7 @@ private:
 				}
 			}
 			else {
-				if (current_action.angleType[0] == 'a' || current_action.angleType[0] == 'r') {
+				if (current_action.angleType == 'a' || current_action.angleType == 'r') {
 					self_sprite.rotate(-current_action.angleSpeed / timePerBeat * time);
 					return false;
 				}

@@ -2,21 +2,13 @@
 #include <fstream>
 using namespace std;
 
-struct plan_exemplar {
+struct bullet_exemplar {
 
 	//a - absolute music time
 	//r - relative music time (from spawn time to action time)
 	//w - after touching with wall
 	vector<char> timeType;
-
 	vector<int> startTime;
-	int endTime = -1, laserPreparingEndTime = -1;
-	//'a' for absolute
-	//'r' for relative without gunAngle
-	//'s' for relative with gunAngle
-	char startMovingType = 'a';
-	vector<char> angleType;
-
 	//"abs" for absolute angle of speed direction (need speed, directional angle)
 	//"rel" for angle relative from gun angle or prev bullet direction (need speed, directional angle)
 	//"plr" for angle to player from gun (with agnle offset and player coord offset) (need speed, angle offset, coord offset)
@@ -33,7 +25,7 @@ struct plan_exemplar {
 	//"srel" like rel, but update every step
 	//"splr" like plr, but update every step
 	//"sabs" like abs, but use gun angle as OY
-	//"rand" for rangom angle (in rangle from 0 to angle)
+	//"rand" for rangom angle (in range from 0 to angle)
 	vector<string> accelAngleType;
 
 	//'a' for absolute speed
@@ -41,20 +33,39 @@ struct plan_exemplar {
 	vector<char> speedChangeType;
 
 	vector<sf::Vector2f> speedOffsetCoord, accelOffsetCoord;
-	vector<double> lineBulletSpeed, lineBulletAccel, shootAngle, bulletSize, bulletSpeedAngle, bulletAccelAngle;
+	vector<double> lineBulletSpeed, lineBulletAccel, bulletSize, bulletSpeedAngle, bulletAccelAngle;
 
 	//1-16 color ID, 0 for random
 	vector<int> bulletColor;
+
+	//wave, circle, standart, ellipse, small_knife, crystal, rune, bullet, dark_ellipse, small_star, alpha_standart, small_dark, 
+	//small_ellipse, disk, glowing, bunny_shit, big_star, big_standart, butterfly, flower, big_knife, big_ellipse, very_big, heart, arrow, small_glowing
+	//burning, wtf, very_big_standart, note
+	vector<string> bulletSkin;
+
 	//'b' - bounce from walls
 	//'d' - destroy by walls
 	//'i' - ingnore walls
 	//'t' - teleport to opposive wall
 	//'c' - classic teleport to opposive wall relative center
 	vector<char> bulletActionWithWalls;
-	double gunEndAngle = 0, angleSpeed = 0;
+
+};
+
+struct plan_exemplar {
+	bullet_exemplar bulletInfo;
+	int startTime = -1;
+	int endTime = -1, laserPreparingEndTime = -1;
+	char angleType = 'a';
+	double gunEndAngle = 0, angleSpeed = 0, shootAngle = 0;
 	sf::Vector2f startMovingCoords, endMovingCoords, gunSpeed;
 	std::string commandType;
 	bool isRotateClockwise = false;
+	double laserSize = 0;
+	//'a' for absolute
+	//'r' for relative without gunAngle
+	//'s' for relative with gunAngle
+	char startMovingType = 'a';
 };
 
 class gun_plan {
@@ -67,7 +78,7 @@ public:
 		file.open("plan.txt");
 		readFile(&file, gun_id);
 		sort(plan_list.begin(), plan_list.end(), [](const plan_exemplar& plan1, const plan_exemplar& plan2) -> bool {
-			return plan1.startTime[0] < plan2.startTime[0];
+			return plan1.startTime < plan2.startTime;
 		});
 		file.close();
 	};
@@ -80,7 +91,7 @@ public:
 
 private:
 	vector<plan_exemplar> plan_list;
-	plan_exemplar public_bullet;
+	bullet_exemplar public_bullet;
 	int current_step;
 	void readFile(ifstream *file, int gun_id) {
 		string command_type;
@@ -106,7 +117,7 @@ private:
 				if (id == gun_id)
 					for (int i = 0; i < numberOfActions; i++) {
 						plan_list.push_back(new_plan);
-						new_plan.startTime[0] += deltaTime;
+						new_plan.startTime += deltaTime;
 						new_plan.endTime += deltaTime;
 						new_plan.laserPreparingEndTime += deltaTime;
 					}
@@ -118,8 +129,7 @@ private:
 		plan_exemplar new_plan;
 		string trash;
 		*file >> trash;
-		new_plan.startTime.resize(0);
-		new_plan.startTime.push_back(read_time(file));
+		new_plan.startTime = read_time(file);
 		*file >> trash;
 		*file >> new_plan.commandType;
 		if (new_plan.commandType == "set") new_plan = readSet(file, new_plan);
@@ -132,8 +142,7 @@ private:
 	}
 
 	plan_exemplar readSet(ifstream *file, plan_exemplar new_plan) {
-		new_plan.shootAngle.push_back(0);
-		*file >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y >> new_plan.shootAngle[0];
+		*file >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y >> new_plan.shootAngle;
 		return new_plan;
 	}
 	plan_exemplar readMove(ifstream *file, plan_exemplar new_plan) {
@@ -141,8 +150,7 @@ private:
 		*file >> trash;
 		new_plan.endTime = read_time(file);
 		*file >> trash;
-		new_plan.angleType.push_back('a');
-		*file >> new_plan.angleType[0] >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y;
+		*file >> new_plan.angleType >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y;
 		return new_plan;
 	}
 	plan_exemplar readRotate(ifstream *file, plan_exemplar new_plan) {
@@ -150,8 +158,7 @@ private:
 		*file >> trash;
 		new_plan.endTime = read_time(file);
 		*file >> trash;
-		new_plan.angleType.push_back('a');
-		*file >> new_plan.angleType[0] >> new_plan.gunEndAngle >> new_plan.isRotateClockwise;
+		*file >> new_plan.angleType >> new_plan.gunEndAngle >> new_plan.isRotateClockwise;
 		return new_plan;
 	}
 	plan_exemplar readLaserShoot(ifstream *file, plan_exemplar new_plan) {
@@ -162,10 +169,7 @@ private:
 		*file >> trash;
 		new_plan.endTime = read_time(file);
 		*file >> trash;
-		new_plan.angleType.push_back('a');
-		new_plan.shootAngle.push_back(0);
-		new_plan.bulletSize.push_back(0);
-		*file >> new_plan.angleType[0] >> new_plan.shootAngle[0] >> new_plan.bulletSize[0];
+		*file >> new_plan.angleType >> new_plan.shootAngle >> new_plan.laserSize;
 		return new_plan;
 	}
 	plan_exemplar readBulletShoot(ifstream *file, plan_exemplar new_plan) {
@@ -174,30 +178,31 @@ private:
 		*file >> trash >> new_plan.startMovingType >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y >> public_or_local;
 		if (public_or_local == "lb") {
 
-			new_plan.timeType.resize(0);
-			new_plan.bulletActionWithWalls.resize(0);
-			new_plan.bulletSize.resize(0);
+			new_plan.bulletInfo.timeType.resize(0);
+			new_plan.bulletInfo.bulletActionWithWalls.resize(0);
+			new_plan.bulletInfo.bulletSize.resize(0);
 
-			new_plan.accelAngleType.resize(0);
-			new_plan.accelOffsetCoord.resize(0);
-			new_plan.bulletAccelAngle.resize(0);
+			new_plan.bulletInfo.accelAngleType.resize(0);
+			new_plan.bulletInfo.accelOffsetCoord.resize(0);
+			new_plan.bulletInfo.bulletAccelAngle.resize(0);
 
-			new_plan.speedAngleType.resize(0);
-			new_plan.speedOffsetCoord.resize(0);
-			new_plan.bulletSpeedAngle.resize(0);
-			new_plan.speedChangeType.resize(0);
+			new_plan.bulletInfo.speedAngleType.resize(0);
+			new_plan.bulletInfo.speedOffsetCoord.resize(0);
+			new_plan.bulletInfo.bulletSpeedAngle.resize(0);
+			new_plan.bulletInfo.speedChangeType.resize(0);
 
-			new_plan.lineBulletSpeed.resize(0);
-			new_plan.lineBulletAccel.resize(0);
+			new_plan.bulletInfo.lineBulletSpeed.resize(0);
+			new_plan.bulletInfo.lineBulletAccel.resize(0);
 
-			new_plan.bulletColor.resize(0);
+			new_plan.bulletInfo.bulletSkin.resize(0);
+			new_plan.bulletInfo.bulletColor.resize(0);
 
 			*file >> trash;
 			int i = 0;
 			do {
 				int bulletColor, startTime;
 				char timeType, bulletActionWithWalls, speedChangeType;
-				string accelAngleType, speedAngleType;
+				string accelAngleType, speedAngleType, bulletSkin;
 				double bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
 				sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 				
@@ -220,63 +225,60 @@ private:
 					*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
 				*file >> lineBulletAccel;
 
-				*file >> trash >> bulletColor;
+				*file >> trash >> bulletSkin >> bulletColor;
 
-				if (timeType != 'n') new_plan.startTime.push_back(startTime);
-				new_plan.timeType.push_back(timeType);
-				new_plan.bulletActionWithWalls.push_back(bulletActionWithWalls);
-				new_plan.bulletSize.push_back(bulletSize);
+				new_plan.bulletInfo.startTime.push_back(startTime);
+				new_plan.bulletInfo.timeType.push_back(timeType);
+				new_plan.bulletInfo.bulletActionWithWalls.push_back(bulletActionWithWalls);
+				new_plan.bulletInfo.bulletSize.push_back(bulletSize);
 
-				new_plan.accelAngleType.push_back(accelAngleType);
-				new_plan.accelOffsetCoord.push_back(accelOffsetCoord);
-				new_plan.bulletAccelAngle.push_back(bulletAccelAngle);
+				new_plan.bulletInfo.accelAngleType.push_back(accelAngleType);
+				new_plan.bulletInfo.accelOffsetCoord.push_back(accelOffsetCoord);
+				new_plan.bulletInfo.bulletAccelAngle.push_back(bulletAccelAngle);
 
-				new_plan.speedAngleType.push_back(speedAngleType);
-				new_plan.speedOffsetCoord.push_back(speedOffsetCoord);
-				new_plan.bulletSpeedAngle.push_back(bulletSpeedAngle);
-				new_plan.speedChangeType.push_back(speedChangeType);
+				new_plan.bulletInfo.speedAngleType.push_back(speedAngleType);
+				new_plan.bulletInfo.speedOffsetCoord.push_back(speedOffsetCoord);
+				new_plan.bulletInfo.bulletSpeedAngle.push_back(bulletSpeedAngle);
+				new_plan.bulletInfo.speedChangeType.push_back(speedChangeType);
 
-				new_plan.lineBulletSpeed.push_back(lineBulletSpeed);
-				new_plan.lineBulletAccel.push_back(lineBulletAccel);
+				new_plan.bulletInfo.lineBulletSpeed.push_back(lineBulletSpeed);
+				new_plan.bulletInfo.lineBulletAccel.push_back(lineBulletAccel);
 
-				new_plan.bulletColor.push_back(bulletColor);
-
+				new_plan.bulletInfo.bulletColor.push_back(bulletColor);
+				new_plan.bulletInfo.bulletSkin.push_back(bulletSkin);
 				*file >> trash;
 				i++;
 			} while (trash != "}");	
 		}
-
-
 		else if (public_or_local == "pb") {
 
-			int startTime = new_plan.startTime[0];
-			new_plan.timeType = public_bullet.timeType;
-			new_plan.startTime = public_bullet.startTime;
-			new_plan.startTime[0] = startTime;
+			new_plan.bulletInfo.timeType = public_bullet.timeType;
+			new_plan.bulletInfo.startTime = public_bullet.startTime;
 
-			new_plan.bulletActionWithWalls = public_bullet.bulletActionWithWalls;
-			new_plan.bulletSize = public_bullet.bulletSize;
+			new_plan.bulletInfo.bulletActionWithWalls = public_bullet.bulletActionWithWalls;
+			new_plan.bulletInfo.bulletSize = public_bullet.bulletSize;
 
-			new_plan.accelAngleType = public_bullet.accelAngleType;
-			new_plan.accelOffsetCoord = public_bullet.accelOffsetCoord;
-			new_plan.bulletAccelAngle = public_bullet.bulletAccelAngle;
+			new_plan.bulletInfo.accelAngleType = public_bullet.accelAngleType;
+			new_plan.bulletInfo.accelOffsetCoord = public_bullet.accelOffsetCoord;
+			new_plan.bulletInfo.bulletAccelAngle = public_bullet.bulletAccelAngle;
 
-			new_plan.speedAngleType = public_bullet.speedAngleType;
-			new_plan.speedOffsetCoord = public_bullet.speedOffsetCoord;
-			new_plan.bulletSpeedAngle = public_bullet.bulletSpeedAngle;
-			new_plan.speedChangeType = public_bullet.speedChangeType;
+			new_plan.bulletInfo.speedAngleType = public_bullet.speedAngleType;
+			new_plan.bulletInfo.speedOffsetCoord = public_bullet.speedOffsetCoord;
+			new_plan.bulletInfo.bulletSpeedAngle = public_bullet.bulletSpeedAngle;
+			new_plan.bulletInfo.speedChangeType = public_bullet.speedChangeType;
 
-			new_plan.lineBulletSpeed = public_bullet.lineBulletSpeed;
-			new_plan.lineBulletAccel = public_bullet.lineBulletAccel;
+			new_plan.bulletInfo.lineBulletSpeed = public_bullet.lineBulletSpeed;
+			new_plan.bulletInfo.lineBulletAccel = public_bullet.lineBulletAccel;
 
-			new_plan.bulletColor = public_bullet.bulletColor;
+			new_plan.bulletInfo.bulletColor = public_bullet.bulletColor;
+			new_plan.bulletInfo.bulletSkin = public_bullet.bulletSkin;
 		}
 		return new_plan;
 	}
 
 	void setNewPublicBullet(ifstream *file) {
 		string trash;
-		plan_exemplar n;
+		bullet_exemplar n;
 		public_bullet = n;
 		*file >> trash;
 
@@ -303,7 +305,7 @@ private:
 		do {
 			int bulletColor, startTime;
 			char timeType, bulletActionWithWalls, speedChangeType;
-			string accelAngleType, speedAngleType;
+			string accelAngleType, speedAngleType, bulletSkin;
 			double bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
 			sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 
@@ -326,7 +328,7 @@ private:
 				*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
 			*file >> lineBulletAccel;
 
-			*file >> trash >> bulletColor;
+			*file >> trash >> bulletSkin >> bulletColor;
 
 		
 			public_bullet.startTime.push_back(startTime);
@@ -349,6 +351,7 @@ private:
 			public_bullet.lineBulletAccel.push_back(lineBulletAccel);
 
 			public_bullet.bulletColor.push_back(bulletColor);
+			public_bullet.bulletSkin.push_back(bulletSkin);
 
 			*file >> trash;
 			i++;
