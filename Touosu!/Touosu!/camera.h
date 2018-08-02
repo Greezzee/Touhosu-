@@ -1,14 +1,5 @@
 #pragma once
 
-struct cam_plan {
-	string type = "";
-	int b_start_time = -1, b_end_time = -1, b_start_animation = -1, b_end_animation = -1;
-	double cam_center_x = 0, cam_center_y = -1, end_angle = 0, flashlight_size = 0, blinkAlpha = 0;
-	double zoom = 1;
-	bool is_rotate_direction_clockwise = false, is_player_center = false, is_flashlight_active = false;
-
-};
-
 class camera {
 public:
 	View cam;
@@ -18,18 +9,16 @@ public:
 		cam.reset(FloatRect((-SCREEN_W + SCREEN_H - BOARDER * SCREEN_W / SCREEN_H) / 2, -BOARDER / 2, SCREEN_W + BOARDER * SCREEN_W / SCREEN_H, SCREEN_H + BOARDER));
 		cam_center_x = 0; cam_center_y = 0; zoom = 1; cam_angle = 0;
 		cam_std_coords = cam.getCenter();
-		plan.resize(0);
 		timer = 0;
 		flashlight_alpha = 0;
 		distance_with_player_total = 0;
 		distance_with_player_now = 0;
-		read_cam_plan();
 		player_coords_than_follow_end.x = 0;
 		player_coords_than_follow_end.y = 0;
 	}
-	void update(RenderWindow *window, long double time, long double player_x, long double player_y) {
-		if (newTick) set_new_actions();
-		for (int i = 0; i < active_actions.size(); i++) {
+	void update(RenderWindow *window, float time, float player_x, float player_y, planner *GlobalMapPlan) {
+		if (newTick) set_new_actions(GlobalMapPlan);
+		for (unsigned int i = 0; i < active_actions.size(); i++) {
 			if (action(i, newTick, player_x, player_y, window, time)) {
 				active_actions.erase(active_actions.begin() + i);
 				i--;
@@ -38,90 +27,29 @@ public:
 		window->setView(cam);
 	}
 private:
-	long double cam_center_x, cam_center_y, zoom, buffer_zoom, cam_angle, timer, distance_with_player_total, distance_with_player_now;
+	float cam_center_x, cam_center_y, zoom, buffer_zoom, cam_angle, timer, distance_with_player_total, distance_with_player_now;
 	int flashlight_alpha;
-	std::vector<cam_plan> plan;
-	std::vector<cam_plan> active_actions;
+	std::vector<camPlanExemplar> active_actions;
+	camPlanExemplar next_action;
 	Sprite Flashlight;
 	Vector2f player_coords_than_follow_end;
 	Vector2f cam_std_coords;
-	int current_step;
-	void read_cam_plan() {
-		current_step = 0;
-		ifstream file;
-		file.open("plan.txt");
-		string command_type, trash;
-		plan_exemplar public_bullet;
-		do {
-			file >> command_type;
-			if (command_type == "cam") {
-				cam_plan new_plan;
-				new_plan.b_start_time = read_time(&file);
-				file >> new_plan.type;
-				if (new_plan.type == "rotate") {
-					file >> trash;
-					new_plan.b_end_time = read_time(&file);
-					file >> trash;
-					file >> new_plan.end_angle >> new_plan.is_rotate_direction_clockwise;
-				}
-				else if (new_plan.type == "zoom") {
-					file >> trash;
-					new_plan.b_end_time = read_time(&file);
-					file >> trash;
-					file >> new_plan.zoom;
-				}
-				else if (new_plan.type == "follow") {
-					file >> trash;
-					new_plan.b_end_time = read_time(&file);
-					file >> trash;
-					new_plan.is_player_center = true;
-				}
-				else if (new_plan.type == "flashlight") {
-					file >> trash;
-					new_plan.b_start_animation = read_time(&file);
-					file >> trash;
-					new_plan.b_end_time = read_time(&file);
-					file >> trash;
-					new_plan.b_end_animation = read_time(&file);
-					file >> trash;
-					file >> new_plan.flashlight_size;
-					new_plan.is_player_center = true;
-				}
-				else if (new_plan.type == "blink") {
-					file >> trash;
-					new_plan.b_start_animation = read_time(&file);
-					file >> trash;
-					new_plan.b_end_time = read_time(&file);
-					file >> trash;
-					new_plan.b_end_animation = read_time(&file);
-					file >> trash;
-					file >> new_plan.blinkAlpha;
-				}
-				plan.push_back(new_plan);
 
+	void set_new_actions(planner *GlobalMapPlan) {
+		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
+			while (true) {
+				if (current_beat - j == next_action.b_start_time) {
+					active_actions.push_back(next_action);
+					next_action = GlobalMapPlan->getCamPlan();
+				}
+				if (current_beat - j != next_action.b_start_time) break;
 			}
-		} while (command_type != "end");
-		file.close();
-	}
-	int read_time(ifstream *file) {
-		int beats4, beat, beat1_2, beat1_3, beat1_4, beat1_6, beat1_8, beat1_16, beat1_32;
-		*file >> beats4 >> beat >> beat1_2 >> beat1_3 >> beat1_4 >> beat1_6 >> beat1_8 >> beat1_16 >> beat1_32;
-		return beats4 * 128 + beat * 32 + beat1_2 * 16 + beat1_3 * 11 + beat1_4 * 8 + beat1_6 * 5 + beat1_16 * 2 + beat1_32;
-	}
-
-	void set_new_actions() {
-		while (true) {
-			if (plan.size() > current_step && current_beat == plan[current_step].b_start_time) {
-				active_actions.push_back(plan[current_step]);
-				current_step++;
-			}
-			else break;
 		}
 	}
-	bool action(int i, bool new_tick, long double player_x, long double player_y, RenderWindow *window, long double time) {
+	bool action(int i, bool new_tick, float player_x, float player_y, RenderWindow *window, float time) {
 		if (active_actions[i].type == "rotate") {
 			int delta = active_actions[i].b_end_time - active_actions[i].b_start_time;
-			long double rotate;
+			float rotate;
 			if (active_actions[i].is_rotate_direction_clockwise) {
 				if (abs(cam_angle - active_actions[i].end_angle) <= 180) rotate = -360 + abs(cam_angle - active_actions[i].end_angle);
 				else rotate = -abs(cam_angle - active_actions[i].end_angle);
@@ -159,7 +87,7 @@ private:
 			}
 			else {
 				if (abs(cam_coords.x - player_x * SCREEN_H / GAMEBOARD_H) <= 15 && abs(cam_coords.y - player_y * SCREEN_H / GAMEBOARD_H) <= 15) cam.setCenter(player_x* SCREEN_H / GAMEBOARD_H, player_y* SCREEN_H / GAMEBOARD_H);
-				else cam.move((-cam_coords.x + player_x * SCREEN_H / GAMEBOARD_H) * time * 0.004, (-cam_coords.y + player_y * SCREEN_H / GAMEBOARD_H) * time * 0.004);
+				else cam.move((-cam_coords.x + player_x * SCREEN_H / GAMEBOARD_H) * time * 0.004f, (-cam_coords.y + player_y * SCREEN_H / GAMEBOARD_H) * time * 0.004f);
 			}
 			if (active_actions[i].b_end_time == current_beat) {
 				distance_with_player_now = 0;
@@ -193,12 +121,12 @@ private:
 
 		else if (active_actions[i].type == "flashlight") {
 
-			if (active_actions[i].b_start_time + active_actions[i].b_start_animation > current_beat) flashlight_alpha = (int) 255 * (((double)current_beat - (double)active_actions[i].b_start_time) / (double)active_actions[i].b_start_animation);
+			if (active_actions[i].b_start_time + active_actions[i].b_start_animation > current_beat) flashlight_alpha = 255 * (int)(((double)current_beat - (double)active_actions[i].b_start_time) / (double)active_actions[i].b_start_animation);
 			else flashlight_alpha = 255;
 
 			if (active_actions[i].b_end_time < current_beat) flashlight_alpha = (int)(255 - 255 * (((double)current_beat - (double)active_actions[i].b_end_time) / (double)active_actions[i].b_end_animation));
 			Flashlight.setColor(Color(255, 255, 255, flashlight_alpha));
-			Flashlight.setScale(active_actions[i].flashlight_size * 2.5 * SCREEN_H / GAMEBOARD_H, active_actions[i].flashlight_size *  2.5 * SCREEN_H / GAMEBOARD_H);
+			Flashlight.setScale(active_actions[i].flashlight_size * 2.5f * SCREEN_H / GAMEBOARD_H, active_actions[i].flashlight_size *  2.5f * SCREEN_H / GAMEBOARD_H);
 			Flashlight.setPosition(player_x * SCREEN_H / GAMEBOARD_H, player_y * SCREEN_H / GAMEBOARD_H);
 			window->draw(Flashlight);
 			if (new_tick && active_actions[i].b_end_time + active_actions[i].b_end_animation == current_beat)
@@ -213,11 +141,11 @@ private:
 			RectangleShape blink(Vector2f(SCREEN_W + 1000, SCREEN_H + 1500));
 			blink.setPosition(Vector2f(-1000, -1000));
 			int blink_alpha = 0;
-			if (active_actions[i].b_start_time + active_actions[i].b_start_time > current_beat) blink_alpha = (int) active_actions[i].blinkAlpha * (((double)current_beat - (double)active_actions[i].b_start_time) / (double)active_actions[i].b_start_animation);
-			else blink_alpha = active_actions[i].blinkAlpha;
-			if (active_actions[i].b_end_time - active_actions[i].b_end_animation <= current_beat) blink_alpha = (int)(active_actions[i].blinkAlpha - active_actions[i].blinkAlpha * (((double)current_beat - (double)active_actions[i].b_end_time) / (double)active_actions[i].b_end_animation));
+			if (active_actions[i].b_start_time + active_actions[i].b_start_time > current_beat) blink_alpha = (int)(active_actions[i].blinkAlpha * (((float)current_beat - (float)active_actions[i].b_start_time) / (float)active_actions[i].b_start_animation));
+			else blink_alpha = (int)active_actions[i].blinkAlpha;
+			if (active_actions[i].b_end_time - active_actions[i].b_end_animation <= current_beat) blink_alpha = (int)(active_actions[i].blinkAlpha - active_actions[i].blinkAlpha * (((float)current_beat - (float)active_actions[i].b_end_time) / (float)active_actions[i].b_end_animation));
 			if (blink_alpha < 0) blink_alpha = 0;
-			if (blink_alpha > active_actions[i].blinkAlpha) blink_alpha = active_actions[i].blinkAlpha;
+			if (blink_alpha > active_actions[i].blinkAlpha) blink_alpha = (int)active_actions[i].blinkAlpha;
 			blink.setFillColor(Color(255, 255, 255, blink_alpha));
 			window->draw(blink);
 			if (new_tick && active_actions[i].b_end_time + active_actions[i].b_end_animation == current_beat) return true;

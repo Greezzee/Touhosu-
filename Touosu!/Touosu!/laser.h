@@ -2,7 +2,7 @@
 using namespace sf;
 class laser {
 public:
-	void create(long double start_x, long double start_y, long double angle, long double sz, Sprite *l) {
+	void create(float start_x, float start_y, float angle, float sz, Sprite *l) {
 		coords.x = start_x;
 		coords.y = start_y;
 		directional_angle_degr = angle;
@@ -37,7 +37,7 @@ public:
 	}
 	Vector2f coords;
 private:
-	double directional_angle_rad, directional_angle_degr, size;
+	float directional_angle_rad, directional_angle_degr, size;
 	Sprite self_sprite;
 	bool is_active;
 

@@ -33,7 +33,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="gun.h" />
-    <ClInclude Include="gun_plan.h" />
+    <ClInclude Include="planner.h" />
     <ClInclude Include="laser.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="resourses.h" />

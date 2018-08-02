@@ -4,13 +4,12 @@ class gun
 {
 public:
 	gun() {}
-	void set_gun(Sprite g, gun_plan mp) {
-		plan = mp;
-		next_action = plan.get_plan();
+	void set_gun(Sprite g, planner *GlobalMapPlan) {
+		next_action = GlobalMapPlan->getGunPlan(selfID);
 		self_sprite = g;
 		self_sprite.setOrigin(0, 256);
 		self_sprite.setPosition(0, 0);
-		self_sprite.setScale(0.125 * SCREEN_H / GAMEBOARD_H, 0.125 * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setScale(0.125f * SCREEN_H / GAMEBOARD_H, 0.125f * SCREEN_H / GAMEBOARD_H);
 		coords.x = 0;
 		coords.y = 0;
 		shoot_angle = 0;
@@ -22,19 +21,19 @@ public:
 		current_actions.resize(0);
 	}
 
-	void update(RenderWindow *window, double time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target) {
+	void update(RenderWindow *window, float time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
 
-		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
+		for (unsigned int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
 			while (true) {
 				if (current_beat - j == next_action.startTime) {
 					start_action();
-					next_action = plan.get_plan();
+					next_action = GlobalMapPlan->getGunPlan(selfID);
 				}
 				if (current_beat - j != next_action.startTime) break;
 			}
 		}
 
-		for (int i = 0; i < current_actions.size(); i++) {
+		for (unsigned int i = 0; i < current_actions.size(); i++) {
 			if (action(current_actions[i], all_bullets, all_lasers, target, time)) {
 				current_actions.erase(current_actions.begin() + i);
 				i--;
@@ -45,17 +44,17 @@ public:
 
 private:
 	Vector2f coords;
-	double shoot_angle, angle_speed;
+	float shoot_angle, angle_speed;
 	bool is_visible, is_laser_shoot;
 	Texture self_text;
 	Sprite self_sprite;
 	Texture example, l_example;
-	plan_exemplar next_action;
-	vector<plan_exemplar> current_actions;
-	gun_plan plan;
+	gunPlanExemplar next_action;
+	vector<gunPlanExemplar> current_actions;
+	int selfID;
 	void start_action() {
 		if (next_action.commandType == "move") {
-			double move_distance_x, move_distance_y;
+			float move_distance_x, move_distance_y;
 			int delta = next_action.endTime - next_action.startTime;
 			if (next_action.angleType == 'a') {
 				move_distance_x = next_action.endMovingCoords.x - coords.x;
@@ -70,7 +69,7 @@ private:
 		}
 		if (next_action.commandType == "rotate") {
 			int delta = next_action.endTime - next_action.startTime;
-			double rotate;
+			float rotate;
 			if (next_action.angleType == 'r') {
 				rotate = next_action.gunEndAngle;
 				if (next_action.isRotateClockwise) rotate *= -1;
@@ -78,7 +77,7 @@ private:
 				next_action.gunEndAngle = LeadAngleToTrigonometric(next_action.gunEndAngle);
 			}
 			else if (next_action.angleType == 'a') {
-				double GunAngleInNewCoordinatesSystem = shoot_angle + 360 - next_action.gunEndAngle;
+				float GunAngleInNewCoordinatesSystem = shoot_angle + 360 - next_action.gunEndAngle;
 				GunAngleInNewCoordinatesSystem = LeadAngleToTrigonometric(GunAngleInNewCoordinatesSystem);
 				if (next_action.isRotateClockwise) rotate = -GunAngleInNewCoordinatesSystem;
 				else rotate = 360 - GunAngleInNewCoordinatesSystem;
@@ -87,7 +86,7 @@ private:
 		}
 		current_actions.push_back(next_action);
 	}
-	bool action(plan_exemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, double time) {
+	bool action(gunPlanExemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, float time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(current_action.endMovingCoords.x * SCREEN_H / GAMEBOARD_H, current_action.endMovingCoords.y * SCREEN_H / GAMEBOARD_H);
@@ -118,7 +117,7 @@ private:
 			Sprite s;
 			s.setTexture(l_example);
 			laser actual_laser;
-			double laserAngle;
+			float laserAngle;
 			if (current_action.angleType == 'a') laserAngle = current_action.shootAngle;
 			else if (current_action.angleType == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.shootAngle);
 			else if (current_action.angleType == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.shootAngle;
