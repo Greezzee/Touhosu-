@@ -35,7 +35,7 @@ int main() {
 	Sprite flash;
 	textur.loadFromFile("flashlight.png");
 	flash.setTexture(textur);
-	camera cam(flash);
+	camera cam(flash, &GlobalMapPlan);
 	Clock clock;
 	Texture heroTexture;
 	heroTexture.loadFromFile(heroSpriteFile);
@@ -59,7 +59,7 @@ int main() {
 		Sprite self_sprite;
 		self_sprite.setTexture(gunTexture);
 		gun g1;
-		g1.set_gun(self_sprite, &GlobalMapPlan);
+		g1.set_gun(self_sprite, &GlobalMapPlan, i);
 		allGuns.push_back(g1);
 	}
 	float time = 0;
@@ -96,7 +96,7 @@ int main() {
 
 		if (current_time > 0){
 			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
-			//	gameMusic.play();
+				gameMusic.play();
 				current_time = 0;
 			}
 			isBPMUpdated = false;

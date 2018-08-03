@@ -19,7 +19,7 @@ public:
 		startAnglesSet(shoot_angle, gunCoords);
 		updateBulletSpeedAndAccel(0);
 
-		self_sprite.setPosition(coords.x * SCREEN_H / GAMEBOARD_H, coords.y * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		destroyed = false;
 	}
 
@@ -36,15 +36,15 @@ public:
 			speed.x += time * acceleration.x * GAMEBOARD_H / timePerBeat / 32 / 4;
 			speed.y += time * acceleration.y * GAMEBOARD_H / timePerBeat / 32 / 4;
 
-			coords.x += speed.x * GAMEBOARD_W / timePerBeat / 32 / 4 * time;
-			coords.y += speed.y * GAMEBOARD_W / timePerBeat / 32 / 4 * time;
+			coords.x += speed.x * GAMEBOARD_H / timePerBeat / 32 / 4 * time;
+			coords.y += speed.y * GAMEBOARD_H / timePerBeat / 32 / 4 * time;
 
 			speedDirectionalAngleRad = atan2(speed.y, speed.x);
 			speedDirectionalAngleDegr = RadToDegr(speedDirectionalAngleRad);
 
 			updateAccel();
 
-			self_sprite.setPosition(coords.x * SCREEN_H / GAMEBOARD_H, coords.y * SCREEN_H / GAMEBOARD_H);
+			self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 			animation(time);
 
 			Vector2f NewPlayerCoords;
@@ -101,7 +101,7 @@ private:
 		self_sprite.setTextureRect(currentTextureRect);
 		setSpriteOrigin();
 		setAnimationStyle();
-		self_sprite.setScale(size / currentTextureRect.width * SCREEN_H / GAMEBOARD_H, size / currentTextureRect.height * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setScale(convertForGraphic(size) / currentTextureRect.width, convertForGraphic(size) / currentTextureRect.height);
 	}
 	void setTextureRect() {
 		if (currentBulletSkin == "wave") currentTextureRect = IntRect(32 * colorID - 32, 32, 32, 32);

@@ -86,18 +86,17 @@ struct BPMchangeExemplar {
 class planner {
 public:
 	void init() {
-		gunPlanList.resize(0);
 		zonePlanList.resize(0);
 		camPlanList.resize(0);
 		publicInfo.resize(0);
-		currentGunStep.resize(0);
 		currentCamStep = 0;
 		numberOfGuns = 0;
 		ifstream file;
 		file.open("plan.txt");
 		file >> numberOfGuns >> randomSeed;
 		gunPlanList.resize(numberOfGuns);
-		currentGunStep.resize(numberOfGuns);
+		currentGunStep.resize(numberOfGuns, 0);
+		currentGunStep[0] = 0;
 		readFile(&file);
 		for (unsigned int i = 0; i < gunPlanList.size(); i++)
 			sort(gunPlanList[i].begin(), gunPlanList[i].end(), [](const gunPlanExemplar& plan1, const gunPlanExemplar& plan2) -> bool {
@@ -341,7 +340,8 @@ private:
 	camPlanExemplar readCam(ifstream *file) {
 		camPlanExemplar new_plan;
 		string command_type, trash;
-		*file >> new_plan.type;
+		*file >> new_plan.type >> trash;
+		new_plan.b_start_time = read_time(file);
 		if (new_plan.type == "rotate") {
 			*file >> trash;
 			new_plan.b_end_time = read_time(file);
@@ -357,7 +357,6 @@ private:
 		else if (new_plan.type == "follow") {
 			*file >> trash;
 			new_plan.b_end_time = read_time(file);
-			*file >> trash;
 			new_plan.is_player_center = true;
 		}
 		else if (new_plan.type == "flashlight") {
@@ -388,7 +387,10 @@ private:
 		zonePlanExemplar new_plan;
 		string trash;
 		*file >> new_plan.type >> trash;
-		*file >> new_plan.startBeat >> trash >> new_plan.endBeat >> trash;
+		new_plan.startBeat = read_time(file);
+		*file >> trash;
+		new_plan.endBeat = read_time(file);
+		*file >> trash;
 		*file >> new_plan.UpLeft.x >> new_plan.UpLeft.y >> trash >> new_plan.DownRight.x >> new_plan.DownRight.y;
 		return new_plan;
 	}

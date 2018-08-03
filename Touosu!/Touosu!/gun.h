@@ -4,12 +4,13 @@ class gun
 {
 public:
 	gun() {}
-	void set_gun(Sprite g, planner *GlobalMapPlan) {
+	void set_gun(Sprite g, planner *GlobalMapPlan, int id) {
+		selfID = id;
 		next_action = GlobalMapPlan->getGunPlan(selfID);
 		self_sprite = g;
 		self_sprite.setOrigin(0, 256);
 		self_sprite.setPosition(0, 0);
-		self_sprite.setScale(0.125f * SCREEN_H / GAMEBOARD_H, 0.125f * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setScale(convertForGraphic(0.125f), convertForGraphic(0.125f));
 		coords.x = 0;
 		coords.y = 0;
 		shoot_angle = 0;
@@ -23,7 +24,7 @@ public:
 
 	void update(RenderWindow *window, float time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
 
-		for (unsigned int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
+		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
 			while (true) {
 				if (current_beat - j == next_action.startTime) {
 					start_action();
@@ -89,7 +90,7 @@ private:
 	bool action(gunPlanExemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, float time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
-			self_sprite.setPosition(current_action.endMovingCoords.x * SCREEN_H / GAMEBOARD_H, current_action.endMovingCoords.y * SCREEN_H / GAMEBOARD_H);
+			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
 			self_sprite.setRotation(-current_action.shootAngle);
 			shoot_angle = current_action.shootAngle;
 			coords.x = current_action.endMovingCoords.x;
@@ -104,10 +105,10 @@ private:
 			if (newTick) {
 				coords.x += current_action.gunSpeed.x;
 				coords.y += current_action.gunSpeed.y;
-				self_sprite.setPosition(coords.x * (float)SCREEN_H / (float)GAMEBOARD_H, coords.y * (float)SCREEN_H / (float)GAMEBOARD_H);
+				self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 			}
 			
-			else self_sprite.move(current_action.gunSpeed.x / timePerBeat * (float)SCREEN_H / (float)GAMEBOARD_H * time, current_action.gunSpeed.y / timePerBeat * (float)SCREEN_H / (float)GAMEBOARD_H * time);
+			else self_sprite.move(convertForGraphic(current_action.gunSpeed.x) / timePerBeat * time, convertForGraphic(current_action.gunSpeed.y) / timePerBeat * time);
 
 			if (current_action.endTime <= current_beat) return true;
 			else return false;

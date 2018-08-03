@@ -3,7 +3,7 @@
 class camera {
 public:
 	View cam;
-	camera(Sprite textur) {
+	camera(Sprite textur, planner *GlobalMapPlan) {
 		Flashlight = textur;
 		Flashlight.setOrigin(512, 512);
 		cam.reset(FloatRect((-SCREEN_W + SCREEN_H - BOARDER * SCREEN_W / SCREEN_H) / 2, -BOARDER / 2, SCREEN_W + BOARDER * SCREEN_W / SCREEN_H, SCREEN_H + BOARDER));
@@ -15,6 +15,7 @@ public:
 		distance_with_player_now = 0;
 		player_coords_than_follow_end.x = 0;
 		player_coords_than_follow_end.y = 0;
+		next_action = GlobalMapPlan->getCamPlan();
 	}
 	void update(RenderWindow *window, float time, float player_x, float player_y, planner *GlobalMapPlan) {
 		if (newTick) set_new_actions(GlobalMapPlan);
@@ -51,8 +52,8 @@ private:
 			int delta = active_actions[i].b_end_time - active_actions[i].b_start_time;
 			float rotate;
 			if (active_actions[i].is_rotate_direction_clockwise) {
-				if (abs(cam_angle - active_actions[i].end_angle) <= 180) rotate = -360 + abs(cam_angle - active_actions[i].end_angle);
-				else rotate = -abs(cam_angle - active_actions[i].end_angle);
+				if (abs(cam_angle - active_actions[i].end_angle) <= 180) rotate = -abs(cam_angle - active_actions[i].end_angle);
+				else rotate = -360 + abs(cam_angle - active_actions[i].end_angle);
 			}
 			else {
 				if (abs(cam_angle - active_actions[i].end_angle) <= 180) rotate = abs(cam_angle - active_actions[i].end_angle);
@@ -67,7 +68,7 @@ private:
 						else break;
 					}
 					cam_angle = active_actions[i].end_angle;
-					cam.setRotation(cam_angle);
+					cam.setRotation(-cam_angle);
 					return true;
 				}
 				else return false;
@@ -95,7 +96,7 @@ private:
 				player_coords_than_follow_end.x = 0;
 				player_coords_than_follow_end.y = 0;
 				cam.reset(FloatRect((-SCREEN_W + SCREEN_H - BOARDER * SCREEN_W / SCREEN_H) / 2, -BOARDER / 2, SCREEN_W + BOARDER * SCREEN_W / SCREEN_H, SCREEN_H + BOARDER));
-				cam.setRotation(90 - cam_angle);
+				cam.setRotation(-cam_angle);
 				cam.zoom(1 / zoom);
 				return true;
 			}
@@ -121,7 +122,7 @@ private:
 
 		else if (active_actions[i].type == "flashlight") {
 
-			if (active_actions[i].b_start_time + active_actions[i].b_start_animation > current_beat) flashlight_alpha = 255 * (int)(((double)current_beat - (double)active_actions[i].b_start_time) / (double)active_actions[i].b_start_animation);
+			if (active_actions[i].b_start_time + active_actions[i].b_start_animation > current_beat) flashlight_alpha = (int)(255 * (((double)current_beat - (double)active_actions[i].b_start_time) / (double)active_actions[i].b_start_animation));
 			else flashlight_alpha = 255;
 
 			if (active_actions[i].b_end_time < current_beat) flashlight_alpha = (int)(255 - 255 * (((double)current_beat - (double)active_actions[i].b_end_time) / (double)active_actions[i].b_end_animation));
