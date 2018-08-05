@@ -4,6 +4,8 @@
 #include <iterator>
 #include <iostream>
 #include <cmath>
+#include <utility>
+#include <cstdio>
 #include "resourses.h"
 #include "planner.h"
 #include "player.h"

@@ -15,7 +15,10 @@ public:
 		distance_with_player_now = 0;
 		player_coords_than_follow_end.x = 0;
 		player_coords_than_follow_end.y = 0;
-		next_action = GlobalMapPlan->getCamPlan();
+		isActionsEnd = false;
+		pair<bool, camPlanExemplar> returned = GlobalMapPlan->getCamPlan();
+		if (returned.first) next_action = returned.second;
+		else isActionsEnd = true;
 	}
 	void update(RenderWindow *window, float time, float player_x, float player_y, planner *GlobalMapPlan) {
 		if (newTick) set_new_actions(GlobalMapPlan);
@@ -35,15 +38,24 @@ private:
 	Sprite Flashlight;
 	Vector2f player_coords_than_follow_end;
 	Vector2f cam_std_coords;
-
+	bool isActionsEnd;
 	void set_new_actions(planner *GlobalMapPlan) {
-		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
-			while (true) {
-				if (current_beat - j == next_action.b_start_time) {
-					active_actions.push_back(next_action);
-					next_action = GlobalMapPlan->getCamPlan();
+		if (!isActionsEnd) {
+			pair<bool, camPlanExemplar> returned;
+			for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
+				while (true) {
+					if (current_beat - j == next_action.b_start_time) {
+						active_actions.push_back(next_action);
+
+						returned = GlobalMapPlan->getCamPlan();
+						if (returned.first) next_action = returned.second;
+						else {
+							isActionsEnd = true;
+							break;
+						}
+					}
+					if (current_beat - j != next_action.b_start_time) break;
 				}
-				if (current_beat - j != next_action.b_start_time) break;
 			}
 		}
 	}

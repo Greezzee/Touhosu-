@@ -5,8 +5,13 @@ class gun
 public:
 	gun() {}
 	void set_gun(Sprite g, planner *GlobalMapPlan, int id) {
+		isActionsEnd = false;
 		selfID = id;
-		next_action = GlobalMapPlan->getGunPlan(selfID);
+
+		pair<bool, gunPlanExemplar> returned = GlobalMapPlan->getGunPlan(selfID);
+		if (returned.first) next_action = returned.second;
+		else isActionsEnd = true;
+			
 		self_sprite = g;
 		self_sprite.setOrigin(0, 256);
 		self_sprite.setPosition(0, 0);
@@ -23,14 +28,22 @@ public:
 	}
 
 	void update(RenderWindow *window, float time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
-
-		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
-			while (true) {
-				if (current_beat - j == next_action.startTime) {
-					start_action();
-					next_action = GlobalMapPlan->getGunPlan(selfID);
+		if (!isActionsEnd)
+		{
+			pair<bool, gunPlanExemplar> returned;
+			for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
+				while (true) {
+					if (current_beat - j == next_action.startTime) {
+						start_action();
+						returned = GlobalMapPlan->getGunPlan(selfID);
+						if (returned.first) next_action = returned.second;
+						else {
+							isActionsEnd = true;
+							break;
+						}
+					}
+					if (current_beat - j != next_action.startTime) break;
 				}
-				if (current_beat - j != next_action.startTime) break;
 			}
 		}
 
@@ -46,7 +59,7 @@ public:
 private:
 	Vector2f coords;
 	float shoot_angle, angle_speed;
-	bool is_visible, is_laser_shoot;
+	bool is_visible, is_laser_shoot, isActionsEnd;
 	Texture self_text;
 	Sprite self_sprite;
 	Texture example, l_example;

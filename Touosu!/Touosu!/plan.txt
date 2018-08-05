@@ -1,138 +1,22 @@
-5 1
+1 1
 
-new_bpm 6696000 62.25;
-new_bpm 7656000 41.667;
-new_bpm 9096000 250;
 
-g 0 - 0 0 0 0 0 0 0 0 1 - set 300 20 270
-g 1 - 0 0 0 0 0 0 0 0 1 - set 300 20 270
-g 2 - 0 0 0 0 0 0 0 0 1 - set 300 20 270
-g 3 - 0 0 0 0 0 0 0 0 1 - set 300 20 270
-g 4 - 0 0 0 0 0 0 0 0 1 - set 300 20 270
+new_bpm 0 120;
 
-g 1 - 0 0 0 0 3 0 0 0 0 - move - 0 1 0 0 0 0 0 0 0 - r 100 0
-g 2 - 0 0 0 0 3 0 0 0 0 - move - 0 1 0 0 0 0 0 0 0 - r 200 0
-g 3 - 0 0 0 0 3 0 0 0 0 - move - 0 1 0 0 0 0 0 0 0 - r -100 0
-g 4 - 0 0 0 0 3 0 0 0 0 - move - 0 1 0 0 0 0 0 0 0 - r -200 0
+g 0 - l0 0 0 0 0 0 0 0 1 - set 300 20 l270
 
-g 0 - 0 1 0 0 0 0 0 0 1 - move - 0 2 0 0 0 0 0 0 0 - a 300 0
-g 1 - 0 1 0 0 0 0 0 0 1 - move - 0 2 0 0 0 0 0 0 0 - a 400 150
-g 2 - 0 1 0 0 0 0 0 0 1 - move - 0 2 0 0 0 0 0 0 0 - a 500 300
-g 3 - 0 1 0 0 0 0 0 0 1 - move - 0 2 0 0 0 0 0 0 0 - a 200 150
-g 4 - 0 1 0 0 0 0 0 0 1 - move - 0 2 0 0 0 0 0 0 0 - a 100 300
+g 0 - l0 1 0 0 0 0 0 0 1 - move - l0 2 0 0 0 0 0 0 0 - a 300 300
 
-g 0 - 0 2 0 0 0 0 0 0 -1 - rotate - 0 2 0 0 0 0 0 0 0 - p 0 0
-g 1 - 0 2 0 0 0 0 0 0 -1 - rotate - 0 2 0 0 0 0 0 0 0 - p 0 0
-g 2 - 0 2 0 0 0 0 0 0 -1 - rotate - 0 2 0 0 0 0 0 0 0 - p 0 0
-g 3 - 0 2 0 0 0 0 0 0 -1 - rotate - 0 2 0 0 0 0 0 0 0 - p 0 0
-g 4 - 0 2 0 0 0 0 0 0 -1 - rotate - 0 2 0 0 0 0 0 0 0 - p 0 0
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 1 - 0 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 -45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 0.004 - butterfly 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3
+public bulletSize 0 = 32
+public startTime 0 = 0 2 0 0 0 0 0 0 1
+public bulletSpeedAngle 0 = 0
+for 30 {
+for 36 {
+g 0 - p0 - bullet_shoot - s 0 0 lb (
+n - p0 - d - rel p0 al0.3 - rel l0 l0 - ellipse 3
+)
+public bulletSpeedAngle 0 + 10
 }
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 1 - 0 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 -0.004 - butterfly 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - butterfly 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - butterfly 3
+public startTime 0 + 0 0 0 0 2 0 0 0 0
 }
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 3 - 0 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 -45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 0.004 - wave 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3
-}
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 3 - 0 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 -0.004 - wave 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - wave 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - wave 3
-}
-
-g 0 - 0 3 0 0 0 0 0 0 -1 - rotate - 1 2 0 0 0 0 0 0 0 - p 0 0
-g 1 - 0 3 0 0 0 0 0 0 -1 - rotate - 1 2 0 0 0 0 0 0 0 - p 0 0
-g 2 - 0 3 0 0 0 0 0 0 -1 - rotate - 1 2 0 0 0 0 0 0 0 - p 0 0
-g 3 - 0 3 0 0 0 0 0 0 -1 - rotate - 1 2 0 0 0 0 0 0 0 - p 0 0
-g 4 - 0 3 0 0 0 0 0 0 -1 - rotate - 1 2 0 0 0 0 0 0 0 - p 0 0
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 2 - 1 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 -45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 0.004 - small_star 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3
-}
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 2 - 1 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 -0.004 - small_star 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - small_star 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - small_star 3
-}
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 4 - 1 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 -45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 0.004 - big_knife 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3
-}
-
-for 8 every 0 0 0 0 0 0 1 0 0 g 4 - 1 2 0 0 0 0 0 0 1 - bullet_shoot - s 45 45 lb {
-n - 24 - i - rel 0 a0.6 - rel 90 -0.004 - big_knife 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3;
-r 0 1 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 -0.004 - big_knife 3;
-r 0 2 0 0 0 0 0 0 0 - 24 - d - rel 0 r0 - sabs 90 0.004 - big_knife 3
-}
-cam blink - 0 0 0 0 4 0 0 0 0 - 0 0 0 0 4 0 0 0 0 - 1 0 0 0 0 0 0 0 0 - 0 0 0 0 4 0 0 0 0 - 255
-cam zoom - 1 0 0 0 4 0 0 0 0 - 2 0 0 0 0 0 0 0 0 - 1
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 270 270 - 330 330
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 0 0 - 60 60
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 540 0 - 600 60
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 540 540 - 600 600
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 0 540 - 60 600
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 270 0 - 330 60
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 0 270 - 60 330
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 540 270 - 600 330
-zone danger - 0 0 0 0 4 0 0 0 0 - 27 2 0 0 0 0 0 0 0 - 270 540 - 330 600
 end
