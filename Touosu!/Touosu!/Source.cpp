@@ -6,6 +6,7 @@
 #include <cmath>
 #include <utility>
 #include <cstdio>
+#include <list>
 #include "resourses.h"
 #include "planner.h"
 #include "player.h"
@@ -32,7 +33,9 @@ int main() {
     gameMusic.openFromFile("music.ogg");
 
 	timePerBeat = BPMtoMCSdiv600Converter / BPM;
+
 	RenderWindow window(sf::VideoMode((unsigned int)SCREEN_W, (unsigned int)SCREEN_H), gameName);
+
 	Texture textur;
 	Sprite flash;
 	textur.loadFromFile("flashlight.png");
@@ -46,9 +49,9 @@ int main() {
 	Texture gunTexture;
 	gunTexture.loadFromFile(turretsFile);
 	player mainPlayer(300, 500);
-	std::vector<bullet> allBullets(0);
-	std::vector<laser> allLasers(0);
-	std::vector<gun> allGuns(0);
+	std::list<bullet> allBullets(0);
+	std::list<laser> allLasers(0);
+	std::list<gun> allGuns(0);
 	Texture ZoneTexture;
 	Sprite zoneSprite;
 	ZoneTexture.loadFromFile("zone.png");
@@ -72,14 +75,26 @@ int main() {
 
 	unsigned int currentBPMid = 0;
 
+	float FPS = 0;
+	int frames = 0;
+	float secondTime = 0;
+	int totalBullets = 0;
 	while (window.isOpen()) {
 
 		int couter = 1;
 		time = (float)clock.getElapsedTime().asMicroseconds();
+		secondTime += time;
+		frames++;
+		if (secondTime >= 1000000) {
+			cout << frames << " ";
+			cout << totalBullets << endl;
+			frames = 0;
+			secondTime = 0;
+		}
+		totalBullets = 0;
 		current_time += time;
 		clock.restart();
 		time = time / timerCoof;
-
 
 
 		window.clear(Color(50, 50, 50));
@@ -112,21 +127,23 @@ int main() {
 
 			if (currentBPMid > 0) timeUpdate(time);
 			zones.update(&window, time);
-			int totalBulletsDestroyed = 0;
-			for (unsigned int i = 0; i < allBullets.size(); i++) {
-				allBullets[i].update(&window, time, &mainPlayer);
-				if (totalBulletsDestroyed < 2 && allBullets[i].destroyed) {
-					allBullets.erase(allBullets.begin() + i);
-					i--;
-					totalBulletsDestroyed++;
+			int bulletDeleted = 0;
+			for (list<bullet>::iterator i = allBullets.begin(); i != allBullets.end();) {
+				i->update(&window, time, &mainPlayer);
+				if (i->destroyed && bulletDeleted <= 10) {
+					i = allBullets.erase(i);
+					//bulletDeleted++;
 				}
+				else i++;
+				totalBullets++;
 			}
-			for (unsigned int i = 0; i < allLasers.size(); i++) {
-				allLasers[i].update(&window, &mainPlayer);
+
+			for (list<laser>::iterator i = allLasers.begin(); i != allLasers.end(); i++) {
+				i->update(&window, &mainPlayer);
 			}
 			allLasers.clear();
-			for (unsigned int i = 0; i < allGuns.size(); i++) {
-				allGuns[i].update(&window, time, &allBullets, &allLasers, &mainPlayer, &GlobalMapPlan);
+			for (list<gun>::iterator i = allGuns.begin(); i != allGuns.end(); i++) {
+				i->update(&window, time, &allBullets, &allLasers, &mainPlayer, &GlobalMapPlan);
 			}
 			cam.update(&window, time, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
 		}

@@ -27,32 +27,36 @@ public:
 		current_actions.resize(0);
 	}
 
-	void update(RenderWindow *window, float time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
+	void update(RenderWindow *window, float time, std::list<bullet> *all_bullets, std::list<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
+		actionsThisFrame = 0;
 		if (!isActionsEnd)
 		{
 			pair<bool, gunPlanExemplar> returned;
 			for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
 				while (true) {
-					if (current_beat - j == next_action.startTime) {
+					if (current_beat - j >= next_action.startTime) {
 						start_action();
 						returned = GlobalMapPlan->getGunPlan(selfID);
-						if (returned.first) next_action = returned.second;
+						if (returned.first) {
+							next_action = returned.second;
+							actionsThisFrame++;
+						}
 						else {
 							isActionsEnd = true;
 							break;
 						}
+						if (actionsThisFrame >= 36) break;
 					}
-					if (current_beat - j != next_action.startTime) break;
+					if (current_beat - j < next_action.startTime) break;
 				}
 			}
 		}
-
-		for (unsigned int i = 0; i < current_actions.size(); i++) {
-			if (action(current_actions[i], all_bullets, all_lasers, target, time)) {
-				current_actions.erase(current_actions.begin() + i);
-				i--;
-			}
+		
+		for (list<gunPlanExemplar>::iterator i = current_actions.begin(); i != current_actions.end();) {
+			if (action(*i, all_bullets, all_lasers, target, time)) i = current_actions.erase(i);
+			else i++;
 		}
+		
 		if (is_visible) window->draw(self_sprite);
 	}
 
@@ -64,8 +68,8 @@ private:
 	Sprite self_sprite;
 	Texture example, l_example;
 	gunPlanExemplar next_action;
-	vector<gunPlanExemplar> current_actions;
-	int selfID;
+	list<gunPlanExemplar> current_actions;
+	int selfID, actionsThisFrame;
 	void start_action() {
 		if (next_action.commandType == "move") {
 			float move_distance_x, move_distance_y;
@@ -100,7 +104,7 @@ private:
 		}
 		current_actions.push_back(next_action);
 	}
-	bool action(gunPlanExemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, float time) {
+	bool action(gunPlanExemplar current_action, std::list<bullet> *all_bullets, std::list<laser> *all_lasers, player *target, float time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
@@ -150,6 +154,7 @@ private:
 		}
 
 		else if (current_action.commandType == "bullet_shoot") {
+			
 			Sprite s;
 			s.setTexture(example);
 			s.setTextureRect(IntRect(64, 96, 32, 32));
@@ -159,7 +164,9 @@ private:
 			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, shoot_angle, coords, &current_action, &s, target);
 			else if (current_action.startMovingType == 's') new_bullet.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, shoot_angle, coords, &current_action, &s, target);
 			all_bullets->push_back(new_bullet);
+			
 			return true;
+			
 		}
 		else if (current_action.commandType == "rotate") {
 			if (newTick) {
@@ -194,7 +201,7 @@ private:
 				}
 			}
 		}
-		else return false;
+		else return true;
 	}
 };
 

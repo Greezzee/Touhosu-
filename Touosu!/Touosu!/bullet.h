@@ -24,6 +24,7 @@ public:
 	}
 
 	void update(RenderWindow *window, float time, player *target) {
+		if (size == -1) destroyed = true;
 		if (destroyed == false) {
 
 			if (isBPMUpdated) updateBulletSpeedAndAccel(nextBulletTypeId - 1);

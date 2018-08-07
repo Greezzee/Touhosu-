@@ -1,22 +1,25 @@
 1 1
-
-
 new_bpm 0 120;
-
 g 0 - l0 0 0 0 0 0 0 0 1 - set 300 20 l270
-
 g 0 - l0 1 0 0 0 0 0 0 1 - move - l0 2 0 0 0 0 0 0 0 - a 300 300
-
-public bulletSize 0 = 32
+public bulletSize 0 = 16
 public startTime 0 = 0 2 0 0 0 0 0 0 1
 public bulletSpeedAngle 0 = 0
-for 30 {
+public lineBulletSpeed 0 = 0.6
+for 5 {
 for 36 {
 g 0 - p0 - bullet_shoot - s 0 0 lb (
-n - p0 - d - rel p0 al0.3 - rel l0 l0 - ellipse 3
+n - p0 - d - rel p0 ap0 - rel l0 l0 - ellipse 3;
+r l0 1 0 0 0 0 0 0 0 - p0 - d - rel l0 al0.0001 - rel l0 l0 - ellipse 1;
+r l0 1 0 0 0 0 0 0 0 - p0 - d - rel l90 ap0 - scoord l0 300 300 l0.0005 - ellipse 5
 )
-public bulletSpeedAngle 0 + 10
-}
-public startTime 0 + 0 0 0 0 2 0 0 0 0
-}
+g 0 - p0 - bullet_shoot - s 0 0 lb (
+n - p0 - d - rel p0 ap0 - rel l0 l0 - ellipse 3;
+r l0 1 0 0 0 0 0 0 0 - p0 - d - rel l0 al0.0001 - rel l0 l0 - ellipse 1;
+r l0 1 0 0 0 0 0 0 0 - p0 - d - rel l-90 ap0 - scoord l0 300 300 l0.0005 - ellipse 7
+)
+public bulletSpeedAngle 0 + 10 }
+public lineBulletSpeed 0 + 0.02
+public bulletSpeedAngle 0 + 1
+public startTime 0 + 0 0 0 0 0 0 0 0 16 }
 end

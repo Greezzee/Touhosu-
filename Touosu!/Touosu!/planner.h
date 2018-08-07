@@ -435,7 +435,7 @@ private:
 			new_plan.bulletInfo.startTime = publicBullets[id].bulletInfo.startTime;
 
 			new_plan.bulletInfo.bulletActionWithWalls = publicBullets[id].bulletInfo.bulletActionWithWalls;
-			new_plan.bulletInfo.bulletSize = publicInfo[id].bulletInfo.bulletSize;
+			new_plan.bulletInfo.bulletSize = publicBullets[id].bulletInfo.bulletSize;
 
 			new_plan.bulletInfo.accelAngleType = publicBullets[id].bulletInfo.accelAngleType;
 			new_plan.bulletInfo.accelOffsetCoord = publicBullets[id].bulletInfo.accelOffsetCoord;
