@@ -3,7 +3,7 @@
 class camera {
 public:
 	View cam;
-	camera(Sprite textur, planner *GlobalMapPlan) {
+	void init(Sprite textur, planner *GlobalMapPlan) {
 		Flashlight = textur;
 		Flashlight.setOrigin(512, 512);
 		cam.reset(FloatRect((-SCREEN_W + SCREEN_H - BOARDER * SCREEN_W / SCREEN_H) / 2, -BOARDER / 2, SCREEN_W + BOARDER * SCREEN_W / SCREEN_H, SCREEN_H + BOARDER));

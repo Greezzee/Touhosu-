@@ -3,7 +3,6 @@ using namespace sf;
 class gun
 {
 public:
-	gun() {}
 	void set_gun(Sprite g, planner *GlobalMapPlan, int id) {
 		isActionsEnd = false;
 		selfID = id;

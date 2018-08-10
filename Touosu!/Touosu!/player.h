@@ -5,7 +5,7 @@ class player {
 public:
 	Vector2f playerCoords;
 	float size;
-	player(float start_x, float start_y) {
+	void init(float start_x, float start_y) {
 		playerCoords.x = start_x;
 		playerCoords.y = start_y;
 		start_x = convertForGraphic(start_x);
