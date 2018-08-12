@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="bullets.png" />
+    <Image Include="button.png" />
     <Image Include="flashlight.png" />
     <Image Include="laser.png" />
     <Image Include="sprite.png" />
@@ -31,9 +32,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="gameplay.h" />
     <ClInclude Include="gun.h" />
-    <ClInclude Include="gun_plan.h" />
+    <ClInclude Include="menuScreens.h" />
+    <ClInclude Include="planner.h" />
     <ClInclude Include="laser.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="resourses.h" />

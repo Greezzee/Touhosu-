@@ -2,7 +2,7 @@
 using namespace sf;
 class bullet {
 public:
-	void create(double start_x, double start_y, double shoot_angle, sf::Vector2f gunCoords, plan_exemplar *a, Sprite *b, player *target) {
+	void create(float start_x, float start_y, float shoot_angle, sf::Vector2f gunCoords, gunPlanExemplar *a, Sprite *b, player *target) {
 
 		playerCoords = target->playerCoords;
 		myPlan = a->bulletInfo;
@@ -19,11 +19,12 @@ public:
 		startAnglesSet(shoot_angle, gunCoords);
 		updateBulletSpeedAndAccel(0);
 
-		self_sprite.setPosition(coords.x * SCREEN_H / GAMEBOARD_H, coords.y * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		destroyed = false;
 	}
 
-	void update(RenderWindow *window, double time, player *target) {
+	void update(RenderWindow *window, float time, player *target) {
+		if (size == -1) destroyed = true;
 		if (destroyed == false) {
 
 			if (isBPMUpdated) updateBulletSpeedAndAccel(nextBulletTypeId - 1);
@@ -36,15 +37,15 @@ public:
 			speed.x += time * acceleration.x * GAMEBOARD_H / timePerBeat / 32 / 4;
 			speed.y += time * acceleration.y * GAMEBOARD_H / timePerBeat / 32 / 4;
 
-			coords.x += speed.x * GAMEBOARD_W / timePerBeat / 32 / 4 * time;
-			coords.y += speed.y * GAMEBOARD_W / timePerBeat / 32 / 4 * time;
+			coords.x += speed.x * GAMEBOARD_H / timePerBeat / 32 / 4 * time;
+			coords.y += speed.y * GAMEBOARD_H / timePerBeat / 32 / 4 * time;
 
 			speedDirectionalAngleRad = atan2(speed.y, speed.x);
 			speedDirectionalAngleDegr = RadToDegr(speedDirectionalAngleRad);
 
 			updateAccel();
 
-			self_sprite.setPosition(coords.x * SCREEN_H / GAMEBOARD_H, coords.y * SCREEN_H / GAMEBOARD_H);
+			self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 			animation(time);
 
 			Vector2f NewPlayerCoords;
@@ -63,17 +64,17 @@ public:
 	Vector2f coords;
 	bool destroyed;
 private:
-	double speedDirectionalAngleRad, speedDirectionalAngleDegr, accelDirectionalAngleDegr, accelDirectionalAngleRad, size, startGunAngle, currentFrame, spriteAngle;
+	float speedDirectionalAngleRad, speedDirectionalAngleDegr, accelDirectionalAngleDegr, accelDirectionalAngleRad, size, startGunAngle, currentFrame, spriteAngle;
 	Vector2f speed, acceleration, playerCoords, realEllipseHitboxSize;
 	Sprite self_sprite;
-	bullet_exemplar myPlan;
-	int nextBulletTypeId, prevBulletTypeTime, colorID;
+	bulletPlanExemplar myPlan;
+	unsigned int nextBulletTypeId, prevBulletTypeTime, colorID;
 	char actionWithWallID;
 	string currentBulletSkin;
 	IntRect currentTextureRect;
 	bool isRotate, isLookForward;
 
-	void animation(double time) {
+	void animation(float time) {
 		if (isRotate) {
 			spriteAngle = LeadAngleToTrigonometric(spriteAngle + timePerBeat * time / 512);
 			self_sprite.setRotation(spriteAngle);
@@ -101,7 +102,7 @@ private:
 		self_sprite.setTextureRect(currentTextureRect);
 		setSpriteOrigin();
 		setAnimationStyle();
-		self_sprite.setScale(size / currentTextureRect.width * SCREEN_H / GAMEBOARD_H, size / currentTextureRect.height * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setScale(convertForGraphic(size) / currentTextureRect.width, convertForGraphic(size) / currentTextureRect.height);
 	}
 	void setTextureRect() {
 		if (currentBulletSkin == "wave") currentTextureRect = IntRect(32 * colorID - 32, 32, 32, 32);
@@ -193,7 +194,7 @@ private:
 
 	void tryToTypeUpdate() {
 		if (nextBulletTypeId < myPlan.startTime.size()) {
-			if ((myPlan.timeType[nextBulletTypeId] == 'a' && current_beat >= myPlan.startTime[nextBulletTypeId]) || (myPlan.timeType[nextBulletTypeId] == 'r' && current_beat >= myPlan.startTime[nextBulletTypeId] + prevBulletTypeTime)) {
+			if ((myPlan.timeType[nextBulletTypeId] == 'a' && current_beat >= myPlan.startTime[nextBulletTypeId]) || (myPlan.timeType[nextBulletTypeId] == 'r' && current_beat >= myPlan.startTime[nextBulletTypeId] + (int)prevBulletTypeTime)) {
 				bulletTypeUpdate();
 			}
 		}
@@ -216,7 +217,7 @@ private:
 		prevBulletTypeTime = current_beat;
 	}
 	void setRealHitboxSize() {
-		float realSize = size * 0.9;
+		float realSize = size * 0.9f;
 		if (currentBulletSkin == "wave") realEllipseHitboxSize = Vector2f(realSize / 32 * 5, realSize / 32 * 9);
 		else if (currentBulletSkin == "circle") realEllipseHitboxSize = Vector2f(realSize / 32 * 14, realSize / 32 * 14);
 		else if (currentBulletSkin == "standart") realEllipseHitboxSize = Vector2f(realSize / 32 * 15, realSize / 32 * 15);
@@ -253,7 +254,7 @@ private:
 			speed.y = myPlan.lineBulletSpeed[currentTypeNum] * sin(speedDirectionalAngleRad);
 		}
 		else if (myPlan.speedChangeType[currentTypeNum] == 'r') {
-			double fullSpeed = sqrt(speed.x * speed.x + speed.y * speed.y) + myPlan.lineBulletSpeed[currentTypeNum];
+			float fullSpeed = sqrt(speed.x * speed.x + speed.y * speed.y) + myPlan.lineBulletSpeed[currentTypeNum];
 			speed.x = fullSpeed * cos(speedDirectionalAngleRad);
 			speed.y = fullSpeed * sin(speedDirectionalAngleRad);
 		}
@@ -282,9 +283,9 @@ private:
 			speedDirectionalAngleDegr = LeadAngleToTrigonometric(RadToDegr(speedDirectionalAngleRad));
 			speedDirectionalAngleRad = degrToRad(speedDirectionalAngleDegr);
 			updateSpeedAfterBounce();
-			if (coords.x < 0) coords.x = 0;
+			if (coords.x < 0.0f) coords.x = 0.0f;
 			else if (coords.x > GAMEBOARD_W) coords.x = GAMEBOARD_W;
-			else if (coords.y < 0) coords.y = 0;
+			else if (coords.y < 0.0f) coords.y = 0.0f;
 			else if (coords.y > GAMEBOARD_H) coords.y = GAMEBOARD_H;
 
 			break;
@@ -293,27 +294,27 @@ private:
 			break;
 
 		case 't':
-			if (coords.x < 0) coords.x = GAMEBOARD_W;
-			else if (coords.x > GAMEBOARD_W) coords.x = 0;
-			else if (coords.y < 0) coords.y = GAMEBOARD_H;
-			else if (coords.y > GAMEBOARD_H) coords.y = 0;
+			if (coords.x < 0.0f) coords.x = GAMEBOARD_W;
+			else if (coords.x > GAMEBOARD_W) coords.x = 0.0f;
+			else if (coords.y < 0.0f) coords.y = GAMEBOARD_H;
+			else if (coords.y > GAMEBOARD_H) coords.y = 0.0f;
 			break;
 		case 'c':
 
-			if (coords.x < 0) {
+			if (coords.x < 0.0f) {
 				coords.x = GAMEBOARD_W;
 				coords.y = abs(GAMEBOARD_H - coords.y);
 			}
 			else if (coords.x > GAMEBOARD_W) {
-				coords.x = 0;
+				coords.x = 0.0f;
 				coords.y = abs(GAMEBOARD_H - coords.y);
 			}
-			else if (coords.y < 0) {
+			else if (coords.y < 0.0f) {
 				coords.y = GAMEBOARD_H;
 				coords.x = abs(GAMEBOARD_W - coords.x);
 			}
 			else if (coords.y > GAMEBOARD_H) {
-				coords.y = 0;
+				coords.y = 0.0f;
 				coords.x = abs(GAMEBOARD_W - coords.x);
 			}
 			break;
@@ -322,7 +323,7 @@ private:
 			bulletTypeUpdate();
 	}
 	void updateSpeedAfterBounce() {
-		double fullSpeed = sqrt(speed.x * speed.x + speed.y * speed.y);
+		float fullSpeed = sqrt(speed.x * speed.x + speed.y * speed.y);
 		speed.x = fullSpeed * cos(speedDirectionalAngleRad);
 		speed.y = fullSpeed * sin(speedDirectionalAngleRad);
 	}
@@ -343,14 +344,14 @@ private:
 		else if (myPlan.accelAngleType[nextBulletTypeId] == "rand") accelDirectionalAngleDegr += rand() % (int)myPlan.bulletAccelAngle[nextBulletTypeId];
 		accelDirectionalAngleRad = degrToRad(accelDirectionalAngleDegr);
 	}
-	void startAnglesSet(double gunAngle, sf::Vector2f gunCoords) {
+	void startAnglesSet(float gunAngle, sf::Vector2f gunCoords) {
 		if (myPlan.speedAngleType[0] == "rel") speedDirectionalAngleDegr = gunAngle + myPlan.bulletSpeedAngle[0];
 		else if (myPlan.speedAngleType[0] == "abs") speedDirectionalAngleDegr = myPlan.bulletSpeedAngle[0];
 		else if (myPlan.speedAngleType[0] == "plr") speedDirectionalAngleDegr = LeadAngleToTrigonometric(atan2(gunCoords.y - playerCoords.y - myPlan.speedOffsetCoord[0].y, playerCoords.x + myPlan.speedOffsetCoord[0].x - gunCoords.x) * 180 / PI) + myPlan.bulletSpeedAngle[0];
 		else if (myPlan.speedAngleType[0] == "splr") speedDirectionalAngleDegr = LeadAngleToTrigonometric(atan2(coords.y - playerCoords.y - myPlan.speedOffsetCoord[0].y, playerCoords.x + myPlan.speedOffsetCoord[0].x - coords.x) * 180 / PI) + myPlan.bulletSpeedAngle[0];
 		else if (myPlan.speedAngleType[0] == "coord") speedDirectionalAngleDegr = LeadAngleToTrigonometric(atan2(gunCoords.y - myPlan.speedOffsetCoord[0].y, myPlan.speedOffsetCoord[0].x - gunCoords.x) * 180 / PI) + myPlan.bulletSpeedAngle[0];
 		else if (myPlan.speedAngleType[0] == "scoord") speedDirectionalAngleDegr = LeadAngleToTrigonometric(atan2(coords.y - myPlan.speedOffsetCoord[0].y, myPlan.speedOffsetCoord[0].x - coords.x) * 180 / PI) + myPlan.bulletSpeedAngle[0];
-		else if (myPlan.speedAngleType[0] == "rand") speedDirectionalAngleDegr = rand() % (int)myPlan.bulletSpeedAngle[0];
+		else if (myPlan.speedAngleType[0] == "rand") speedDirectionalAngleDegr = (float)(rand() % (int)myPlan.bulletSpeedAngle[0]);
 		speedDirectionalAngleRad = degrToRad(speedDirectionalAngleDegr);
 
 		if (myPlan.accelAngleType[0] == "rel" || myPlan.accelAngleType[0] == "srel") accelDirectionalAngleDegr = speedDirectionalAngleDegr + myPlan.bulletAccelAngle[0];
@@ -358,13 +359,13 @@ private:
 		else if (myPlan.accelAngleType[0] == "sabs") accelDirectionalAngleDegr = startGunAngle + myPlan.bulletAccelAngle[0];
 		else if (myPlan.accelAngleType[0] == "plr" || myPlan.accelAngleType[0] == "splr") accelDirectionalAngleDegr = LeadAngleToTrigonometric(atan2(coords.y - playerCoords.y - myPlan.accelOffsetCoord[0].y, playerCoords.x + myPlan.accelOffsetCoord[0].x - coords.x) * 180 / PI) + myPlan.bulletAccelAngle[0];
 		else if (myPlan.accelAngleType[0] == "coord" || myPlan.accelAngleType[0] == "scoord") accelDirectionalAngleDegr = LeadAngleToTrigonometric(atan2(coords.y - myPlan.accelOffsetCoord[0].y, myPlan.accelOffsetCoord[0].x - coords.x) * 180 / PI) + myPlan.bulletAccelAngle[0];
-		else if (myPlan.accelAngleType[0] == "rand") accelDirectionalAngleDegr = rand() % (int)myPlan.bulletAccelAngle[0];
+		else if (myPlan.accelAngleType[0] == "rand") accelDirectionalAngleDegr = (float)(rand() % (int)myPlan.bulletAccelAngle[0]);
 		accelDirectionalAngleRad = degrToRad(accelDirectionalAngleDegr);
 	}
-	double degrToRad(double degr) {
+	float degrToRad(float degr) {
 		return -degr / 180 * PI;
 	}
-	double RadToDegr(double rad) {
+	float RadToDegr(float rad) {
 		return -rad * 180 / PI;
 	}
 

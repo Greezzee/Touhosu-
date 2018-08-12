@@ -2,17 +2,17 @@
 using namespace sf;
 class laser {
 public:
-	void create(long double start_x, long double start_y, long double angle, long double sz, Sprite *l) {
+	void create(float start_x, float start_y, float angle, float sz, Sprite *l) {
 		coords.x = start_x;
 		coords.y = start_y;
 		directional_angle_degr = angle;
 		directional_angle_rad = -angle / 360 * 2 * PI;
 		size = sz;
 		self_sprite = *l;
-		self_sprite.setOrigin(-32 / (size / 32 * SCREEN_H / GAMEBOARD_H), 16);
-		self_sprite.setScale(size / 32 * SCREEN_H / GAMEBOARD_H, size / 32 * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setOrigin(-32 / (convertForGraphic(size) / 32), 16);
+		self_sprite.setScale(convertForGraphic(size) / 32, convertForGraphic(size) / 32);
 		//self_sprite.setOrigin(-24 / size * 32, 16);
-		self_sprite.setPosition(coords.x * SCREEN_H / GAMEBOARD_H, coords.y * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		self_sprite.rotate(-angle);
 		self_sprite.setColor(Color(255, 255, 255, 150));
 		is_active = false;
@@ -37,7 +37,7 @@ public:
 	}
 	Vector2f coords;
 private:
-	double directional_angle_rad, directional_angle_degr, size;
+	float directional_angle_rad, directional_angle_degr, size;
 	Sprite self_sprite;
 	bool is_active;
 

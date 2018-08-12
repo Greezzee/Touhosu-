@@ -5,7 +5,7 @@ class player {
 public:
 	Vector2f playerCoords;
 	float size;
-	player(float start_x, float start_y) {
+	void init(float start_x, float start_y) {
 		playerCoords.x = start_x;
 		playerCoords.y = start_y;
 		start_x = convertForGraphic(start_x);
@@ -83,8 +83,8 @@ private:
 	Vector2f getTestMoveCoef(bool u, bool d, bool l, bool r) {
 		Vector2f MoveCoef(0, 0);
 		if ((u || d) && (l || r)) {
-			MoveCoef.x = sqrt(2) / 2;
-			MoveCoef.y = sqrt(2) / 2;
+			MoveCoef.x = (float)sqrt(2) / 2;
+			MoveCoef.y = (float)sqrt(2) / 2;
 		}
 		else if (u || d) MoveCoef.y = 1;
 		else if (l || r) MoveCoef.x = 1;
@@ -107,7 +107,7 @@ private:
 		hero_hitbox_sprite.setPosition(convertForGraphic(playerCoords.x), convertForGraphic(playerCoords.y));
 	}
 	void testForFastOrSlow(float time) {
-		speed = 0.7 * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
+		speed = 0.7f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
 		isHitboxVisible = false;
 		if (Keyboard::isKeyPressed(Keyboard::LShift)) {
 			speed = 0.35f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
@@ -126,7 +126,7 @@ private:
 		else trail_delta = 0;
 	}
 	void trailUpdate(float time, RenderWindow *window) {
-		for (int i = 0; i < trails.size(); i++) if (trails[i].update(window, time)) trails.erase(trails.begin() + i);
+		for (unsigned int i = 0; i < trails.size(); i++) if (trails[i].update(window, time)) trails.erase(trails.begin() + i);
 	}
 	void updateMoveDirectionInfo(Vector2f MoveCoef) {
 		moveDirectionInfo = "";

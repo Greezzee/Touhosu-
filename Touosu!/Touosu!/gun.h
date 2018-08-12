@@ -3,14 +3,18 @@ using namespace sf;
 class gun
 {
 public:
-	gun() {}
-	void set_gun(Sprite g, gun_plan mp) {
-		plan = mp;
-		next_action = plan.get_plan();
+	void set_gun(Sprite g, planner *GlobalMapPlan, int id) {
+		isActionsEnd = false;
+		selfID = id;
+
+		pair<bool, gunPlanExemplar> returned = GlobalMapPlan->getGunPlan(selfID);
+		if (returned.first) next_action = returned.second;
+		else isActionsEnd = true;
+			
 		self_sprite = g;
 		self_sprite.setOrigin(0, 256);
 		self_sprite.setPosition(0, 0);
-		self_sprite.setScale(0.125 * SCREEN_H / GAMEBOARD_H, 0.125 * SCREEN_H / GAMEBOARD_H);
+		self_sprite.setScale(convertForGraphic(0.125f), convertForGraphic(0.125f));
 		coords.x = 0;
 		coords.y = 0;
 		shoot_angle = 0;
@@ -22,40 +26,52 @@ public:
 		current_actions.resize(0);
 	}
 
-	void update(RenderWindow *window, double time, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target) {
-
-		for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
-			while (true) {
-				if (current_beat - j == next_action.startTime) {
-					start_action();
-					next_action = plan.get_plan();
+	void update(RenderWindow *window, float time, std::list<bullet> *all_bullets, std::list<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
+		actionsThisFrame = 0;
+		if (!isActionsEnd)
+		{
+			pair<bool, gunPlanExemplar> returned;
+			for (int j = numberOfBeatThisTurn - 1; j >= 0; j--) {
+				while (true) {
+					if (current_beat - j >= next_action.startTime) {
+						start_action();
+						returned = GlobalMapPlan->getGunPlan(selfID);
+						if (returned.first) {
+							next_action = returned.second;
+							actionsThisFrame++;
+						}
+						else {
+							isActionsEnd = true;
+							break;
+						}
+						if (actionsThisFrame >= 36) break;
+					}
+					if (current_beat - j < next_action.startTime) break;
 				}
-				if (current_beat - j != next_action.startTime) break;
 			}
 		}
-
-		for (int i = 0; i < current_actions.size(); i++) {
-			if (action(current_actions[i], all_bullets, all_lasers, target, time)) {
-				current_actions.erase(current_actions.begin() + i);
-				i--;
-			}
+		
+		for (list<gunPlanExemplar>::iterator i = current_actions.begin(); i != current_actions.end();) {
+			if (action(*i, all_bullets, all_lasers, target, time)) i = current_actions.erase(i);
+			else i++;
 		}
+		
 		if (is_visible) window->draw(self_sprite);
 	}
 
 private:
 	Vector2f coords;
-	double shoot_angle, angle_speed;
-	bool is_visible, is_laser_shoot;
+	float shoot_angle, angle_speed;
+	bool is_visible, is_laser_shoot, isActionsEnd;
 	Texture self_text;
 	Sprite self_sprite;
 	Texture example, l_example;
-	plan_exemplar next_action;
-	vector<plan_exemplar> current_actions;
-	gun_plan plan;
+	gunPlanExemplar next_action;
+	list<gunPlanExemplar> current_actions;
+	int selfID, actionsThisFrame;
 	void start_action() {
 		if (next_action.commandType == "move") {
-			double move_distance_x, move_distance_y;
+			float move_distance_x, move_distance_y;
 			int delta = next_action.endTime - next_action.startTime;
 			if (next_action.angleType == 'a') {
 				move_distance_x = next_action.endMovingCoords.x - coords.x;
@@ -70,7 +86,7 @@ private:
 		}
 		if (next_action.commandType == "rotate") {
 			int delta = next_action.endTime - next_action.startTime;
-			double rotate;
+			float rotate;
 			if (next_action.angleType == 'r') {
 				rotate = next_action.gunEndAngle;
 				if (next_action.isRotateClockwise) rotate *= -1;
@@ -78,7 +94,7 @@ private:
 				next_action.gunEndAngle = LeadAngleToTrigonometric(next_action.gunEndAngle);
 			}
 			else if (next_action.angleType == 'a') {
-				double GunAngleInNewCoordinatesSystem = shoot_angle + 360 - next_action.gunEndAngle;
+				float GunAngleInNewCoordinatesSystem = shoot_angle + 360 - next_action.gunEndAngle;
 				GunAngleInNewCoordinatesSystem = LeadAngleToTrigonometric(GunAngleInNewCoordinatesSystem);
 				if (next_action.isRotateClockwise) rotate = -GunAngleInNewCoordinatesSystem;
 				else rotate = 360 - GunAngleInNewCoordinatesSystem;
@@ -87,10 +103,10 @@ private:
 		}
 		current_actions.push_back(next_action);
 	}
-	bool action(plan_exemplar current_action, std::vector<bullet> *all_bullets, std::vector<laser> *all_lasers, player *target, double time) {
+	bool action(gunPlanExemplar current_action, std::list<bullet> *all_bullets, std::list<laser> *all_lasers, player *target, float time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
-			self_sprite.setPosition(current_action.endMovingCoords.x * SCREEN_H / GAMEBOARD_H, current_action.endMovingCoords.y * SCREEN_H / GAMEBOARD_H);
+			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
 			self_sprite.setRotation(-current_action.shootAngle);
 			shoot_angle = current_action.shootAngle;
 			coords.x = current_action.endMovingCoords.x;
@@ -105,10 +121,10 @@ private:
 			if (newTick) {
 				coords.x += current_action.gunSpeed.x;
 				coords.y += current_action.gunSpeed.y;
-				self_sprite.setPosition(coords.x * (float)SCREEN_H / (float)GAMEBOARD_H, coords.y * (float)SCREEN_H / (float)GAMEBOARD_H);
+				self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 			}
 			
-			else self_sprite.move(current_action.gunSpeed.x / timePerBeat * (float)SCREEN_H / (float)GAMEBOARD_H * time, current_action.gunSpeed.y / timePerBeat * (float)SCREEN_H / (float)GAMEBOARD_H * time);
+			else self_sprite.move(convertForGraphic(current_action.gunSpeed.x) / timePerBeat * time, convertForGraphic(current_action.gunSpeed.y) / timePerBeat * time);
 
 			if (current_action.endTime <= current_beat) return true;
 			else return false;
@@ -118,7 +134,7 @@ private:
 			Sprite s;
 			s.setTexture(l_example);
 			laser actual_laser;
-			double laserAngle;
+			float laserAngle;
 			if (current_action.angleType == 'a') laserAngle = current_action.shootAngle;
 			else if (current_action.angleType == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.shootAngle);
 			else if (current_action.angleType == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.shootAngle;
@@ -137,6 +153,7 @@ private:
 		}
 
 		else if (current_action.commandType == "bullet_shoot") {
+			
 			Sprite s;
 			s.setTexture(example);
 			s.setTextureRect(IntRect(64, 96, 32, 32));
@@ -146,7 +163,9 @@ private:
 			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, shoot_angle, coords, &current_action, &s, target);
 			else if (current_action.startMovingType == 's') new_bullet.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, shoot_angle, coords, &current_action, &s, target);
 			all_bullets->push_back(new_bullet);
+			
 			return true;
+			
 		}
 		else if (current_action.commandType == "rotate") {
 			if (newTick) {
@@ -181,7 +200,7 @@ private:
 				}
 			}
 		}
-		else return false;
+		else return true;
 	}
 };
 

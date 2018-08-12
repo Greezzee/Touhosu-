@@ -47,6 +47,9 @@
     <Image Include="zone.png">
       <Filter>Images</Filter>
     </Image>
+    <Image Include="button.png">
+      <Filter>Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -56,9 +59,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="gun.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="gun_plan.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="laser.h">
@@ -74,6 +74,18 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="zone.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="planner.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="gameplay.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="menuScreens.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
