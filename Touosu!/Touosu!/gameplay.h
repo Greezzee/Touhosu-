@@ -4,6 +4,7 @@ class gameplay
 public:
 	void setWindow() {
 		window.create(sf::VideoMode((unsigned int)SCREEN_W, (unsigned int)SCREEN_H), gameName);
+		menu.menuInit();
 	}
 	void gameStart() {
 		GlobalMapPlan.init();
@@ -73,15 +74,10 @@ public:
 					else if (command == 1) {
 						gameMusic.play();
 						clock.restart();
+						window.setView(cam.cam);
 						return false;
 					}
 				}
-			}
-			else if (event.type == Event::Resized) {
-				SCREEN_H = (float)event.size.height;
-				SCREEN_W = (float)event.size.width;
-				cam.cam.reset(FloatRect((-SCREEN_W + SCREEN_H - BOARDER * SCREEN_W / SCREEN_H) / 2, -BOARDER / 2, SCREEN_W + BOARDER * SCREEN_W / SCREEN_H, SCREEN_H + BOARDER));
-				gameboard.setSize(Vector2f(convertForGraphic(GAMEBOARD_W), convertForGraphic(GAMEBOARD_H)));
 			}
 		}
 		window.clear(Color(50, 50, 50));

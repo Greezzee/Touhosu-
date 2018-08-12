@@ -15,6 +15,7 @@
 #include "gun.h"
 #include "zone.h"
 #include "camera.h"
+#include "button.h"
 #include "menuScreens.h"
 #include "gameplay.h"
 using namespace sf;
