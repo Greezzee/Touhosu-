@@ -90,7 +90,6 @@ public:
 		camPlanList.resize(0);
 		publicInfo.resize(0);
 		publicBullets.resize(0);
-		currentCamStep = 0;
 		numberOfGuns = 0;
 		ifstream file;
 		file.open("plan.txt");
@@ -98,6 +97,7 @@ public:
 		gunPlanList.resize(numberOfGuns);
 		currentGunStep.resize(numberOfGuns, 0);
 		currentGunStep[0] = 0;
+		currentCamStep = 0;
 		forSteps = 0;
 		readFile(&file);
 		for (unsigned int i = 0; i < gunPlanList.size(); i++)
@@ -139,6 +139,13 @@ public:
 	int getNumberOfGuns() {
 		return numberOfGuns;
 	}
+
+	void restart() {
+		currentGunStep.resize(numberOfGuns, 0);
+		currentGunStep[0] = 0;
+		currentCamStep = 0;
+	}
+
 private:
 	vector<vector<gunPlanExemplar>> gunPlanList;
 	vector<zonePlanExemplar> zonePlanList;

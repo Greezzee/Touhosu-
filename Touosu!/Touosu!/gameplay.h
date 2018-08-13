@@ -8,41 +8,19 @@ public:
 	}
 	void gameStart() {
 		GlobalMapPlan.init();
-		bpmChanges.resize(0);
-		bpmChanges = GlobalMapPlan.getBPMchangesPlan();
-		srand(GlobalMapPlan.getRandomSeed());
 		gameMusic.openFromFile("music.ogg");
-		timePerBeat = BPMtoMCSdiv600Converter / BPM;
 		textur.loadFromFile("flashlight.png");
 		flash.setTexture(textur);
-		cam.init(flash, &GlobalMapPlan);
 		heroTexture.loadFromFile(heroSpriteFile);
 		bulletsHitboxTexture.loadFromFile(bulletsAndHitboxesFile);
 		gunTexture.loadFromFile(turretsFile);
-		mainPlayer.init(300, 500);
-		allBullets.resize(0);
-		allLasers.resize(0);
-		allGuns.resize(0);
 		ZoneTexture.loadFromFile("zone.png");
 		zoneSprite.setTexture(ZoneTexture);
-		setSmoothON();
-		zones.init(zoneSprite, &GlobalMapPlan);
-		for (int i = 0; i < GlobalMapPlan.getNumberOfGuns(); i++) {
-			Sprite self_sprite;
-			self_sprite.setTexture(gunTexture);
-			gun g1;
-			g1.set_gun(self_sprite, &GlobalMapPlan, i);
-			allGuns.push_back(g1);
-		}
-		time = 0;
 		gameboard.setSize(Vector2f(convertForGraphic(GAMEBOARD_W), convertForGraphic(GAMEBOARD_H)));
 		gameboard.setFillColor(Color(200, 200, 200));
-		window.draw(gameboard);
-		currentBPMid = 0;
-		FPS = 0;
-		frames = 0;
-		secondTime = 0;
-		totalBullets = 0;
+		setSmoothON();
+
+		restart();
 	}
 	bool gameUpdate() {
 		int couter = 1;
@@ -75,6 +53,13 @@ public:
 						gameMusic.play();
 						clock.restart();
 						window.setView(cam.cam);
+						return false;
+					}
+					else if (command == 2) {
+						gameMusic.stop();
+						clock.restart();
+						window.setView(cam.cam);
+						restart();
 						return false;
 					}
 				}
@@ -150,6 +135,40 @@ private:
 	unsigned int currentBPMid;
 	RenderWindow window;
 	menuScreens menu;
+
+
+	void restart() {
+		GlobalMapPlan.restart();
+		mainPlayer.init(300, 500);
+		allBullets.resize(0);
+		allLasers.resize(0);
+		allGuns.resize(0);
+		zones.init(zoneSprite, &GlobalMapPlan);
+		bpmChanges.resize(0);
+		bpmChanges = GlobalMapPlan.getBPMchangesPlan();
+		srand(GlobalMapPlan.getRandomSeed());
+		timePerBeat = BPMtoMCSdiv600Converter / BPM;
+		cam.init(flash, &GlobalMapPlan);
+		for (int i = 0; i < GlobalMapPlan.getNumberOfGuns(); i++) {
+			Sprite self_sprite;
+			self_sprite.setTexture(gunTexture);
+			gun g1;
+			g1.set_gun(self_sprite, &GlobalMapPlan, i);
+			allGuns.push_back(g1);
+		}
+		time = 0;
+		currentBPMid = 0;
+		FPS = 0;
+		frames = 0;
+		secondTime = 0;
+		totalBullets = 0;
+		current_beat = 0;
+		current_time = -2000000;
+		isBPMUpdated = false;
+		timer = 0;
+		current_time = 0;
+		clock.restart();
+	}
 
 	void setSmoothON() {
 		heroTexture.setSmooth(true);

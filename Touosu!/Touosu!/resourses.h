@@ -18,7 +18,7 @@ float convertForGraphic(float param) {
 }
 bool isBPMUpdated = false;
 float timer = 0;
-float current_time = -2000000; 
+float current_time = -2000000;
 int current_beat = 0, numberOfBeatThisTurn;
 bool newTick;
 void timeUpdate(float time) {
