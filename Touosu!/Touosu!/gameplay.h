@@ -139,7 +139,7 @@ private:
 
 	void restart() {
 		GlobalMapPlan.restart();
-		mainPlayer.init(300, 500);
+		mainPlayer.init(300, 500, "boost");
 		allBullets.resize(0);
 		allLasers.resize(0);
 		allGuns.resize(0);

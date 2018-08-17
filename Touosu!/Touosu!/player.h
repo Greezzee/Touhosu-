@@ -5,7 +5,7 @@ class player {
 public:
 	Vector2f playerCoords;
 	float size;
-	void init(float start_x, float start_y) {
+	void init(float start_x, float start_y, string activeSkill) {
 		playerCoords.x = start_x;
 		playerCoords.y = start_y;
 		start_x = convertForGraphic(start_x);
@@ -34,15 +34,35 @@ public:
 		moveDirectionInfo = "";
 		prevMoveDirectionInfo = "";
 		currentFrame = 0;
+
+		maxMana = 100;
+		currentMana = 0;
+		maxManaBar.setFillColor(Color(70, 130, 180));
+		currentManaBar.setFillColor(Color(0, 191, 255));
+		maxManaBar.setPosition(convertForGraphic(100), convertForGraphic(610));
+		maxManaBar.setSize(Vector2f(convertForGraphic(4 * maxMana), convertForGraphic(40)));
+		currentManaBar.setPosition(convertForGraphic(100), convertForGraphic(610));
+		currentManaBar.setSize(Vector2f(convertForGraphic(4 * currentMana), convertForGraphic(40)));
+
+		mySkill = activeSkill;
 	}
 	void update(RenderWindow *window, float time) {
 		if (Keyboard::isKeyPressed(Keyboard::Q)) herosprite.setColor(Color(255, 255, 255, 255));;
-		testForFastOrSlow(time);
+		testForShift(time);
 		trailUpdate(time, window);
+
+		skill(time);
+
 		Move(time);
 		updateAnimation(time);
 		setSpritePosition();
+
+		currentMana += time * 0.005f;
+		if (currentMana > 100) currentMana = 100;
+		currentManaBar.setSize(Vector2f(convertForGraphic(4 * currentMana), convertForGraphic(40)));
 		window->draw(herosprite);
+		window->draw(maxManaBar);
+		window->draw(currentManaBar);
 	}
 	void drawHitbox(RenderWindow *window) {
 		if (isHitboxVisible) window->draw(hero_hitbox_sprite);
@@ -60,10 +80,12 @@ private:
 	"r" for right
 	"l" for left
 	*/
-	string moveDirectionInfo, prevMoveDirectionInfo;
+	string moveDirectionInfo, prevMoveDirectionInfo, mySkill;
+	float maxMana, currentMana;
 	bool isHitboxVisible;
 	Sprite herosprite, hero_hitbox_sprite;
 	Texture herotexture, bullets_hitbox;
+	RectangleShape maxManaBar, currentManaBar;
 	std::vector<trail> trails;
 
 	void Move(float time) {
@@ -106,24 +128,13 @@ private:
 		herosprite.setPosition(convertForGraphic(playerCoords.x), convertForGraphic(playerCoords.y));
 		hero_hitbox_sprite.setPosition(convertForGraphic(playerCoords.x), convertForGraphic(playerCoords.y));
 	}
-	void testForFastOrSlow(float time) {
+	void testForShift(float time) {
 		speed = 0.7f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
 		isHitboxVisible = false;
 		if (Keyboard::isKeyPressed(Keyboard::LShift)) {
-			speed = 0.35f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
+			speed /= 2;
 			isHitboxVisible = true;
 		}
-		else if (Keyboard::isKeyPressed(Keyboard::Space)) {
-			speed = 1.4f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
-			trail_delta += time;
-			if (trail_delta >= 50) {
-				trail new_trail;
-				new_trail.set_trail(herosprite);
-				trails.push_back(new_trail);
-				trail_delta = 0;
-			}
-		}
-		else trail_delta = 0;
 	}
 	void trailUpdate(float time, RenderWindow *window) {
 		for (unsigned int i = 0; i < trails.size(); i++) if (trails[i].update(window, time)) trails.erase(trails.begin() + i);
@@ -148,6 +159,23 @@ private:
 		else if (moveDirectionInfo == "l") {
 			if (currentFrame > 8) currentFrame -= 4;
 			herosprite.setTextureRect(IntRect(32 * int(currentFrame), 48, 32, 48));
+		}
+	}
+
+	void skill(float time) {
+
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			if (mySkill == "boost" && currentMana > 1.f) {
+				speed *= 2;
+				currentMana -= time * 0.02f;
+				trail_delta += time;
+				if (trail_delta >= 50) {
+					trail new_trail;
+					new_trail.set_trail(herosprite);
+					trails.push_back(new_trail);
+					trail_delta = 0;
+				}
+			}
 		}
 	}
 };

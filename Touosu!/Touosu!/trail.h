@@ -7,7 +7,6 @@ public:
 		lifetime = 1500;
 		my_sprite = t;
 		my_sprite.setColor(Color(255, 255, 255, 50));
-		my_sprite.setTextureRect(IntRect(0, 0, 32, 48));
 	}
 	bool update(RenderWindow *window, double time) {
 		lifetime -= time;

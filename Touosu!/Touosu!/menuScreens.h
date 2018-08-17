@@ -26,10 +26,10 @@ public:
 		backgroundDim.setSize(Vector2f(SCREEN_W, SCREEN_H));
 		playground.setTexture(buffer);
 
-		button continueButton, restartButton, exitButton;
-		continueButton.init(Vector2f(0.5f, 0.5f), Vector2f(SCREEN_W / 2, SCREEN_H / 4), 6, "CONTINUE");
-		restartButton.init(Vector2f(0.5f, 0.5f), Vector2f(SCREEN_W / 2, SCREEN_H / 4 * 2), 6, "RESTART");
-		exitButton.init(Vector2f(0.5f, 0.5f), Vector2f(SCREEN_W / 2, SCREEN_H / 4 * 3), 6, "EXIT");
+		pauseButton continueButton, restartButton, exitButton;
+		continueButton.init(Vector2f(SCREEN_W / 2, SCREEN_H / 4), "continue");
+		restartButton.init(Vector2f(SCREEN_W / 2, SCREEN_H / 4 * 2), "restart");
+		exitButton.init(Vector2f(SCREEN_W / 2, SCREEN_H / 4 * 3), "exit");
 
 		window->clear();
 		while (true) {
