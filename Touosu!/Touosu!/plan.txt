@@ -1,16 +1,40 @@
 1 1
 new_bpm 0 120;
 g 0 - l0 0 0 0 0 0 0 0 1 - set 300 300 l270
-g 0 - l0 1 0 0 0 0 0 0 1 - rotate - l0 2 0 0 0 0 0 0 0 - r l30 0
-public bulletSize 0 = 16
+g 0 - l0 2 0 0 0 0 0 0 1 - rotate - l8 2 0 0 0 0 0 0 1 - r l360 0
+public bulletSize 0 = 32
 public startTime 0 = 0 2 0 0 0 0 0 0 1
-public bulletSpeedAngle 0 = 0
-public lineBulletSpeed 0 = 0.6
-for 15 {
-for 144 {
-g 0 - p0 - bullet_shoot - s 0 0 lb (
-n - p0 - d - rel p0 ap0 - rel l0 l0 - ellipse 3
+g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l0 l32
+g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l180 l32
+g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l90 l32
+g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l270 l32
+
+for 24 {
+for 7 {
+public startCoords.x 0 = 0
+public startCoords.x 0 ~ 50 - 400 - 30
+g 0 - p0 - bullet_shoot - s p0 l0 p0 lb (
+n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 3;
+r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
 )
-public bulletSpeedAngle 0 + 2.5 }
-public startTime 0 + 0 0 0 0 0 0 0 0 2 }
+g 0 - p0 - bullet_shoot - s p0 l0 l180 lb (
+n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 3;
+r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+)
+
+
+public startCoords.x 0 = 0
+public startCoords.x 0 ~ 50 - 400 - 30
+g 0 - p0 - bullet_shoot - s p0 l0 l90 lb (
+n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 7;
+r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+)
+g 0 - p0 - bullet_shoot - s p0 l0 l270 lb (
+n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 7;
+r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+)
+}
+
+public startTime 0 + 0 1 0 0 0 0 0 0 0
+}
 end

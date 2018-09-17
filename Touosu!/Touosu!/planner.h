@@ -56,8 +56,8 @@ struct gunPlanExemplar {
 	int startTime = -1;
 	int endTime = -1, laserPreparingEndTime = -1;
 	char angleType = 'a';
-	float gunEndAngle = 0, angleSpeed = 0, shootAngle = 0;
-	sf::Vector2f startMovingCoords, endMovingCoords, gunSpeed;
+	float gunEndAngle = 0, angleSpeed = 0, gunAngle = 0, laserShootAngle = 0, spawnOffsetAngle = 0;
+	sf::Vector2f startCoords, endMovingCoords, gunSpeed;
 	std::string commandType;
 	bool isRotateClockwise = false;
 	float laserSize = 0;
@@ -243,11 +243,11 @@ private:
 		char p_or_l;
 		*file >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y;
 		*file >> p_or_l;
-		if (p_or_l == 'l') *file >> new_plan.shootAngle;
+		if (p_or_l == 'l') *file >> new_plan.gunAngle;
 		else {
 			int id;
 			*file >> id;
-			new_plan.shootAngle = publicInfo[id].shootAngle;
+			new_plan.gunAngle = publicInfo[id].gunAngle;
 		}
 		return new_plan;
 	}
@@ -290,7 +290,25 @@ private:
 		string trash;
 		char p_or_l;
 		int ID;
-		*file >> trash >> new_plan.startMovingType >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y;
+		*file >> trash >> new_plan.startMovingType;
+		*file >> p_or_l;
+		if (p_or_l == 'l') *file >> new_plan.startCoords.x;
+		else {
+			*file >> ID;
+			new_plan.startCoords.x = publicInfo[ID].startCoords.x;
+		}
+		*file >> p_or_l;
+		if (p_or_l == 'l') *file >> new_plan.startCoords.y;
+		else {
+			*file >> ID;
+			new_plan.startCoords.y = publicInfo[ID].startCoords.y;
+		}
+		*file >> p_or_l;
+		if (p_or_l == 'l') *file >> new_plan.spawnOffsetAngle;
+		else {
+			*file >> ID;
+			new_plan.spawnOffsetAngle = publicInfo[ID].spawnOffsetAngle;
+		}
 		*file >> trash >> p_or_l;
 		if (p_or_l == 'l') new_plan.laserPreparingEndTime = read_time(file);
 		else {
@@ -305,10 +323,10 @@ private:
 		}
 		*file >> trash;
 		*file >> new_plan.angleType >> p_or_l;
-		if (p_or_l == 'l') *file >> new_plan.shootAngle;
+		if (p_or_l == 'l') *file >> new_plan.laserShootAngle;
 		else {
 			*file >> ID;
-			new_plan.shootAngle = publicInfo[ID].shootAngle;
+			new_plan.laserShootAngle = publicInfo[ID].laserShootAngle;
 		}
 		*file >> p_or_l;
 		if (p_or_l == 'l') *file >> new_plan.laserSize;
@@ -321,7 +339,30 @@ private:
 	gunPlanExemplar readBulletShoot(ifstream *file, gunPlanExemplar new_plan) {
 		string trash;
 		string public_or_local;
-		*file >> trash >> new_plan.startMovingType >> new_plan.startMovingCoords.x >> new_plan.startMovingCoords.y >> public_or_local;
+		char p_or_l;
+		int ID;
+		*file >> trash >> new_plan.startMovingType;
+
+		*file >> p_or_l;
+		if(p_or_l == 'l') *file >> new_plan.startCoords.x;
+		else {
+			*file >> ID;
+			new_plan.startCoords.x = publicInfo[ID].startCoords.x;
+		}
+		*file >> p_or_l;
+		if (p_or_l == 'l') *file >> new_plan.startCoords.y;
+		else {
+			*file >> ID;
+			new_plan.startCoords.y = publicInfo[ID].startCoords.y;
+		}
+		*file >> p_or_l;
+		if (p_or_l == 'l') *file >> new_plan.spawnOffsetAngle;
+		else {
+			*file >> ID;
+			new_plan.spawnOffsetAngle = publicInfo[ID].spawnOffsetAngle;
+		}
+
+		*file >> public_or_local;
 		if (public_or_local == "lb") {
 
 			new_plan.bulletInfo.timeType.resize(0);
@@ -352,8 +393,6 @@ private:
 				float bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
 				sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 				
-				char p_or_l;
-				int ID;
 
 				*file >> timeType;
 
@@ -531,7 +570,6 @@ private:
 		*file >> new_plan.UpLeft.x >> new_plan.UpLeft.y >> trash >> new_plan.DownRight.x >> new_plan.DownRight.y;
 		return new_plan;
 	}
-
 	BPMchangeExemplar readBPMchange(ifstream *file) {
 		BPMchangeExemplar new_plan;
 		*file >> new_plan.offset >> new_plan.bpm;
@@ -556,8 +594,12 @@ private:
 			else if (varName == "endTime") publicInfo[varID].endTime = read_time(file);
 			else if (varName == "laserPreparingEndTime") publicInfo[varID].laserPreparingEndTime = read_time(file);
 			else if (varName == "laserSize") *file >> publicInfo[varID].laserSize;
-			else if (varName == "shootAngle") *file >> publicInfo[varID].shootAngle;
+			else if (varName == "gunAngle") *file >> publicInfo[varID].gunAngle;
 			else if (varName == "gunEndAngle") *file >> publicInfo[varID].gunEndAngle;
+			else if (varName == "laserShootAngle") *file >> publicInfo[varID].laserShootAngle;
+			else if (varName == "startCoords.x") *file >> publicInfo[varID].startCoords.x;
+			else if (varName == "startCoords.y") *file >> publicInfo[varID].startCoords.y;
+			else if (varName == "spawnOffsetAngle") *file >> publicInfo[varID].spawnOffsetAngle;
 			else if (varName == "bulletAccelAngle") *file >> publicInfo[varID].bulletInfo.bulletAccelAngle[0];
 			else if (varName == "bulletSize") *file >> publicInfo[varID].bulletInfo.bulletSize[0];
 			else if (varName == "bulletSpeedAngle") *file >> publicInfo[varID].bulletInfo.bulletSpeedAngle[0];
@@ -584,11 +626,27 @@ private:
 			}
 			else if (varName == "shootAngle") {
 				*file >> a;
-				publicInfo[varID].shootAngle += a;
+				publicInfo[varID].gunAngle += a;
 			}
 			else if (varName == "gunEndAngle") {
 				*file >> a;
 				publicInfo[varID].gunEndAngle += a;
+			}
+			else if (varName == "laserShootAngle") {
+				*file >> a;
+				publicInfo[varID].laserShootAngle += a;
+			}
+			else if (varName == "startCoords.x") {
+				*file >> a;
+				publicInfo[varID].startCoords.x += a;
+			}
+			else if (varName == "startCoords.y") {
+				*file >> a;
+				publicInfo[varID].startCoords.y += a;
+			}
+			else if (varName == "spawnOffsetAngle") {
+				*file >> a;
+				publicInfo[varID].spawnOffsetAngle += a;
 			}
 			else if (varName == "bulletAccelAngle"){
 				*file >> a;
@@ -610,6 +668,21 @@ private:
 				*file >> a;
 				publicInfo[varID].bulletInfo.lineBulletSpeed[0] += a;
 			}
+			break;
+
+		case '~':
+			if (varName == "laserSize") publicInfo[varID].laserSize += readRandomFloat(file);
+			else if (varName == "gunAngle") publicInfo[varID].gunAngle += readRandomFloat(file);
+			else if (varName == "gunEndAngle") publicInfo[varID].gunEndAngle += readRandomFloat(file);
+			else if (varName == "laserShootAngle") publicInfo[varID].laserShootAngle += readRandomFloat(file);
+			else if (varName == "startCoords.x") publicInfo[varID].startCoords.x += readRandomFloat(file);
+			else if (varName == "startCoords.y") publicInfo[varID].startCoords.y += readRandomFloat(file);
+			else if (varName == "spawnOffsetAngle") publicInfo[varID].spawnOffsetAngle += readRandomFloat(file);
+			else if (varName == "bulletAccelAngle") publicInfo[varID].bulletInfo.bulletAccelAngle[0] += readRandomFloat(file);
+			else if (varName == "bulletSize") publicInfo[varID].bulletInfo.bulletSize[0] += readRandomFloat(file);
+			else if (varName == "bulletSpeedAngle") publicInfo[varID].bulletInfo.bulletSpeedAngle[0] += readRandomFloat(file);
+			else if (varName == "lineBulletAccel") publicInfo[varID].bulletInfo.lineBulletAccel[0] += readRandomFloat(file);
+			else if (varName == "lineBulletSpeed") publicInfo[varID].bulletInfo.lineBulletSpeed[0] += readRandomFloat(file);
 			break;
 		}
 	}
@@ -742,6 +815,17 @@ private:
 		int beats4, beat, beat1_2, beat1_3, beat1_4, beat1_6, beat1_8, beat1_16, beat1_32;
 		*file >> beats4 >> beat >> beat1_2 >> beat1_3 >> beat1_4 >> beat1_6 >> beat1_8 >> beat1_16 >> beat1_32;
 		return beats4 * 128 + beat * 32 + beat1_2 * 16 + beat1_3 * 11 + beat1_4 * 8 + beat1_6 * 5 + beat1_8 * 4 + beat1_16 * 2 + beat1_32;
+	}
+
+	float readRandomFloat(ifstream *file) {
+		float min, max, step;
+		string trash;
+		*file >> min >> trash >> max >> trash >> step;
+
+		int randRange = (int)(abs(max - min) / step) + 1;
+		float out = (float)(rand() % randRange) * step + min;
+		cout << out << endl;
+		return out;
 	}
 };
 

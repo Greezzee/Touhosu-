@@ -28,8 +28,8 @@ public:
 		secondTime += time;
 		frames++;
 		if (secondTime >= 1000000) {
-			cout << frames << " ";
-			cout << totalBullets << endl;
+			//cout << frames << " ";
+			//cout << totalBullets << endl; print FPS
 			frames = 0;
 			secondTime = 0;
 		}

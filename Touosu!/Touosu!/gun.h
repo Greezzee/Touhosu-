@@ -107,8 +107,8 @@ private:
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
-			self_sprite.setRotation(-current_action.shootAngle);
-			shoot_angle = current_action.shootAngle;
+			self_sprite.setRotation(-current_action.gunAngle);
+			shoot_angle = current_action.gunAngle;
 			coords.x = current_action.endMovingCoords.x;
 			coords.y = current_action.endMovingCoords.y;
 			return true;
@@ -135,16 +135,16 @@ private:
 			s.setTexture(l_example);
 			laser actual_laser;
 			float laserAngle;
-			if (current_action.angleType == 'a') laserAngle = current_action.shootAngle;
-			else if (current_action.angleType == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.shootAngle);
-			else if (current_action.angleType == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.shootAngle;
+			if (current_action.angleType == 'a') laserAngle = current_action.laserShootAngle;
+			else if (current_action.angleType == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.laserShootAngle);
+			else if (current_action.angleType == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.laserShootAngle;
 			else if (current_action.angleType == 's') {
-				if (current_action.startMovingType == 'r') laserAngle = LeadAngleToTrigonometric(atan2(coords.y + current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x - coords.x) * 180 / PI) + current_action.shootAngle;
-				else laserAngle = LeadAngleToTrigonometric(atan2(current_action.startMovingCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startMovingCoords.x) * 180 / PI) + current_action.shootAngle;
+				if (current_action.startMovingType == 'r') laserAngle = LeadAngleToTrigonometric(atan2(coords.y + current_action.startCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startCoords.x - coords.x) * 180 / PI) + current_action.laserShootAngle;
+				else laserAngle = LeadAngleToTrigonometric(atan2(current_action.startCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startCoords.x) * 180 / PI) + current_action.laserShootAngle;
 			}
-			if (current_action.startMovingType == 'a') actual_laser.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, laserAngle, current_action.laserSize, &s);
-			else if (current_action.startMovingType == 'r') actual_laser.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, laserAngle, current_action.laserSize, &s);
-			else if (current_action.startMovingType == 's') actual_laser.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, laserAngle, current_action.laserSize, &s);
+			if (current_action.startMovingType == 'a') actual_laser.create(current_action.startCoords.x, current_action.startCoords.y, laserAngle, current_action.laserSize, &s);
+			else if (current_action.startMovingType == 'r') actual_laser.create(current_action.startCoords.x + coords.x, current_action.startCoords.y + coords.y, laserAngle, current_action.laserSize, &s);
+			else if (current_action.startMovingType == 's') actual_laser.create(current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + coords.x, current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + coords.y, laserAngle, current_action.laserSize, &s);
 			if (current_beat >= current_action.laserPreparingEndTime) actual_laser.activate();
 			else actual_laser.activate_animation(current_beat - current_action.startTime, current_action.laserPreparingEndTime - current_action.startTime);
 			all_lasers->push_back(actual_laser);
@@ -159,9 +159,9 @@ private:
 			s.setTextureRect(IntRect(64, 96, 32, 32));
 			s.setOrigin(16, 16);
 			bullet new_bullet;
-			if (current_action.startMovingType == 'a') new_bullet.create(current_action.startMovingCoords.x, current_action.startMovingCoords.y, shoot_angle, coords, &current_action, &s, target);
-			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startMovingCoords.x + coords.x, current_action.startMovingCoords.y + coords.y, shoot_angle, coords, &current_action, &s, target);
-			else if (current_action.startMovingType == 's') new_bullet.create(current_action.startMovingCoords.x * cos(-shoot_angle / 180 * PI) + current_action.startMovingCoords.y * sin(-shoot_angle / 180 * PI) + coords.x, current_action.startMovingCoords.x * cos(-(shoot_angle + 90) / 180 * PI) + current_action.startMovingCoords.y * sin(-(shoot_angle + 90) / 180 * PI) + coords.y, shoot_angle, coords, &current_action, &s, target);
+			if (current_action.startMovingType == 'a') new_bullet.create(current_action.startCoords.x, current_action.startCoords.y, shoot_angle, coords, &current_action, &s, target);
+			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startCoords.x + coords.x, current_action.startCoords.y + coords.y, shoot_angle, coords, &current_action, &s, target);
+			else if (current_action.startMovingType == 's') new_bullet.create(current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + coords.x, current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + coords.y, shoot_angle, coords, &current_action, &s, target);
 			all_bullets->push_back(new_bullet);
 			
 			return true;
