@@ -84,13 +84,14 @@ public:
 
 			if (currentBPMid > 0) timeUpdate(time);
 			zones.update(&window, time);
-			
+			for (list<gun>::iterator i = allGuns.begin(); i != allGuns.end(); i++) {
+				i->update(&window, time, &allBullets, &allLasers, &mainPlayer, &GlobalMapPlan);
+			}
 			for (list<bullet>::iterator i = allBullets.begin(); i != allBullets.end();) {
 				i->update(&window, time, &mainPlayer);
-				if (i->destroyed) {
-					i = allBullets.erase(i);
+				if (i->destroyed) i = allBullets.erase(i);
 					
-				}
+				
 				else i++;
 				totalBullets++;
 			}
@@ -99,9 +100,6 @@ public:
 				i->update(&window, &mainPlayer);
 			}
 			allLasers.clear();
-			for (list<gun>::iterator i = allGuns.begin(); i != allGuns.end(); i++) {
-				i->update(&window, time, &allBullets, &allLasers, &mainPlayer, &GlobalMapPlan);
-			}
 			cam.update(&window, time, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
 		}
 		else cam.update(&window, 0, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);

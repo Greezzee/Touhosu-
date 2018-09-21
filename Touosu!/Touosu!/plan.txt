@@ -14,24 +14,24 @@ for 7 {
 public startCoords.x 0 = 0
 public startCoords.x 0 ~ 50 - 400 - 30
 g 0 - p0 - bullet_shoot - s p0 l0 p0 lb (
-n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 3;
-r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 3;
+a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - big_knife 2
 )
 g 0 - p0 - bullet_shoot - s p0 l0 l180 lb (
-n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 3;
-r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 3;
+a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
 )
 
 
 public startCoords.x 0 = 0
 public startCoords.x 0 ~ 50 - 400 - 30
 g 0 - p0 - bullet_shoot - s p0 l0 l90 lb (
-n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 7;
-r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 7;
+a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - big_knife 2
 )
 g 0 - p0 - bullet_shoot - s p0 l0 l270 lb (
-n - p0 - b - rel p0 ap0 - rel l0 l0 - standart 7;
-r l2 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
+n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 7;
+a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - big_knife 2
 )
 }
 
