@@ -68,19 +68,26 @@ public:
 		window.clear(Color(50, 50, 50));
 		window.draw(gameboard);
 		mainPlayer.update(&window, time);
-		if (current_time > 0) {
+		if (current_time > start.startTime) {
 			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
+				Time offsetTime(sf::microseconds((Int64)start.startTime));
 				gameMusic.play();
-				current_time = 0;
+				gameMusic.setPlayingOffset(offsetTime);
+				current_time = start.startTime;
 			}
 			isBPMUpdated = false;
 			if (currentBPMid < bpmChanges.size() && current_time >= bpmChanges[currentBPMid].offset) {
 				BPM = bpmChanges[currentBPMid].bpm;
-				timePerBeat = BPMtoMCSdiv600Converter / BPM;
+				setNewTimePerBeat(BPM);
 				currentBPMid++;
 				isBPMUpdated = true;
+				cout << BPM << " " << (int)current_time << " " << timePerBeat << endl;
 			}
 
+			if (last_beat != current_beat) {
+				cout << current_beat << " " << (int)current_time << endl;
+				last_beat = current_beat;
+			}
 
 			if (currentBPMid > 0) timeUpdate(time);
 			zones.update(&window, time);
@@ -128,12 +135,12 @@ private:
 	std::list<gun> allGuns;
 	zone zones;
 	RectangleShape gameboard;
-	int frames, totalBullets;
+	int frames, totalBullets, last_beat = 0;
 	float secondTime, FPS, time;
 	unsigned int currentBPMid;
 	RenderWindow window;
 	menuScreens menu;
-
+	startPosExemplar start;
 
 	void restart() {
 		GlobalMapPlan.restart();
@@ -145,8 +152,9 @@ private:
 		bpmChanges.resize(0);
 		bpmChanges = GlobalMapPlan.getBPMchangesPlan();
 		srand(GlobalMapPlan.getRandomSeed());
-		timePerBeat = BPMtoMCSdiv600Converter / BPM;
+		setNewTimePerBeat(BPM);
 		cam.init(flash, &GlobalMapPlan);
+		start = GlobalMapPlan.getStartPos();
 		for (int i = 0; i < GlobalMapPlan.getNumberOfGuns(); i++) {
 			Sprite self_sprite;
 			self_sprite.setTexture(gunTexture);
@@ -160,11 +168,10 @@ private:
 		frames = 0;
 		secondTime = 0;
 		totalBullets = 0;
-		current_beat = 0;
-		current_time = -2000000;
+		current_beat = start.beatStartTime;
+		current_time = -2000000 + start.startTime;
 		isBPMUpdated = false;
 		timer = 0;
-		current_time = 0;
 		clock.restart();
 	}
 

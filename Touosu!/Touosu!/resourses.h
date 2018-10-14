@@ -18,8 +18,8 @@ float convertForGraphic(float param) {
 }
 bool isBPMUpdated = false;
 float timer = 0;
-float current_time = -2000000;
-int current_beat = 0, numberOfBeatThisTurn;
+float current_time;
+int current_beat, numberOfBeatThisTurn;
 bool newTick;
 void timeUpdate(float time) {
 	timer += time;
@@ -39,4 +39,8 @@ float LeadAngleToTrigonometric(float angle) {
 	if (angle >= 360) angle -= 360;
 	else if (angle < 0) angle += 360;
 	return angle;
+}
+void setNewTimePerBeat(float bpm) {
+	timePerBeat = BPMtoMCSdiv600Converter / bpm;
+	timer = 0;
 }

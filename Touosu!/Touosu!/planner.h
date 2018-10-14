@@ -82,6 +82,10 @@ struct camPlanExemplar {
 struct BPMchangeExemplar {
 	float offset, bpm;
 };
+struct startPosExemplar {
+	int beatStartTime = 0;
+	float startTime = 0;
+};
 
 class planner {
 public:
@@ -104,6 +108,14 @@ public:
 			sort(gunPlanList[i].begin(), gunPlanList[i].end(), [](const gunPlanExemplar& plan1, const gunPlanExemplar& plan2) -> bool {
 				return plan1.startTime < plan2.startTime;
 			});
+
+		sort(zonePlanList.begin(), zonePlanList.end(), [](const zonePlanExemplar& plan1, const zonePlanExemplar& plan2) -> bool {
+			return plan1.startBeat < plan2.startBeat;
+		});
+		sort(camPlanList.begin(), camPlanList.end(), [](const camPlanExemplar& plan1, const camPlanExemplar& plan2) -> bool {
+			return plan1.b_start_time < plan2.b_start_time;
+		});
+		startPosInit();
 		file.close();
 	};
 
@@ -133,6 +145,9 @@ public:
 	vector<BPMchangeExemplar> getBPMchangesPlan() {
 		return BPMchangePlanList;
 	}
+	startPosExemplar getStartPos() {
+		return startPos;
+	}
 	int getRandomSeed() {
 		return randomSeed;
 	}
@@ -153,6 +168,7 @@ private:
 	vector<gunPlanExemplar> publicInfo, publicBullets;
 	vector<BPMchangeExemplar> BPMchangePlanList;
 	vector<unsigned int> currentGunStep;
+	startPosExemplar startPos;
 	unsigned int currentCamStep;
 	unsigned int numberOfGuns, randomSeed;
 	int forSteps;
@@ -214,6 +230,7 @@ private:
 			}
 			remove(selfFileName.c_str());
 		}
+		else if (command_type == "start_pos") readStartPos(file);
 		return command_type;
 	}
 
@@ -574,6 +591,39 @@ private:
 		BPMchangeExemplar new_plan;
 		*file >> new_plan.offset >> new_plan.bpm;
 		return new_plan;
+	}
+
+	void readStartPos(ifstream *file) {
+		startPos.beatStartTime = read_time(file);
+	}
+	void startPosInit() {
+		if (startPos.beatStartTime == 0) return;
+		startPos.startTime = BPMchangePlanList[0].offset;
+		float bpm = BPMchangePlanList[0].bpm;
+		float time = BPMtoMCSdiv600Converter / bpm;
+		int bufferBeat = 0;
+		while (bufferBeat != startPos.beatStartTime) {
+			startPos.startTime += time * 600;
+			bufferBeat++;
+			if (BPMchangePlanList[1].offset < startPos.startTime) {
+				bufferBeat--;
+				bpm = BPMchangePlanList[1].bpm;
+				time = BPMtoMCSdiv600Converter / bpm;
+				BPMchangePlanList.erase(BPMchangePlanList.begin());
+			}
+		}
+		for (int i = 0; i < gunPlanList.size(); i++) while (true) {
+			if (gunPlanList[i].size() == 0 || gunPlanList[i][0].startTime >= startPos.beatStartTime) break;
+			else gunPlanList[i].erase(gunPlanList[i].begin());
+		}
+		while (true) {
+			if (zonePlanList.size() == 0 || zonePlanList[0].startBeat >= startPos.beatStartTime) break;
+			else zonePlanList.erase(zonePlanList.begin());
+		}
+		while (true) {
+			if (camPlanList.size() == 0 || camPlanList[0].b_start_time >= startPos.beatStartTime) break;
+			else camPlanList.erase(camPlanList.begin());
+		}
 	}
 
 	void readPublicVar(ifstream *file) {

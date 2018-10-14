@@ -1,40 +1,189 @@
 1 1
-new_bpm 0 120;
+
+new_bpm 6696000 62.25;
+new_bpm 7656000 41.667;
+new_bpm 9096000 250;
+new_bpm 11496000 250;
+new_bpm 26856000 140;
+new_bpm 41421000 10.595;
+new_bpm 47084000 250;
+new_bpm 47319000 251; 
+new_bpm 47558000 252;
+new_bpm 47796000 253;
+new_bpm 48033000 254;
+new_bpm 48269000 255;
+new_bpm 48504000 256;
+new_bpm 48738000 257;
+new_bpm 48971000 258;
+new_bpm 49203000 259;
+new_bpm 49434000 260;
+new_bpm 49664000 261;
+new_bpm 49893000 262;
+new_bpm 50122000 263;
+new_bpm 50350000 264;
+new_bpm 50577000 265;
+new_bpm 50804000 266;
+new_bpm 51029000 267;
+new_bpm 51253000 268;
+new_bpm 51476000 269;
+new_bpm 51699000 270;
+new_bpm 51921000 271;
+new_bpm 52142000 272;
+new_bpm 52362000 273;
+new_bpm 52581000 274;
+new_bpm 52799000 275;
+new_bpm 53017000 276;
+new_bpm 53234000 277;
+new_bpm 53450000 278;
+new_bpm 53665000 279;
+new_bpm 53880000 280;
+new_bpm 54094000 281;
+new_bpm 54309000 282;
+new_bpm 54521000 283;
+new_bpm 54733000 284;
+new_bpm 54944000 285;
+new_bpm 55154000 286;
+new_bpm 55363000 287;
+new_bpm 55572000 288;
+new_bpm 55780000 289;
+new_bpm 55987000 290;
+new_bpm 56193000 291;
+new_bpm 56399000 292;
+new_bpm 56604000 293;
+new_bpm 56809000 294;
+new_bpm 57013000 295;
+new_bpm 57216000 296;
+new_bpm 57418000 297;
+new_bpm 57622000 298;
+new_bpm 57823000 299;
+new_bpm 58023000 300;
+new_bpm 58223000 301;
+new_bpm 58422000 302;
+new_bpm 58620000 303;
+new_bpm 58818000 304;
+new_bpm 59015000 305;
+new_bpm 59212000 306;
+new_bpm 59408000 307;
+new_bpm 59603000 308;
+new_bpm 59797000 309;
+new_bpm 59991000 310;
+new_bpm 60184000 311;
+new_bpm 60376000 312;
+new_bpm 60568000 313; 
+new_bpm 60761000 314;
+new_bpm 60952000 315;
+new_bpm 61142000 316;
+new_bpm 61333000 317;
+new_bpm 61522000 318;
+new_bpm 61710000 319;
+new_bpm 61898000 320;
+new_bpm 62085000 321;
+new_bpm 62273000 322;
+new_bpm 62459000 323;
+new_bpm 62644000 324;
+new_bpm 62829000 325;
+new_bpm 63015000 326;
+new_bpm 63199000 327;
+new_bpm 63382000 328;
+new_bpm 63564000 329;
+new_bpm 63753000 330;
+new_bpm 63934000 331;
+new_bpm 64115000 332;
+new_bpm 64295000 333;
+new_bpm 64475000 334;
+new_bpm 64654000 335;
+new_bpm 64833000 336;
+new_bpm 65011000 337;
+new_bpm 65193000 338;
+new_bpm 65370000 339;
+new_bpm 65546000 340;
+new_bpm 65722000 341;
+new_bpm 65897000 342;
+new_bpm 66072000 343;
+new_bpm 66246000 344;
+new_bpm 66420000 345;
+new_bpm 66595000 346;
+new_bpm 66768000 347;
+new_bpm 66940000 348;
+new_bpm 67112000 349;
+new_bpm 67283000 350;
+new_bpm 67454000 351;
+new_bpm 67624000 352;
+new_bpm 67794000 353;
+new_bpm 67969000 354;
+new_bpm 68137000 355;
+new_bpm 68306000 356;
+new_bpm 68476000 357;
+new_bpm 68644000 358;
+new_bpm 68811000 359;
+new_bpm 68978000 360;
+new_bpm 69144000 361;
+new_bpm 69319000 362;
+new_bpm 69484000 363;
+new_bpm 69649000 364;
+new_bpm 69813000 365;
+new_bpm 69981000 366;
+new_bpm 70144000 367;
+new_bpm 70307000 368;
+new_bpm 70470000 369;
+new_bpm 70632000 370;
+new_bpm 70794000 371;
+new_bpm 70955000 372;
+new_bpm 71116000 373;
+new_bpm 71276000 374;
+new_bpm 71436000 375;
+new_bpm 71596000 376;
+new_bpm 71755000 377;
+new_bpm 71924000 378;
+new_bpm 72082000 379;
+new_bpm 72240000 380;
+new_bpm 72397000 381;
+new_bpm 72554000 382;
+new_bpm 72711000 383;
+new_bpm 72867000 384;
+new_bpm 73023000 385;
+new_bpm 73178000 386;
+new_bpm 73333000 387;
+new_bpm 73488000 388;
+new_bpm 73642000 389;
+new_bpm 73796000 390;
+new_bpm 73949000 391;
+new_bpm 74102000 392;
+new_bpm 74255000 393;
+new_bpm 74407000 394;
+new_bpm 74559000 395;
+new_bpm 74710000 396;
+new_bpm 74861000 397;
+new_bpm 75012000 398;
+new_bpm 75162000 399;
+new_bpm 75312000 25;
+new_bpm 77712000 400;
+new_bpm 80112000 15.625;
+new_bpm 82032000 250;
+new_bpm 89712000 62.5;
+new_bpm 93552000 125;
+new_bpm 108912000 250;
+new_bpm 110832000 62.5;
+new_bpm 111792000 250;
+new_bpm 115632000 125;
+new_bpm 116592000 250;
+new_bpm 118512000 125;
+new_bpm 119472000 250;
+new_bpm 123312000 125;
+
+start_pos 79 -1 0 0 0 0 0 0 0
+
 g 0 - l0 0 0 0 0 0 0 0 1 - set 300 300 l270
+
+g 0 - l0 2 0 0 0 0 0 0 1 - set 300 300 l270
 g 0 - l0 2 0 0 0 0 0 0 1 - rotate - l8 2 0 0 0 0 0 0 1 - r l360 0
 public bulletSize 0 = 32
 public startTime 0 = 0 2 0 0 0 0 0 0 1
-g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l0 l32
-g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l180 l32
-g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l90 l32
-g 0 - p0 - laser_shoot - s l0 l0 l0 - l0 3 0 0 0 0 0 0 1 - l8 2 0 0 0 0 0 0 1 - r l270 l32
 
-for 24 {
-for 7 {
-public startCoords.x 0 = 0
-public startCoords.x 0 ~ 50 - 400 - 30
-g 0 - p0 - bullet_shoot - s p0 l0 p0 lb (
-n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 3;
-a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - big_knife 2
+for 2400 {
+g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
+n - p0 - d - rel p0 al0.5 - rel l0 l0 - big_knife 3
 )
-g 0 - p0 - bullet_shoot - s p0 l0 l180 lb (
-n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 3;
-a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - standart 2
-)
-
-
-public startCoords.x 0 = 0
-public startCoords.x 0 ~ 50 - 400 - 30
-g 0 - p0 - bullet_shoot - s p0 l0 l90 lb (
-n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 7;
-a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - big_knife 2
-)
-g 0 - p0 - bullet_shoot - s p0 l0 l270 lb (
-n - p0 - b - rel p0 al0.1 - rel l0 l0 - big_knife 7;
-a l9 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 rl0 - rel l0 l0 - big_knife 2
-)
-}
-
 public startTime 0 + 0 1 0 0 0 0 0 0 0
 }
 end
