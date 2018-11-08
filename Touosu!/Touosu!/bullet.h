@@ -6,10 +6,13 @@ public:
 
 		playerCoords = target->playerCoords;
 		myPlan = a->bulletInfo;
+		colorID = myPlan.bulletColor[0];
+		myChildBullets = a->childBullets;
 		nextBulletTypeId = 0;
+		nextChildBulletID = 0;
 		coords.x = start_x;
 		coords.y = start_y;
-
+		prevBulletTypeTime = current_beat;
 		startGunAngle = shoot_angle;
 
 		self_sprite = *b;
@@ -21,9 +24,10 @@ public:
 
 		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		destroyed = false;
+
 	}
 
-	void update(RenderWindow *window, float time, player *target) {
+	vector<gunPlanExemplar> update(RenderWindow *window, float time, player *target) {
 		if (size == -1) destroyed = true;
 		if (destroyed == false) {
 
@@ -32,6 +36,9 @@ public:
 			playerCoords = target->playerCoords;
 
 			if (coords.x < 0 || coords.x > GAMEBOARD_W || coords.y < 0 || coords.y > GAMEBOARD_H) actionWithWalls();
+
+			bulletsForShoot.resize(0);
+
 			for (int i = numberOfBeatThisTurn - 1; i >= 0; i--) tryToTypeUpdate();
 
 			speed.x += time * acceleration.x * GAMEBOARD_H / timePerBeat / 32 / 4;
@@ -60,15 +67,23 @@ public:
 			if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
 			window->draw(self_sprite);
 		}
+		vector<gunPlanExemplar> out(0);
+		for (int i = 0; i < bulletsForShoot.size(); i++) {
+			gunPlanExemplar a;
+			a.bulletInfo = bulletsForShoot[i];
+			
+		}
+		return out;
 	}
 	Vector2f coords;
 	bool destroyed;
 private:
 	float speedDirectionalAngleRad, speedDirectionalAngleDegr, accelDirectionalAngleDegr, accelDirectionalAngleRad, size, startGunAngle, currentFrame, spriteAngle;
+	vector<bulletPlanExemplar> myChildBullets, bulletsForShoot;
 	Vector2f speed, acceleration, playerCoords, realEllipseHitboxSize;
 	Sprite self_sprite;
 	bulletPlanExemplar myPlan;
-	unsigned int nextBulletTypeId, prevBulletTypeTime, colorID;
+	unsigned int nextBulletTypeId, prevBulletTypeTime, colorID, nextChildBulletID;
 	char actionWithWallID;
 	string currentBulletSkin;
 	IntRect currentTextureRect;
@@ -197,6 +212,17 @@ private:
 			if ((myPlan.timeType[nextBulletTypeId] == 'a' && current_beat >= myPlan.startTime[nextBulletTypeId]) || (myPlan.timeType[nextBulletTypeId] == 'r' && current_beat >= myPlan.startTime[nextBulletTypeId] + (int)prevBulletTypeTime)) {
 				bulletTypeUpdate();
 			}
+		}
+		while (true) {
+			if (nextChildBulletID >= myChildBullets.size()) break;
+			if (myChildBullets[nextChildBulletID].timeType[0] == 'a' && myChildBullets[nextChildBulletID].startTime[0] <= current_beat || myChildBullets[nextChildBulletID].timeType[0] == 'r' && current_beat >= myChildBullets[nextChildBulletID].startTime[0] + (int)prevBulletTypeTime) {
+				myChildBullets[nextChildBulletID].timeType[0] = 'n';
+				myChildBullets[nextChildBulletID].startTime[0] = -1;
+				bulletsForShoot.push_back(myChildBullets[nextChildBulletID]);
+				nextChildBulletID++;
+				prevBulletTypeTime = current_beat;
+			}
+			else break;
 		}
 	}
 	void bulletTypeUpdate() {

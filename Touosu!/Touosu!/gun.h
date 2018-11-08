@@ -18,15 +18,13 @@ public:
 		coords.x = 0;
 		coords.y = 0;
 		shoot_angle = 0;
-		example.loadFromFile(bulletsAndHitboxesFile);
-		l_example.loadFromFile(laserFile);
 		timer = 0;
 		is_visible = false;
 		is_laser_shoot = false;
 		current_actions.resize(0);
 	}
 
-	void update(RenderWindow *window, float time, std::list<bullet> *all_bullets, std::list<laser> *all_lasers, player *target, planner *GlobalMapPlan) {
+	void update(RenderWindow *window, float time, bulletManager *manager, player *target, planner *GlobalMapPlan) {
 		actionsThisFrame = 0;
 		if (!isActionsEnd)
 		{
@@ -52,7 +50,7 @@ public:
 		}
 		
 		for (list<gunPlanExemplar>::iterator i = current_actions.begin(); i != current_actions.end();) {
-			if (action(*i, all_bullets, all_lasers, target, time)) i = current_actions.erase(i);
+			if (action(*i, manager, target, time)) i = current_actions.erase(i);
 			else i++;
 		}
 		
@@ -103,7 +101,7 @@ private:
 		}
 		current_actions.push_back(next_action);
 	}
-	bool action(gunPlanExemplar current_action, std::list<bullet> *all_bullets, std::list<laser> *all_lasers, player *target, float time) {
+	bool action(gunPlanExemplar current_action, bulletManager *manager, player *target, float time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
@@ -131,39 +129,13 @@ private:
 			
 		}
 		else if (current_action.commandType == "laser_shoot") {
-			Sprite s;
-			s.setTexture(l_example);
-			laser actual_laser;
-			float laserAngle;
-			if (current_action.angleType == 'a') laserAngle = current_action.laserShootAngle;
-			else if (current_action.angleType == 'r') laserAngle = LeadAngleToTrigonometric(shoot_angle + current_action.laserShootAngle);
-			else if (current_action.angleType == 'p') laserAngle = LeadAngleToTrigonometric(atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) * 180 / PI) + current_action.laserShootAngle;
-			else if (current_action.angleType == 's') {
-				if (current_action.startMovingType == 'r') laserAngle = LeadAngleToTrigonometric(atan2(coords.y + current_action.startCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startCoords.x - coords.x) * 180 / PI) + current_action.laserShootAngle;
-				else laserAngle = LeadAngleToTrigonometric(atan2(current_action.startCoords.y - target->playerCoords.y, target->playerCoords.x - current_action.startCoords.x) * 180 / PI) + current_action.laserShootAngle;
-			}
-			if (current_action.startMovingType == 'a') actual_laser.create(current_action.startCoords.x, current_action.startCoords.y, laserAngle, current_action.laserSize, &s);
-			else if (current_action.startMovingType == 'r') actual_laser.create(current_action.startCoords.x + coords.x, current_action.startCoords.y + coords.y, laserAngle, current_action.laserSize, &s);
-			else if (current_action.startMovingType == 's') actual_laser.create(current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + coords.x, current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + coords.y, laserAngle, current_action.laserSize, &s);
-			if (current_beat >= current_action.laserPreparingEndTime) actual_laser.activate();
-			else actual_laser.activate_animation(current_beat - current_action.startTime, current_action.laserPreparingEndTime - current_action.startTime);
-			all_lasers->push_back(actual_laser);
+			manager->createLaser(&current_action, shoot_angle, coords, target);
 			if (current_action.endTime <= current_beat) return true;
 			else return false;
 		}
 
 		else if (current_action.commandType == "bullet_shoot") {
-			
-			Sprite s;
-			s.setTexture(example);
-			s.setTextureRect(IntRect(64, 96, 32, 32));
-			s.setOrigin(16, 16);
-			bullet new_bullet;
-			if (current_action.startMovingType == 'a') new_bullet.create(current_action.startCoords.x, current_action.startCoords.y, shoot_angle, coords, &current_action, &s, target);
-			else if (current_action.startMovingType == 'r') new_bullet.create(current_action.startCoords.x + coords.x, current_action.startCoords.y + coords.y, shoot_angle, coords, &current_action, &s, target);
-			else if (current_action.startMovingType == 's') new_bullet.create(current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle) / 180 * PI) + coords.x, current_action.startCoords.x * cos(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + current_action.startCoords.y * sin(-(shoot_angle + current_action.spawnOffsetAngle + 90) / 180 * PI) + coords.y, shoot_angle, coords, &current_action, &s, target);
-			all_bullets->push_back(new_bullet);
-			
+			manager->createBullet(&current_action, shoot_angle, coords, target);
 			return true;
 			
 		}

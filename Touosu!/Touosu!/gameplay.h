@@ -27,13 +27,6 @@ public:
 		time = (float)clock.getElapsedTime().asMicroseconds();
 		secondTime += time;
 		frames++;
-		if (secondTime >= 1000000) {
-			//cout << frames << " ";
-			//cout << totalBullets << endl; print FPS
-			frames = 0;
-			secondTime = 0;
-		}
-		totalBullets = 0;
 		current_time += time;
 		clock.restart();
 		time = time / timerCoof;
@@ -92,21 +85,9 @@ public:
 			if (currentBPMid > 0) timeUpdate(time);
 			zones.update(&window, time);
 			for (list<gun>::iterator i = allGuns.begin(); i != allGuns.end(); i++) {
-				i->update(&window, time, &allBullets, &allLasers, &mainPlayer, &GlobalMapPlan);
+				i->update(&window, time, &manager, &mainPlayer, &GlobalMapPlan);
 			}
-			for (list<bullet>::iterator i = allBullets.begin(); i != allBullets.end();) {
-				i->update(&window, time, &mainPlayer);
-				if (i->destroyed) i = allBullets.erase(i);
-					
-				
-				else i++;
-				totalBullets++;
-			}
-
-			for (list<laser>::iterator i = allLasers.begin(); i != allLasers.end(); i++) {
-				i->update(&window, &mainPlayer);
-			}
-			allLasers.clear();
+			manager.updateAll(&window, time, &mainPlayer);
 			cam.update(&window, time, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
 		}
 		else cam.update(&window, 0, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
@@ -121,6 +102,7 @@ public:
 	}
 
 private:
+	bulletManager manager;
 	planner GlobalMapPlan;
 	vector<BPMchangeExemplar> bpmChanges;
 	Music gameMusic;
@@ -130,12 +112,10 @@ private:
 	Clock clock;
 	Texture heroTexture, bulletsHitboxTexture, gunTexture, ZoneTexture;
 	player mainPlayer;
-	std::list<bullet> allBullets;
-	std::list<laser> allLasers;
 	std::list<gun> allGuns;
 	zone zones;
 	RectangleShape gameboard;
-	int frames, totalBullets, last_beat = 0;
+	int frames, last_beat = 0;
 	float secondTime, FPS, time;
 	unsigned int currentBPMid;
 	RenderWindow window;
@@ -145,8 +125,7 @@ private:
 	void restart() {
 		GlobalMapPlan.restart();
 		mainPlayer.init(300, 500, "boost");
-		allBullets.resize(0);
-		allLasers.resize(0);
+		manager.init();
 		allGuns.resize(0);
 		zones.init(zoneSprite, &GlobalMapPlan);
 		bpmChanges.resize(0);
@@ -167,7 +146,6 @@ private:
 		FPS = 0;
 		frames = 0;
 		secondTime = 0;
-		totalBullets = 0;
 		current_beat = start.beatStartTime;
 		current_time = -2000000 + start.startTime;
 		isBPMUpdated = false;

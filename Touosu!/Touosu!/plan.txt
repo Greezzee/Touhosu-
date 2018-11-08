@@ -171,18 +171,23 @@ new_bpm 118512000 125;
 new_bpm 119472000 250;
 new_bpm 123312000 125;
 
-start_pos 79 -1 0 0 0 0 0 0 0
+start_pos  0 2 0 0 0 0 0 0 -1
 
 g 0 - l0 0 0 0 0 0 0 0 1 - set 300 300 l270
 
-g 0 - l0 2 0 0 0 0 0 0 1 - set 300 300 l270
+
+g 0 - l0 2 0 0 0 0 0 0 0 - set 300 300 l270
 g 0 - l0 2 0 0 0 0 0 0 1 - rotate - l8 2 0 0 0 0 0 0 1 - r l360 0
+
 public bulletSize 0 = 32
 public startTime 0 = 0 2 0 0 0 0 0 0 1
 
 for 2400 {
 g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
-n - p0 - d - rel p0 al0.5 - rel l0 l0 - big_knife 3
+switch - n - p0 - d - rel p0 al0.1 - rel l0 l0 - big_knife 3;
+shoot - r l2 0 0 0 0 0 0 0 0 - s l0 l0 l0 lb (
+	switch - n - p0 - d - rel p0 al0.5 - rel l0 l0 - big_knife 3
+	)
 )
 public startTime 0 + 0 1 0 0 0 0 0 0 0
 }

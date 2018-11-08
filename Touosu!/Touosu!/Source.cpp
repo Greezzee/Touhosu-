@@ -12,6 +12,7 @@
 #include "player.h"
 #include "bullet.h"
 #include "laser.h"
+#include "bulletManager.h"
 #include "gun.h"
 #include "zone.h"
 #include "camera.h"
