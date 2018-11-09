@@ -74,11 +74,11 @@ public:
 				setNewTimePerBeat(BPM);
 				currentBPMid++;
 				isBPMUpdated = true;
-				cout << BPM << " " << (int)current_time << " " << timePerBeat << endl;
+				//cout << BPM << " " << (int)current_time << " " << timePerBeat << endl;
 			}
 
 			if (last_beat != current_beat) {
-				cout << current_beat << " " << (int)current_time << endl;
+				//cout << current_beat << " " << (int)current_time << endl;
 				last_beat = current_beat;
 			}
 

@@ -1,5 +1,11 @@
 #pragma once
 using namespace sf;
+struct bulletsFromBullets
+{
+	gunPlanExemplar info;
+	float angle;
+	Vector2f coords;
+};
 class bullet {
 public:
 	void create(float start_x, float start_y, float shoot_angle, sf::Vector2f gunCoords, gunPlanExemplar *a, Sprite *b, player *target) {
@@ -13,6 +19,7 @@ public:
 		coords.x = start_x;
 		coords.y = start_y;
 		prevBulletTypeTime = current_beat;
+		prevBulletShootTime = current_beat;
 		startGunAngle = shoot_angle;
 
 		self_sprite = *b;
@@ -27,7 +34,7 @@ public:
 
 	}
 
-	vector<gunPlanExemplar> update(RenderWindow *window, float time, player *target) {
+	vector<bulletsFromBullets> update(RenderWindow *window, float time, player *target) {
 		if (size == -1) destroyed = true;
 		if (destroyed == false) {
 
@@ -67,11 +74,16 @@ public:
 			if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
 			window->draw(self_sprite);
 		}
-		vector<gunPlanExemplar> out(0);
+		vector<bulletsFromBullets> out(0);
 		for (int i = 0; i < bulletsForShoot.size(); i++) {
-			gunPlanExemplar a;
-			a.bulletInfo = bulletsForShoot[i];
-			
+			bulletsFromBullets a;
+			a.info.bulletInfo = bulletsForShoot[i];
+			a.info.startMovingType = bulletsForShoot[i].startMovingType;
+			a.info.spawnOffsetAngle = bulletsForShoot[i].spawnOffsetAngle;
+			a.info.startCoords = bulletsForShoot[i].startCoords;
+			a.angle = speedDirectionalAngleDegr;
+			a.coords = coords;
+			out.push_back(a);
 		}
 		return out;
 	}
@@ -83,7 +95,7 @@ private:
 	Vector2f speed, acceleration, playerCoords, realEllipseHitboxSize;
 	Sprite self_sprite;
 	bulletPlanExemplar myPlan;
-	unsigned int nextBulletTypeId, prevBulletTypeTime, colorID, nextChildBulletID;
+	unsigned int nextBulletTypeId, prevBulletTypeTime, prevBulletShootTime, colorID, nextChildBulletID;
 	char actionWithWallID;
 	string currentBulletSkin;
 	IntRect currentTextureRect;
@@ -215,12 +227,12 @@ private:
 		}
 		while (true) {
 			if (nextChildBulletID >= myChildBullets.size()) break;
-			if (myChildBullets[nextChildBulletID].timeType[0] == 'a' && myChildBullets[nextChildBulletID].startTime[0] <= current_beat || myChildBullets[nextChildBulletID].timeType[0] == 'r' && current_beat >= myChildBullets[nextChildBulletID].startTime[0] + (int)prevBulletTypeTime) {
+			if (myChildBullets[nextChildBulletID].timeType[0] == 'a' && myChildBullets[nextChildBulletID].startTime[0] <= current_beat || myChildBullets[nextChildBulletID].timeType[0] == 'r' && current_beat >= myChildBullets[nextChildBulletID].startTime[0] + (int)prevBulletShootTime) {
 				myChildBullets[nextChildBulletID].timeType[0] = 'n';
 				myChildBullets[nextChildBulletID].startTime[0] = -1;
 				bulletsForShoot.push_back(myChildBullets[nextChildBulletID]);
 				nextChildBulletID++;
-				prevBulletTypeTime = current_beat;
+				prevBulletShootTime = current_beat;
 			}
 			else break;
 		}

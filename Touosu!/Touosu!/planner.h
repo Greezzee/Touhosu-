@@ -49,7 +49,9 @@ struct bulletPlanExemplar {
 	//'t' - teleport to opposive wall
 	//'c' - classic teleport to opposive wall relative center
 	vector<char> bulletActionWithWalls;
-
+	char startMovingType = 'a';
+	sf::Vector2f startCoords;
+	float spawnOffsetAngle;
 };
 struct gunPlanExemplar {
 	bulletPlanExemplar bulletInfo;
@@ -380,6 +382,10 @@ private:
 			new_plan.spawnOffsetAngle = publicInfo[ID].spawnOffsetAngle;
 		}
 
+		new_plan.bulletInfo.startMovingType = new_plan.startMovingType;
+		new_plan.bulletInfo.spawnOffsetAngle = new_plan.spawnOffsetAngle;
+		new_plan.bulletInfo.startCoords = new_plan.startCoords;
+
 		*file >> public_or_local;
 		if (public_or_local == "lb") {
 
@@ -473,6 +479,7 @@ private:
 					}
 
 					*file >> trash >> bulletSkin >> bulletColor;
+
 
 					new_plan.bulletInfo.startTime.push_back(startTime);
 					new_plan.bulletInfo.timeType.push_back(timeType);

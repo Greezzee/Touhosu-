@@ -179,15 +179,36 @@ g 0 - l0 0 0 0 0 0 0 0 1 - set 300 300 l270
 g 0 - l0 2 0 0 0 0 0 0 0 - set 300 300 l270
 g 0 - l0 2 0 0 0 0 0 0 1 - rotate - l8 2 0 0 0 0 0 0 1 - r l360 0
 
-public bulletSize 0 = 32
+public bulletSize 0 = 64
 public startTime 0 = 0 2 0 0 0 0 0 0 1
 
-for 2400 {
+for 24 {
+
+public bulletSpeedAngle 0 = 0
+public bulletSpeedAngle 1 = 0
+public bulletSpeedAngle 2 = 0
+public bulletSpeedAngle 3 = 0
+
+public bulletSpeedAngle 0 ~ 0 - 360 - 1
+public bulletSpeedAngle 1 ~ 0 - 360 - 1
+public bulletSpeedAngle 2 ~ 0 - 360 - 1
+public bulletSpeedAngle 3 ~ 0 - 360 - 1
+
 g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
-switch - n - p0 - d - rel p0 al0.1 - rel l0 l0 - big_knife 3;
-shoot - r l2 0 0 0 0 0 0 0 0 - s l0 l0 l0 lb (
-	switch - n - p0 - d - rel p0 al0.5 - rel l0 l0 - big_knife 3
-	)
+switch - n - p0 - d - rel l0 al0.2 - rel l0 l0 - standart 3;
+shoot - r l1 0 0 0 0 0 0 0 0 - s l0 l0 l0 lb (
+	switch - n - l48 - d - rel p0 al0.3 - splr l0 0 0 l0.001 - big_knife 2
+	) ;
+shoot - r l0 0 0 0 0 0 0 0 0 - s l0 l0 l0 lb (
+	switch - n - l48 - d - rel p1 al0.3 - splr l0 0 0 l0.001 - big_knife 2
+	) ;
+shoot - r l0 0 0 0 0 0 0 0 0 - s l0 l0 l0 lb (
+	switch - n - l48 - d - rel p2 al0.3 - splr l0 0 0 l0.001 - big_knife 2
+	) ;
+shoot - r l0 0 0 0 0 0 0 0 0 - s l0 l0 l0 lb (
+	switch - n - l48 - d - rel p3 al0.3 - splr l0 0 0 l0.001 - big_knife 2
+	) ;
+switch - r l1 0 0 0 0 0 0 0 0 - l-1 - d - rel p0 al0.1 - rel l0 l0 - standart 3
 )
 public startTime 0 + 0 1 0 0 0 0 0 0 0
 }

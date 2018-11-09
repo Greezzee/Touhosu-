@@ -1,4 +1,5 @@
 #pragma once
+
 class bulletManager
 {
 public:
@@ -9,7 +10,7 @@ public:
 		l_example.loadFromFile(laserFile);
 	}
 	void updateAll(RenderWindow *window, float time, player *mainPlayer) {
-		vector<gunPlanExemplar> bulletsForShoot(0), a(0);
+		vector<bulletsFromBullets> bulletsForShoot(0), a(0);
 		for (list<bullet>::iterator i = allBullets.begin(); i != allBullets.end();) {
 			a = i->update(window, time, mainPlayer);
 			bulletsForShoot.insert(bulletsForShoot.end(), a.begin(), a.end());
@@ -20,9 +21,9 @@ public:
 			i->update(window, mainPlayer);
 		}
 		allLasers.clear();
-
-		// TODO: Апдейт пули возвращает структуру для спавна новой пули. Структура для спавна новой пули подгоняется под createBullet
-
+		
+		for (int i = 0; i < bulletsForShoot.size(); i++) 
+			createBullet(&bulletsForShoot[i].info, bulletsForShoot[i].angle, bulletsForShoot[i].coords, mainPlayer);
 	}
 	void createBullet(gunPlanExemplar *current_action, float shoot_angle, Vector2f coords, player *target) {
 		Sprite s;
@@ -30,6 +31,7 @@ public:
 		s.setTextureRect(IntRect(64, 96, 32, 32));
 		s.setOrigin(16, 16);
 		bullet new_bullet;
+		std::cout << current_action->startMovingType << " " << current_action->spawnOffsetAngle << endl;
 		if (current_action->startMovingType == 'a') new_bullet.create(current_action->startCoords.x, current_action->startCoords.y, shoot_angle, coords, current_action, &s, target);
 		else if (current_action->startMovingType == 'r') new_bullet.create(current_action->startCoords.x + coords.x, current_action->startCoords.y + coords.y, shoot_angle, coords, current_action, &s, target);
 		else if (current_action->startMovingType == 's') new_bullet.create(current_action->startCoords.x * cos(-(shoot_angle + current_action->spawnOffsetAngle) / 180 * PI) + current_action->startCoords.y * sin(-(shoot_angle + current_action->spawnOffsetAngle) / 180 * PI) + coords.x, current_action->startCoords.x * cos(-(shoot_angle + current_action->spawnOffsetAngle + 90) / 180 * PI) + current_action->startCoords.y * sin(-(shoot_angle + current_action->spawnOffsetAngle + 90) / 180 * PI) + coords.y, shoot_angle, coords, current_action, &s, target);
