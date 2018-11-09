@@ -639,7 +639,7 @@ private:
 		while (bufferBeat != startPos.beatStartTime) {
 			startPos.startTime += time * 600;
 			bufferBeat++;
-			if (BPMchangePlanList[1].offset < startPos.startTime) {
+			if (BPMchangePlanList.size() > 1 && BPMchangePlanList[1].offset < startPos.startTime) {
 				bufferBeat--;
 				bpm = BPMchangePlanList[1].bpm;
 				time = BPMtoMCSdiv600Converter / bpm;
