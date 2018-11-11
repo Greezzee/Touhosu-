@@ -508,12 +508,15 @@ private:
 					char p_or_l, timeType;
 					*file >> trash;
 					*file >> timeType;
-					*file >> p_or_l;
-					int t, ID;
-					if (p_or_l == 'l') t = read_time(file);
-					else {
-						*file >> ID;
-						t = publicInfo[ID].startTime;
+					int t = -1;
+					if (timeType != 'w') {
+						*file >> p_or_l;
+						int ID;
+						if (p_or_l == 'l') t = read_time(file);
+						else {
+							*file >> ID;
+							t = publicInfo[ID].startTime;
+						}
 					}
 					ChildPlan = readBulletShoot(file, ChildPlan);
 					ChildPlan.bulletInfo.startTime[0] = t;

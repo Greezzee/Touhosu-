@@ -39,12 +39,10 @@ public:
 		if (destroyed == false) {
 
 			if (isBPMUpdated) updateBulletSpeedAndAccel(nextBulletTypeId - 1);
-
+			bulletsForShoot.resize(0);
 			playerCoords = target->playerCoords;
 
 			if (coords.x < 0 || coords.x > GAMEBOARD_W || coords.y < 0 || coords.y > GAMEBOARD_H) actionWithWalls();
-
-			bulletsForShoot.resize(0);
 
 			for (int i = numberOfBeatThisTurn - 1; i >= 0; i--) tryToTypeUpdate();
 
@@ -228,15 +226,20 @@ private:
 		while (true) {
 			if (nextChildBulletID >= myChildBullets.size()) break;
 			if (myChildBullets[nextChildBulletID].timeType[0] == 'a' && myChildBullets[nextChildBulletID].startTime[0] <= current_beat || myChildBullets[nextChildBulletID].timeType[0] == 'r' && current_beat >= myChildBullets[nextChildBulletID].startTime[0] + (int)prevBulletShootTime) {
-				myChildBullets[nextChildBulletID].timeType[0] = 'n';
-				myChildBullets[nextChildBulletID].startTime[0] = -1;
-				bulletsForShoot.push_back(myChildBullets[nextChildBulletID]);
-				nextChildBulletID++;
-				prevBulletShootTime = current_beat;
+				setBulletForShoot();
 			}
 			else break;
 		}
 	}
+
+	void setBulletForShoot() {
+		myChildBullets[nextChildBulletID].timeType[0] = 'n';
+		myChildBullets[nextChildBulletID].startTime[0] = -1;
+		bulletsForShoot.push_back(myChildBullets[nextChildBulletID]);
+		nextChildBulletID++;
+		prevBulletShootTime = current_beat;
+	}
+
 	void bulletTypeUpdate() {
 		size = myPlan.bulletSize[nextBulletTypeId];
 		if (size < 0) {
@@ -359,6 +362,8 @@ private:
 		}
 		if (nextBulletTypeId < myPlan.startTime.size() && myPlan.timeType[nextBulletTypeId] == 'w')
 			bulletTypeUpdate();
+		if (nextChildBulletID < myChildBullets.size() && myChildBullets[nextChildBulletID].timeType[0] == 'w')
+			setBulletForShoot();
 	}
 	void updateSpeedAfterBounce() {
 		float fullSpeed = sqrt(speed.x * speed.x + speed.y * speed.y);
