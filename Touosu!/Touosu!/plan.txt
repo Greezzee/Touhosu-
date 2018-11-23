@@ -1,83 +1,59 @@
 1 1
+new_bpm 458000 226;
 
-new_bpm 0 220;
+start_pos  16 0 0 0 0 0 0 0 -64
 
-start_pos  0 2 0 0 0 0 0 0 -1
+g 0 - l0 0 0 0 0 0 0 0 1 - set 300 200 l270
+g 0 - l16 0 0 0 0 0 0 0 0 - set 300 200 l270
+public bulletSize 0 = 32
+public startTime 0 = 18 0 0 0 0 0 0 0 0
 
-g 0 - l0 0 0 0 0 0 0 0 1 - set 300 100 l270
-
-
-g 0 - l0 2 0 0 0 0 0 0 0 - set 300 100 l270
-
-public bulletSize 0 = 64
-public startTime 0 = 0 2 0 0 0 0 0 0 1
-
-for 24 {
-
+for 62 {
 public bulletSpeedAngle 0 = 0
-public bulletSpeedAngle 1 = 0
-public bulletSpeedAngle 2 = 0
-public bulletSpeedAngle 3 = 0
-
-public bulletSpeedAngle 0 ~ -45 - 45 - 1
-public bulletSpeedAngle 1 ~ -45 - 45 - 1
-public bulletSpeedAngle 2 ~ -45 - 45 - 1
-public bulletSpeedAngle 3 ~ -45 - 45 - 1
-
-g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
-switch - n - p0 - b - rel l90 al0.5 - rel l0 l0 - standart 3;
-shoot - w - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p0 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p1 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p2 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p3 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-switch - w - p0 - d - rel p0 al0.1 - rel l0 l0 - standart 3;
-switch - r l0 0 0 0 0 0 0 0 3 - l-1 - d - rel p0 al0.1 - rel l0 l0 - standart 3
+public bulletSpeedAngle 0 ~ 0 - 360 - 1
+public startCoords.x 0 = 0
+public startCoords.x 0 ~ 0 - 100 - 1
+public startCoords.y 0 = 0
+public startCoords.y 0 ~ 0 - 100 - 1
+public spawnOffsetAngle 0 = 0
+public spawnOffsetAngle 0 ~ 0 - 360 - 1
+g 0 - p0 - bullet_shoot - s p0 p0 p0 lb (
+switch - n - p0 - d - rel p0 al0.0001 - rel l0 l0 - standart 3;
+switch - a l20 0 0 0 0 0 0 0 0 - p0 - d - rel l0 al0.8 - rel l0 l0 - standart 3
 )
 
-g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
-switch - n - p0 - b - rel l-90 al0.5 - rel l0 l0 - standart 3;
-shoot - w - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p0 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p1 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p2 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
-	switch - n - l48 - d - plr p3 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
-	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
-	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
-	) ;
-switch - w - p0 - d - rel p0 al0.1 - rel l0 l0 - standart 3;
-switch - r l0 0 0 0 0 0 0 0 3 - l-1 - d - rel p0 al0.1 - rel l0 l0 - standart 3
-)
-public startTime 0 + 0 1 0 0 0 0 0 0 0
+public startTime 0 + 0 0 0 0 0 0 1 0 0
 }
 end
+
+
+
+g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
+switch - n - p0 - b - rel p5 al0.5 - rel l0 l0 - standart 3;
+shoot - w - s l0 l0 l0 lb (
+	switch - n - l48 - d - plr p0 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
+	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
+	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
+	) ;
+shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
+	switch - n - l48 - d - plr p1 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
+	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
+	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
+	) ;
+shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
+	switch - n - l48 - d - plr p2 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
+	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
+	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
+	) ;
+shoot - r l0 0 0 0 0 0 0 0 1 - s l0 l0 l0 lb (
+	switch - n - l48 - d - plr p3 0 0 al0.3 - splr l0 0 0 l0 - big_knife 2;
+	switch - r l0 0 1 0 0 0 0 0 0 - l48 - d - plr p0 0 0 rl0 - splr l0 0 0 l0.0002 - big_knife 2;
+	switch - r l1 0 0 0 0 0 0 0 0 - l48 - d - rel l0 rl0 - rel l0 l0 - big_knife 3
+	) ;
+switch - w - p0 - d - rel p0 al0.1 - rel l0 l0 - standart 3;
+switch - r l0 0 0 0 0 0 0 0 3 - l-1 - d - rel p0 al0.1 - rel l0 l0 - standart 3
+)
+
 
 g 0 - l0 2 0 0 0 0 0 0 1 - rotate - l8 2 0 0 0 0 0 0 1 - r l360 0
 

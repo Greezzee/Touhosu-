@@ -552,6 +552,7 @@ private:
 
 			new_plan.childBullets = publicBullets[id].childBullets;
 		}
+		new_plan.startTime -= 32;
 		return new_plan;
 	}
 
@@ -930,7 +931,6 @@ private:
 
 		int randRange = (int)(abs(max - min) / step) + 1;
 		float out = (float)(rand() % randRange) * step + min;
-		cout << out << endl;
 		return out;
 	}
 };

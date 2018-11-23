@@ -29,6 +29,7 @@ void timeUpdate(float time) {
 		while (timer > time) {
 			timer -= timePerBeat;
 			current_beat++;
+			if (current_beat % 128 == 0) std::cout << current_beat / 128 << std::endl;
 			numberOfBeatThisTurn++;
 			newTick = true;
 		}

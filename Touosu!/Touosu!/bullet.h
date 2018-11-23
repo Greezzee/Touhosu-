@@ -18,8 +18,8 @@ public:
 		nextChildBulletID = 0;
 		coords.x = start_x;
 		coords.y = start_y;
-		prevBulletTypeTime = current_beat;
-		prevBulletShootTime = current_beat;
+		prevBulletTypeTime = a->startTime + 32;
+		prevBulletShootTime = a->startTime + 32;
 		startGunAngle = shoot_angle;
 
 		self_sprite = *b;
@@ -32,14 +32,55 @@ public:
 		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		destroyed = false;
 
+		creatingAnimationEndTime = a->startTime + 32;
+
 	}
 
 	vector<bulletsFromBullets> update(RenderWindow *window, float time, player *target) {
+		bulletsForShoot.resize(0);
+		if (current_beat < creatingAnimationEndTime) startAnimationUpdate(window);
+		else realUpdate(window, time, target);
+		window->draw(self_sprite);
+		vector<bulletsFromBullets> out(0);
+		for (int i = 0; i < bulletsForShoot.size(); i++) {
+			bulletsFromBullets a;
+			a.info.bulletInfo = bulletsForShoot[i];
+			a.info.startMovingType = bulletsForShoot[i].startMovingType;
+			a.info.spawnOffsetAngle = bulletsForShoot[i].spawnOffsetAngle;
+			a.info.startCoords = bulletsForShoot[i].startCoords;
+			a.angle = speedDirectionalAngleDegr;
+			a.coords = coords;
+			out.push_back(a);
+		}
+		return out;
+	}
+	Vector2f coords;
+	bool destroyed;
+private:
+	float speedDirectionalAngleRad, speedDirectionalAngleDegr, accelDirectionalAngleDegr, accelDirectionalAngleRad, size, startGunAngle, currentFrame, spriteAngle;
+	vector<bulletPlanExemplar> myChildBullets, bulletsForShoot;
+	Vector2f speed, acceleration, playerCoords, realEllipseHitboxSize;
+	Sprite self_sprite;
+	bulletPlanExemplar myPlan;
+	unsigned int nextBulletTypeId, prevBulletTypeTime, prevBulletShootTime, colorID, nextChildBulletID, creatingAnimationEndTime;
+	char actionWithWallID;
+	string currentBulletSkin;
+	IntRect currentTextureRect;
+	bool isRotate, isLookForward;
+
+	void startAnimationUpdate(RenderWindow *window) {
+		float sizeCoof = (float)(creatingAnimationEndTime - current_beat) / 32.0f * 2.0f + 1;
+		float alphaCoof = 255.0f - pow((float)(creatingAnimationEndTime - current_beat - 1) / 32.0f, 0.5) * 255.0f;
+		self_sprite.setScale(convertForGraphic(size) / currentTextureRect.width * sizeCoof, convertForGraphic(size) / currentTextureRect.height * sizeCoof);
+		self_sprite.setColor(Color(255, 255, 255, (int)alphaCoof));
+		window->draw(self_sprite);
+	}
+
+	void realUpdate(RenderWindow *window, float time, player *target) {
 		if (size == -1) destroyed = true;
 		if (destroyed == false) {
 
 			if (isBPMUpdated) updateBulletSpeedAndAccel(nextBulletTypeId - 1);
-			bulletsForShoot.resize(0);
 			playerCoords = target->playerCoords;
 
 			if (coords.x < 0 || coords.x > GAMEBOARD_W || coords.y < 0 || coords.y > GAMEBOARD_H) actionWithWalls();
@@ -72,32 +113,7 @@ public:
 			if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
 			window->draw(self_sprite);
 		}
-		vector<bulletsFromBullets> out(0);
-		for (int i = 0; i < bulletsForShoot.size(); i++) {
-			bulletsFromBullets a;
-			a.info.bulletInfo = bulletsForShoot[i];
-			a.info.startMovingType = bulletsForShoot[i].startMovingType;
-			a.info.spawnOffsetAngle = bulletsForShoot[i].spawnOffsetAngle;
-			a.info.startCoords = bulletsForShoot[i].startCoords;
-			a.angle = speedDirectionalAngleDegr;
-			a.coords = coords;
-			out.push_back(a);
-		}
-		return out;
 	}
-	Vector2f coords;
-	bool destroyed;
-private:
-	float speedDirectionalAngleRad, speedDirectionalAngleDegr, accelDirectionalAngleDegr, accelDirectionalAngleRad, size, startGunAngle, currentFrame, spriteAngle;
-	vector<bulletPlanExemplar> myChildBullets, bulletsForShoot;
-	Vector2f speed, acceleration, playerCoords, realEllipseHitboxSize;
-	Sprite self_sprite;
-	bulletPlanExemplar myPlan;
-	unsigned int nextBulletTypeId, prevBulletTypeTime, prevBulletShootTime, colorID, nextChildBulletID;
-	char actionWithWallID;
-	string currentBulletSkin;
-	IntRect currentTextureRect;
-	bool isRotate, isLookForward;
 
 	void animation(float time) {
 		if (isRotate) {
@@ -241,6 +257,7 @@ private:
 	}
 
 	void bulletTypeUpdate() {
+		if (nextBulletTypeId != 0) prevBulletTypeTime = current_beat;
 		size = myPlan.bulletSize[nextBulletTypeId];
 		if (size < 0) {
 			destroyed = true;
@@ -255,7 +272,6 @@ private:
 		updateBulletSpeedAndAccel(nextBulletTypeId);
 		actionWithWallID = myPlan.bulletActionWithWalls[nextBulletTypeId];
 		nextBulletTypeId++;
-		prevBulletTypeTime = current_beat;
 	}
 	void setRealHitboxSize() {
 		float realSize = size * 0.9f;

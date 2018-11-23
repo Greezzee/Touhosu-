@@ -31,7 +31,6 @@ public:
 		s.setTextureRect(IntRect(64, 96, 32, 32));
 		s.setOrigin(16, 16);
 		bullet new_bullet;
-		std::cout << current_action->startMovingType << " " << current_action->spawnOffsetAngle << endl;
 		if (current_action->startMovingType == 'a') new_bullet.create(current_action->startCoords.x, current_action->startCoords.y, shoot_angle, coords, current_action, &s, target);
 		else if (current_action->startMovingType == 'r') new_bullet.create(current_action->startCoords.x + coords.x, current_action->startCoords.y + coords.y, shoot_angle, coords, current_action, &s, target);
 		else if (current_action->startMovingType == 's') new_bullet.create(current_action->startCoords.x * cos(-(shoot_angle + current_action->spawnOffsetAngle) / 180 * PI) + current_action->startCoords.y * sin(-(shoot_angle + current_action->spawnOffsetAngle) / 180 * PI) + coords.x, current_action->startCoords.x * cos(-(shoot_angle + current_action->spawnOffsetAngle + 90) / 180 * PI) + current_action->startCoords.y * sin(-(shoot_angle + current_action->spawnOffsetAngle + 90) / 180 * PI) + coords.y, shoot_angle, coords, current_action, &s, target);
