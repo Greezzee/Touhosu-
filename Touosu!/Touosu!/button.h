@@ -46,7 +46,7 @@ class pauseButton : public button
 public:
 	void init(Vector2f startCoords, string type) {
 		buttonHeightScale = Scale;
-		string fileName = "pause-" + type + ".png";
+		string fileName = "Sprites/pause-" + type + ".png";
 		buttonTexture.loadFromFile(fileName);
 		buttonTexture.setSmooth(true);
 		buttonSprite.setTexture(buttonTexture);
@@ -63,7 +63,7 @@ class menuButton : public button
 {
 	void init(Vector2f startCoords, string type) {
 		buttonHeightScale = Scale;
-		string fileName = "pause-" + type + ".png";
+		string fileName = "Sprites/pause-" + type + ".png";
 		buttonTexture.loadFromFile(fileName);
 		buttonTexture.setSmooth(true);
 		buttonSprite.setTexture(buttonTexture);

@@ -8,10 +8,10 @@ float timePerBeat;
 float SCREEN_W = 1920, SCREEN_H = 1080;
 float GAMEBOARD_W = 600, GAMEBOARD_H = 600;
 float BOARDER = 200;
-std::string heroSpriteFile = "sprite.png";
-std::string bulletsAndHitboxesFile = "bullets.png";
-std::string turretsFile = "turret.png";
-std::string laserFile = "laser.png";
+std::string heroSpriteFile = "Sprites/sprite.png";
+std::string bulletsAndHitboxesFile = "Sprites/bullets.png";
+std::string turretsFile = "Sprites/enemy.png";
+std::string laserFile = "Sprites/laser.png";
 
 float convertForGraphic(float param) {
 	return param * SCREEN_H / GAMEBOARD_H;

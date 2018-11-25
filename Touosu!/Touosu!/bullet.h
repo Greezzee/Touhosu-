@@ -31,7 +31,7 @@ public:
 
 		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		destroyed = false;
-
+		isSpawned = false;
 		creatingAnimationEndTime = a->startTime + 32;
 
 	}
@@ -39,7 +39,11 @@ public:
 	vector<bulletsFromBullets> update(RenderWindow *window, float time, player *target) {
 		bulletsForShoot.resize(0);
 		if (current_beat < creatingAnimationEndTime) startAnimationUpdate(window);
-		else realUpdate(window, time, target);
+		else {
+			realUpdate(window, time, target);
+			if (!isSpawned) soundManager::bulletShootSound();
+			isSpawned = true;
+		}
 		window->draw(self_sprite);
 		vector<bulletsFromBullets> out(0);
 		for (int i = 0; i < bulletsForShoot.size(); i++) {
@@ -66,7 +70,7 @@ private:
 	char actionWithWallID;
 	string currentBulletSkin;
 	IntRect currentTextureRect;
-	bool isRotate, isLookForward;
+	bool isRotate, isLookForward, isSpawned;
 
 	void startAnimationUpdate(RenderWindow *window) {
 		float sizeCoof = (float)(creatingAnimationEndTime - current_beat) / 32.0f * 2.0f + 1;

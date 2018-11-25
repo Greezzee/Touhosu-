@@ -9,16 +9,16 @@ public:
 	void gameStart() {
 		GlobalMapPlan.init();
 		gameMusic.openFromFile("music.ogg");
-		textur.loadFromFile("flashlight.png");
+		textur.loadFromFile("Sprites/flashlight.png");
 		flash.setTexture(textur);
 		heroTexture.loadFromFile(heroSpriteFile);
 		bulletsHitboxTexture.loadFromFile(bulletsAndHitboxesFile);
 		gunTexture.loadFromFile(turretsFile);
-		ZoneTexture.loadFromFile("zone.png");
+		ZoneTexture.loadFromFile("Sprites/zone.png");
 		zoneSprite.setTexture(ZoneTexture);
 		gameboard.setSize(Vector2f(convertForGraphic(GAMEBOARD_W), convertForGraphic(GAMEBOARD_H)));
 		gameboard.setFillColor(Color(200, 200, 200));
-		setSmoothON();
+		//setSmoothON();
 
 		restart();
 	}
@@ -62,12 +62,14 @@ public:
 		window.draw(gameboard);
 		mainPlayer.update(&window, time);
 		if (current_time > start.startTime) {
+			
 			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
 				Time offsetTime(sf::microseconds((Int64)start.startTime));
 				gameMusic.play();
 				gameMusic.setPlayingOffset(offsetTime);
 				current_time = start.startTime;
 			}
+			
 			isBPMUpdated = false;
 			if (currentBPMid < bpmChanges.size() && current_time >= bpmChanges[currentBPMid].offset) {
 				BPM = bpmChanges[currentBPMid].bpm;
@@ -123,6 +125,7 @@ private:
 	startPosExemplar start;
 
 	void restart() {
+		soundManager::init();
 		GlobalMapPlan.restart();
 		mainPlayer.init(300, 500, "boost");
 		manager.init();

@@ -7,6 +7,7 @@
 #include <utility>
 #include <cstdio>
 #include <list>
+#include "soundManager.h"
 #include "resourses.h"
 #include "planner.h"
 #include "player.h"

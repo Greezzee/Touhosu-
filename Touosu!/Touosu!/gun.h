@@ -9,22 +9,42 @@ public:
 
 		pair<bool, gunPlanExemplar> returned = GlobalMapPlan->getGunPlan(selfID);
 		if (returned.first) next_action = returned.second;
-		else isActionsEnd = true;
-			
+		else isActionsEnd = true;	
 		self_sprite = g;
-		self_sprite.setOrigin(0, 256);
+		self_sprite.setTextureRect(sf::IntRect(48, 1383, 32, 32));
+		self_sprite.setOrigin(16, 16);
 		self_sprite.setPosition(0, 0);
-		self_sprite.setScale(convertForGraphic(0.125f), convertForGraphic(0.125f));
+		self_sprite.setScale(convertForGraphic(1.5f), convertForGraphic(1.5f));
 		coords.x = 0;
 		coords.y = 0;
 		shoot_angle = 0;
 		timer = 0;
 		is_visible = false;
 		is_laser_shoot = false;
+		spritePos = 0;
+		moveType = 'n';
 		current_actions.resize(0);
 	}
 
 	void update(RenderWindow *window, float time, bulletManager *manager, player *target, planner *GlobalMapPlan) {
+		spritePos += time * 0.005f;
+		if (moveType == 'n') {
+			if (spritePos >= 5) spritePos = 0;
+			if (spritePos >= 0) {
+				self_sprite.setTextureRect(sf::IntRect(48 + 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
+				self_sprite.setScale(convertForGraphic(1.5f), convertForGraphic(1.5f));
+			}
+			else self_sprite.setTextureRect(sf::IntRect(208 - 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
+		}
+		else if (moveType == 'r') {
+			if (spritePos >= 7) spritePos = 3;
+			self_sprite.setTextureRect(sf::IntRect(176 + 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
+			self_sprite.setScale(convertForGraphic(-1.5f), convertForGraphic(1.5f));
+		}
+		else {
+			if (spritePos >= 7) spritePos = 3;
+			self_sprite.setTextureRect(sf::IntRect(176 + 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
+		}
 		actionsThisFrame = 0;
 		if (!isActionsEnd)
 		{
@@ -42,7 +62,7 @@ public:
 							isActionsEnd = true;
 							break;
 						}
-						if (actionsThisFrame >= 36) break;
+						if (actionsThisFrame >= 5) break;
 					}
 					if (current_beat - j < next_action.startTime) break;
 				}
@@ -59,14 +79,16 @@ public:
 
 private:
 	Vector2f coords;
-	float shoot_angle, angle_speed;
+	float shoot_angle, angle_speed, spritePos;
 	bool is_visible, is_laser_shoot, isActionsEnd;
 	Texture self_text;
 	Sprite self_sprite;
 	Texture example, l_example;
 	gunPlanExemplar next_action;
 	list<gunPlanExemplar> current_actions;
-	int selfID, actionsThisFrame;
+	int selfID, actionsThisFrame, textureColorID;
+	//n for standart, l or r for movement
+	char moveType;
 	void start_action() {
 		if (next_action.commandType == "move") {
 			float move_distance_x, move_distance_y;
@@ -79,6 +101,9 @@ private:
 				move_distance_x = next_action.endMovingCoords.x;
 				move_distance_y = next_action.endMovingCoords.y;
 			}
+			if (move_distance_x > 0) moveType = 'r';
+			else if (move_distance_x < 0) moveType = 'l';
+			spritePos = 0;
 			next_action.gunSpeed.x = move_distance_x / delta;
 			next_action.gunSpeed.y = move_distance_y / delta;
 		}
@@ -105,10 +130,13 @@ private:
 		if (current_action.commandType == "set") {
 			is_visible = true;
 			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
-			self_sprite.setRotation(-current_action.gunAngle);
+			//self_sprite.setRotation(-current_action.gunAngle); Должен вращать "указатель" врага
 			shoot_angle = current_action.gunAngle;
 			coords.x = current_action.endMovingCoords.x;
 			coords.y = current_action.endMovingCoords.y;
+			textureColorID = current_action.colorID;
+			self_sprite.setTextureRect(sf::IntRect(48, 1383 + 32 * textureColorID, 32, 32));
+			spritePos = 0;
 			return true;
 		}
 		else if (current_action.commandType == "del") {
@@ -124,7 +152,11 @@ private:
 			
 			else self_sprite.move(convertForGraphic(current_action.gunSpeed.x) / timePerBeat * time, convertForGraphic(current_action.gunSpeed.y) / timePerBeat * time);
 
-			if (current_action.endTime <= current_beat) return true;
+			if (current_action.endTime <= current_beat) {
+				moveType = 'n';
+				spritePos = -2;
+				return true;
+			}
 			else return false;
 			
 		}
@@ -144,29 +176,29 @@ private:
 				if (current_action.angleType == 'a' || current_action.angleType == 'r') {
 					shoot_angle += current_action.angleSpeed;
 					shoot_angle = LeadAngleToTrigonometric(shoot_angle);
-					self_sprite.setRotation(-shoot_angle);
+					//self_sprite.setRotation(-shoot_angle); Должен вращать "указатель" врага
 					if (current_action.endTime <= current_beat) {
 						shoot_angle = current_action.gunEndAngle;
-						self_sprite.setRotation(-current_action.gunEndAngle);
+						//self_sprite.setRotation(-current_action.gunEndAngle); Должен вращать "указатель" врага
 						return true;
 					}
 					else return false;
 				}
 				else {
 					shoot_angle = LeadAngleToTrigonometric((atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) + current_action.gunEndAngle) * 180 / PI);
-					self_sprite.setRotation(-shoot_angle);
+					//self_sprite.setRotation(-shoot_angle); Должен вращать "указатель" врага
 					if (current_action.endTime <= current_beat) return true;
 					else return false;
 				}
 			}
 			else {
 				if (current_action.angleType == 'a' || current_action.angleType == 'r') {
-					self_sprite.rotate(-current_action.angleSpeed / timePerBeat * time);
+					//self_sprite.rotate(-current_action.angleSpeed / timePerBeat * time); Должен вращать "указатель" врага
 					return false;
 				}
 				else {
 					shoot_angle = LeadAngleToTrigonometric((atan2(coords.y - target->playerCoords.y, target->playerCoords.x - coords.x) + current_action.gunEndAngle) * 180 / PI);
-					self_sprite.setRotation(-shoot_angle);
+					//self_sprite.setRotation(-shoot_angle); Должен вращать "указатель" врага
 					if (current_action.endTime <= current_beat) return true;
 					else return false;
 				}

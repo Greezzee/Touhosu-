@@ -129,7 +129,7 @@ private:
 		hero_hitbox_sprite.setPosition(convertForGraphic(playerCoords.x), convertForGraphic(playerCoords.y));
 	}
 	void testForShift(float time) {
-		speed = 0.7f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
+		speed = 0.5f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
 		isHitboxVisible = false;
 		if (Keyboard::isKeyPressed(Keyboard::LShift)) {
 			speed /= 2;

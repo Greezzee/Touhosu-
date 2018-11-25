@@ -42,6 +42,7 @@
     <ClInclude Include="laser.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="resourses.h" />
+    <ClInclude Include="soundManager.h" />
     <ClInclude Include="trail.h" />
     <ClInclude Include="zone.h" />
   </ItemGroup>

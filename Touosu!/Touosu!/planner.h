@@ -57,7 +57,7 @@ struct gunPlanExemplar {
 	bulletPlanExemplar bulletInfo;
 	vector<bulletPlanExemplar> childBullets;
 	int startTime = -1;
-	int endTime = -1, laserPreparingEndTime = -1;
+	int endTime = -1, laserPreparingEndTime = -1, colorID = 0;
 	char angleType = 'a';
 	float gunEndAngle = 0, angleSpeed = 0, gunAngle = 0, laserShootAngle = 0, spawnOffsetAngle = 0;
 	sf::Vector2f startCoords, endMovingCoords, gunSpeed;
@@ -159,8 +159,8 @@ public:
 	}
 
 	void restart() {
+		currentGunStep.resize(0);
 		currentGunStep.resize(numberOfGuns, 0);
-		currentGunStep[0] = 0;
 		currentCamStep = 0;
 	}
 
@@ -269,6 +269,7 @@ private:
 			*file >> id;
 			new_plan.gunAngle = publicInfo[id].gunAngle;
 		}
+		*file >> new_plan.colorID;
 		return new_plan;
 	}
 	gunPlanExemplar readMove(ifstream *file, gunPlanExemplar new_plan) {
