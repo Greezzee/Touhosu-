@@ -25,7 +25,7 @@ using namespace sf;
 int main() {
 	gameplay game;
 	game.setWindow();
-	game.gameStart();
+	game.gameStart("1");
 	while (game.getWindowIsOpen()) {
 		bool needToClose = game.gameUpdate();
 		if (needToClose) break;

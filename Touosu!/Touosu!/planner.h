@@ -92,14 +92,14 @@ struct startPosExemplar {
 
 class planner {
 public:
-	void init() {
+	void init(std::string mapName) {
 		zonePlanList.resize(0);
 		camPlanList.resize(0);
 		publicInfo.resize(0);
 		publicBullets.resize(0);
 		numberOfGuns = 0;
 		ifstream file;
-		file.open("plan.txt");
+		file.open("Maps/" + mapName + "/plan.txt");
 		file >> numberOfGuns >> randomSeed;
 		gunPlanList.resize(numberOfGuns);
 		currentGunStep.resize(numberOfGuns, 0);

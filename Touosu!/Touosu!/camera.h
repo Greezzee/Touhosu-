@@ -6,7 +6,7 @@ public:
 	void init(Sprite textur, planner *GlobalMapPlan) {
 		Flashlight = textur;
 		Flashlight.setOrigin(512, 512);
-		cam.reset(FloatRect((-SCREEN_W + SCREEN_H - BOARDER * SCREEN_W / SCREEN_H) / 2, -BOARDER / 2, SCREEN_W + BOARDER * SCREEN_W / SCREEN_H, SCREEN_H + BOARDER));
+		cam.reset(FloatRect((-SCREEN_W + SCREEN_H - convertForGraphic(BOARDER) * SCREEN_W / SCREEN_H) / 2, -convertForGraphic(BOARDER) / 2, SCREEN_W + convertForGraphic(BOARDER) * SCREEN_W / SCREEN_H, SCREEN_H + convertForGraphic(BOARDER)));
 		cam_center_x = 0; cam_center_y = 0; zoom = 1; cam_angle = 0;
 		cam_std_coords = cam.getCenter();
 		timer = 0;

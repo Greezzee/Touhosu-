@@ -6,9 +6,9 @@ public:
 		window.create(sf::VideoMode((unsigned int)SCREEN_W, (unsigned int)SCREEN_H), gameName);
 		menu.menuInit();
 	}
-	void gameStart() {
-		GlobalMapPlan.init();
-		gameMusic.openFromFile("music.ogg");
+	void gameStart(std::string mapName) {
+		GlobalMapPlan.init(mapName);
+		gameMusic.openFromFile("Maps/" + mapName + "/music.ogg");
 		textur.loadFromFile("Sprites/flashlight.png");
 		flash.setTexture(textur);
 		heroTexture.loadFromFile(heroSpriteFile);

@@ -35,15 +35,6 @@ public:
 		prevMoveDirectionInfo = "";
 		currentFrame = 0;
 
-		maxMana = 100;
-		currentMana = 0;
-		maxManaBar.setFillColor(Color(70, 130, 180));
-		currentManaBar.setFillColor(Color(0, 191, 255));
-		maxManaBar.setPosition(convertForGraphic(100), convertForGraphic(610));
-		maxManaBar.setSize(Vector2f(convertForGraphic(4 * maxMana), convertForGraphic(40)));
-		currentManaBar.setPosition(convertForGraphic(100), convertForGraphic(610));
-		currentManaBar.setSize(Vector2f(convertForGraphic(4 * currentMana), convertForGraphic(40)));
-
 		mySkill = activeSkill;
 	}
 	void update(RenderWindow *window, float time) {
@@ -56,13 +47,7 @@ public:
 		Move(time);
 		updateAnimation(time);
 		setSpritePosition();
-
-		currentMana += time * 0.005f;
-		if (currentMana > 100) currentMana = 100;
-		currentManaBar.setSize(Vector2f(convertForGraphic(4 * currentMana), convertForGraphic(40)));
 		window->draw(herosprite);
-		window->draw(maxManaBar);
-		window->draw(currentManaBar);
 	}
 	void drawHitbox(RenderWindow *window) {
 		if (isHitboxVisible) window->draw(hero_hitbox_sprite);
@@ -81,11 +66,9 @@ private:
 	"l" for left
 	*/
 	string moveDirectionInfo, prevMoveDirectionInfo, mySkill;
-	float maxMana, currentMana;
 	bool isHitboxVisible;
 	Sprite herosprite, hero_hitbox_sprite;
 	Texture herotexture, bullets_hitbox;
-	RectangleShape maxManaBar, currentManaBar;
 	std::vector<trail> trails;
 
 	void Move(float time) {
@@ -165,9 +148,8 @@ private:
 	void skill(float time) {
 
 		if (Keyboard::isKeyPressed(Keyboard::Space)) {
-			if (mySkill == "boost" && currentMana > 1.f) {
+			if (mySkill == "boost") {
 				speed *= 2;
-				currentMana -= time * 0.02f;
 				trail_delta += time;
 				if (trail_delta >= 50) {
 					trail new_trail;
