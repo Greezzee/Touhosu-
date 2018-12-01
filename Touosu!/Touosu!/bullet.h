@@ -38,7 +38,7 @@ public:
 
 	vector<bulletsFromBullets> update(RenderWindow *window, float time, player *target) {
 		bulletsForShoot.resize(0);
-		if (current_beat < creatingAnimationEndTime) startAnimationUpdate(window);
+		if (current_beat < creatingAnimationEndTime && myPlan.isAnimated) startAnimationUpdate(window);
 		else {
 			realUpdate(window, time, target);
 			if (!isSpawned) soundManager::bulletShootSound();
@@ -114,7 +114,8 @@ private:
 				NewPlayerCoords.x = coords.x + (target->playerCoords.x - coords.x) * cos(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1])) - (target->playerCoords.y - coords.y) * sin(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1]));
 				NewPlayerCoords.y = coords.y + (target->playerCoords.y - coords.y) * cos(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1])) + (target->playerCoords.x - coords.x) * sin(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1]));
 			}
-			if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
+			if (target->currentActiveBomb == "std" && pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->bombCurrentRadius), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->bombCurrentRadius), 2) < pow((realEllipseHitboxSize.x + target->bombCurrentRadius) * (realEllipseHitboxSize.y + target->bombCurrentRadius), 2)) destroyed = true;
+			else if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
 			window->draw(self_sprite);
 		}
 	}

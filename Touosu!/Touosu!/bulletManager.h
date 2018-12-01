@@ -56,6 +56,9 @@ public:
 		else actual_laser.activate_animation(current_beat - current_action->startTime, current_action->laserPreparingEndTime - current_action->startTime);
 		allLasers.push_back(actual_laser);
 	}
+	void clear() {
+		allBullets.resize(0);
+	}
 private:
 
 	std::list<bullet> allBullets;

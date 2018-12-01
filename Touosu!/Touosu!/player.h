@@ -4,7 +4,9 @@ using namespace sf;
 class player {
 public:
 	Vector2f playerCoords;
-	float size;
+	float size, bombCurrentRadius;
+	//none for nothing, std for standart bomb
+	string currentActiveBomb;
 	void init(float start_x, float start_y, string activeSkill) {
 		playerCoords.x = start_x;
 		playerCoords.y = start_y;
@@ -18,6 +20,10 @@ public:
 		herosprite.setOrigin(16, 24);
 		herosprite.setPosition(start_x, start_y);
 		herosprite.setScale(convertForGraphic(1.2f), convertForGraphic(1.2f));
+
+		bombSprite.setTexture(herotexture);
+		bombSprite.setOrigin(8, 8);
+		bombSprite.setScale(convertForGraphic(1.2f), convertForGraphic(1.2f));
 
 		hero_hitbox_sprite.setTexture(bullets_hitbox);
 		hero_hitbox_sprite.setTextureRect(IntRect(843, 140, 38, 38));
@@ -33,9 +39,12 @@ public:
 
 		moveDirectionInfo = "";
 		prevMoveDirectionInfo = "";
+		currentActiveBomb = "none";
+		bombCurrentRadius = 0.f;
 		currentFrame = 0;
-
+		bombStartTime = 0;
 		mySkill = activeSkill;
+		bombRotation = 0;
 	}
 	void update(RenderWindow *window, float time) {
 		if (Keyboard::isKeyPressed(Keyboard::Q)) herosprite.setColor(Color(255, 255, 255, 255));;
@@ -43,7 +52,8 @@ public:
 		trailUpdate(time, window);
 
 		skill(time);
-
+		if (currentActiveBomb == "none" && Keyboard::isKeyPressed(Keyboard::X)) bombLaunch();
+		if(currentActiveBomb != "none") bombActive(window, time);
 		Move(time);
 		updateAnimation(time);
 		setSpritePosition();
@@ -66,8 +76,10 @@ private:
 	"l" for left
 	*/
 	string moveDirectionInfo, prevMoveDirectionInfo, mySkill;
+	float bombStartTime, bombRotation;
+	const float MaxBombActiveTime = 3000000.f;
 	bool isHitboxVisible;
-	Sprite herosprite, hero_hitbox_sprite;
+	Sprite herosprite, hero_hitbox_sprite, bombSprite;
 	Texture herotexture, bullets_hitbox;
 	std::vector<trail> trails;
 
@@ -158,6 +170,38 @@ private:
 					trail_delta = 0;
 				}
 			}
+		}
+	}
+	void bombLaunch() {
+		currentActiveBomb = "std";
+		bombStartTime = current_time;
+	}
+	void bombActive(RenderWindow *window, float time) {
+		if (current_time > bombStartTime + MaxBombActiveTime && bombStartTime != 0) {
+			currentActiveBomb = "none";
+			bombStartTime = 0;
+			bombCurrentRadius = 0;
+			return;
+		}
+
+		if (current_time < bombStartTime + 500000.f) bombCurrentRadius = 80.f * (current_time - bombStartTime) / 500000.f;
+		else if (current_time > bombStartTime + MaxBombActiveTime - 500000.f) bombCurrentRadius = 80.f * (bombStartTime + MaxBombActiveTime - current_time) / 500000.f;
+		else bombCurrentRadius = 80.f;
+
+		bombRotation += time * 0.007f;
+		if (bombRotation >= 2 * PI) bombRotation -= 2 * PI;
+
+		for (int i = 0; i < 6; i++) {
+			bombSprite.setTextureRect(IntRect(66 + 16 * (i % 3), 146, 16, 16));
+			bombSprite.setRotation((PI / 3 * (float)i + bombRotation) / PI * 180);
+			bombSprite.setPosition(convertForGraphic(playerCoords.x + bombCurrentRadius * cos(PI / 3 * (float)i + bombRotation)), convertForGraphic(playerCoords.y + bombCurrentRadius * sin(PI / 3 * (float)i + bombRotation)));
+			window->draw(bombSprite);
+		}
+		for (int i = 0; i < 6; i++) {
+			bombSprite.setTextureRect(IntRect(66 + 16 * (i % 3), 146, 16, 16));
+			bombSprite.setRotation((PI / 3 * (float)i - bombRotation) / PI * 180);
+			bombSprite.setPosition(convertForGraphic(playerCoords.x + bombCurrentRadius * cos(PI / 3 * (float)i - bombRotation) / 2), convertForGraphic(playerCoords.y + bombCurrentRadius * sin(PI / 3 * (float)i - bombRotation) / 2));
+			window->draw(bombSprite);
 		}
 	}
 };

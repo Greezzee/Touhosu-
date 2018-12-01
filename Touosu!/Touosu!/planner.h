@@ -50,6 +50,7 @@ struct bulletPlanExemplar {
 	//'c' - classic teleport to opposive wall relative center
 	vector<char> bulletActionWithWalls;
 	char startMovingType = 'a';
+	bool isAnimated = false;
 	sf::Vector2f startCoords;
 	float spawnOffsetAngle;
 };
@@ -387,7 +388,7 @@ private:
 		new_plan.bulletInfo.spawnOffsetAngle = new_plan.spawnOffsetAngle;
 		new_plan.bulletInfo.startCoords = new_plan.startCoords;
 
-		*file >> public_or_local;
+		*file >> public_or_local >> trash >> new_plan.bulletInfo.isAnimated;
 		if (public_or_local == "lb") {
 
 			new_plan.bulletInfo.timeType.resize(0);
