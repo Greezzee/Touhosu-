@@ -50,7 +50,7 @@ struct bulletPlanExemplar {
 	//'c' - classic teleport to opposive wall relative center
 	vector<char> bulletActionWithWalls;
 	char startMovingType = 'a';
-	bool isAnimated = false;
+	int animationTime = 0;
 	sf::Vector2f startCoords;
 	float spawnOffsetAngle;
 };
@@ -77,10 +77,11 @@ struct zonePlanExemplar {
 };
 struct camPlanExemplar {
 	string type = "";
-	int b_start_time = -1, b_end_time = -1, b_start_animation = -1, b_end_animation = -1;
-	float cam_center_x = 0, cam_center_y = -1, end_angle = 0, flashlight_size = 0, blinkAlpha = 0;
+	int startBeat = -1, endBeat = -1, startAnimationBeat = -1, endAnimationBeat = -1;
+	float endAngle = 0, flashlightSize = 0, blinkAlpha = 0;
 	float zoom = 1;
-	bool is_rotate_direction_clockwise = false, is_player_center = false, is_flashlight_active = false;
+	bool isRotateClockwise = false, isPlayerCenter = false, isFlashlightActive = false;
+	sf::Color blinkColor;
 
 };
 struct BPMchangeExemplar {
@@ -117,7 +118,7 @@ public:
 			return plan1.startBeat < plan2.startBeat;
 		});
 		sort(camPlanList.begin(), camPlanList.end(), [](const camPlanExemplar& plan1, const camPlanExemplar& plan2) -> bool {
-			return plan1.b_start_time < plan2.b_start_time;
+			return plan1.startBeat < plan2.startBeat;
 		});
 		startPosInit();
 		file.close();
@@ -235,6 +236,7 @@ private:
 			remove(selfFileName.c_str());
 		}
 		else if (command_type == "start_pos") readStartPos(file);
+		std::cout << command_type << " ";
 		return command_type;
 	}
 
@@ -257,6 +259,7 @@ private:
 		else if (new_plan.commandType == "rotate") new_plan = readRotate(file, new_plan);
 		else if (new_plan.commandType == "laser_shoot") new_plan = readLaserShoot(file, new_plan);
 		else if (new_plan.commandType == "bullet_shoot") new_plan = readBulletShoot(file, new_plan);
+		std::cout << new_plan.commandType << " ";
 		return new_plan;
 	}
 
@@ -388,7 +391,7 @@ private:
 		new_plan.bulletInfo.spawnOffsetAngle = new_plan.spawnOffsetAngle;
 		new_plan.bulletInfo.startCoords = new_plan.startCoords;
 
-		*file >> public_or_local >> trash >> new_plan.bulletInfo.isAnimated;
+		*file >> public_or_local >> trash >> new_plan.bulletInfo.animationTime;
 		if (public_or_local == "lb") {
 
 			new_plan.bulletInfo.timeType.resize(0);
@@ -565,43 +568,46 @@ private:
 		char p_or_l;
 		int ID;
 		*file >> p_or_l;
-		if (p_or_l == 'l') new_plan.b_start_time = read_time(file);
+		if (p_or_l == 'l') new_plan.startBeat = read_time(file);
 		else {
 			*file >> ID;
-			new_plan.b_start_time = publicInfo[ID].startTime;
+			new_plan.startBeat = publicInfo[ID].startTime;
 		}
 		*file >> trash >> p_or_l;
-		if (p_or_l == 'l') new_plan.b_end_time = read_time(file);
+		if (p_or_l == 'l') new_plan.endBeat = read_time(file);
 		else {
 			*file >> ID;
-			new_plan.b_end_time = publicInfo[ID].endTime;
+			new_plan.endBeat = publicInfo[ID].endTime;
 		}
 		if (new_plan.type == "rotate") {
 			*file >> trash;
-			*file >> new_plan.end_angle >> new_plan.is_rotate_direction_clockwise;
+			*file >> new_plan.endAngle >> new_plan.isRotateClockwise;
 		}
 		else if (new_plan.type == "zoom") {
 			*file >> trash;
 			*file >> new_plan.zoom;
 		}
 		else if (new_plan.type == "follow") {
-			new_plan.is_player_center = true;
+			new_plan.isPlayerCenter = true;
 		}
 		else if (new_plan.type == "flashlight") {
 			*file >> trash;
-			new_plan.b_start_animation = read_time(file);
+			new_plan.startAnimationBeat = read_time(file);
 			*file >> trash;
-			new_plan.b_end_animation = read_time(file);
+			new_plan.endAnimationBeat = read_time(file);
 			*file >> trash;
-			*file >> new_plan.flashlight_size;
-			new_plan.is_player_center = true;
+			*file >> new_plan.flashlightSize;
+			new_plan.isPlayerCenter = true;
 		}
 		else if (new_plan.type == "blink") {
 			*file >> trash;
-			new_plan.b_start_animation = read_time(file);
+			new_plan.startAnimationBeat = read_time(file);
 			*file >> trash;
-			new_plan.b_end_animation = read_time(file);
+			new_plan.endAnimationBeat = read_time(file);
 			*file >> trash;
+			int r, g, b;
+			*file >> r >> g >> b;
+			new_plan.blinkColor = sf::Color(r, g, b);
 			*file >> new_plan.blinkAlpha;
 		}
 		return new_plan;
@@ -661,7 +667,7 @@ private:
 			else zonePlanList.erase(zonePlanList.begin());
 		}
 		while (true) {
-			if (camPlanList.size() == 0 || camPlanList[0].b_start_time >= startPos.beatStartTime) break;
+			if (camPlanList.size() == 0 || camPlanList[0].startBeat >= startPos.beatStartTime) break;
 			else camPlanList.erase(camPlanList.begin());
 		}
 	}

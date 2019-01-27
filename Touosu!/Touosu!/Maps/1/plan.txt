@@ -1,7 +1,9 @@
 4 10
 new_bpm 458000 226;
 
-start_pos  16 0 0 0 0 0 0 0 -64
+start_pos 16 0 0 0 0 0 0 0 -64
+
+cam blink - l17 0 0 0 0 0 0 0 0 - l20 0 0 0 0 0 0 0 0 - 1 0 0 0 0 0 0 0 0- 1 0 0 0 0 0 0 0 0- 100 0 0 255
 
 g 0 - l16 0 0 0 0 0 0 0 0 - set 300 200 l270 0
 g 1 - l16 0 0 0 0 0 0 0 0 - set 200 300 l270 1
@@ -18,7 +20,7 @@ public startCoords.x 0 = 0
 public startCoords.x 0 ~ 0 - 60 - 1
 public spawnOffsetAngle 0 = 0
 public spawnOffsetAngle 0 ~ 0 - 360 - 1
-g 3 - p0 - bullet_shoot - s p0 p0 p0 lb (
+g 3 - p0 - bullet_shoot - s p0 p0 p0 lb - 32 (
 switch - n - p0 - d - rel p0 al0.0001 - rel l0 l0 - standart 3;
 switch - a l20 0 0 0 0 0 0 0 0 - p0 - d - rel l0 al0.6 - rel l0 l0 - standart 3
 )
@@ -28,7 +30,7 @@ public startCoords.x 0 = 0
 public startCoords.x 0 ~ 0 - 60 - 1
 public spawnOffsetAngle 0 = 0
 public spawnOffsetAngle 0 ~ 0 - 360 - 1
-g 3 - p0 - bullet_shoot - s p0 p0 p0 lb (
+g 3 - p0 - bullet_shoot - s p0 p0 p0 lb - 32 (
 switch - n - p0 - d - rel p0 al0.0001 - rel l0 l0 - standart 7;
 switch - a l20 0 0 0 0 0 0 0 0 - p0 - d - rel l0 al0.6 - rel l0 l0 - standart 7
 )
@@ -38,7 +40,7 @@ public startCoords.x 0 = 0
 public startCoords.x 0 ~ 0 - 60 - 1
 public spawnOffsetAngle 0 = 0
 public spawnOffsetAngle 0 ~ 0 - 360 - 1
-g 3 - p0 - bullet_shoot - s p0 p0 p0 lb (
+g 3 - p0 - bullet_shoot - s p0 p0 p0 lb - 32 (
 switch - n - p0 - d - rel p0 al0.0001 - rel l0 l0 - standart 11;
 switch - a l20 0 0 0 0 0 0 0 0 - p0 - d - rel l0 al0.6 - rel l0 l0 - standart 11
 )
@@ -48,31 +50,31 @@ public startTime 0 + 0 0 0 0 0 0 1 0 0
 public lineBulletSpeed 0 = 0.4
 
 for 10 {
-g 0 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 11
 )
-g 0 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 11
 )
-g 0 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 -1 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 11
 )
 public lineBulletSpeed 0 + 0.04
@@ -85,31 +87,31 @@ g 2 - l21 0 0 0 0 0 0 0 0 - move - l21 4 0 0 0 0 0 0 0 - a 300 200
 public lineBulletSpeed 0 = 0.4
 
 for 10 {
-g 0 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 11
 )
-g 0 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 11
 )
-g 0 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 5 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 11
 )
 public lineBulletSpeed 0 + 0.04
@@ -122,31 +124,31 @@ g 1 - l21 6 0 0 0 0 0 0 0 - move - l21 10 0 0 0 0 0 0 0 - a 300 200
 public lineBulletSpeed 0 = 0.4
 
 for 10 {
-g 0 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l0 0 0 ap0 - rel l0 l0 - crystal 11
 )
-g 0 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l10 0 0 ap0 - rel l0 l0 - crystal 11
 )
-g 0 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 7
 )
-g 1 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 3
 )
-g 2 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 11 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 0  (
 switch - n - l16 - d - plr l-10 0 0 ap0 - rel l0 l0 - crystal 11
 )
 public lineBulletSpeed 0 + 0.04
@@ -159,13 +161,13 @@ g 0 - l21 12 0 0 0 0 0 0 0 - move - l21 16 0 0 0 0 0 0 0 - a 300 200
 public bulletSpeedAngle 0 = 0
 for 45 {
 public bulletSpeedAngle 0 + 8
-g 0 - l21 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l21 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 7
 )
-g 1 - l21 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l21 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 3
 )
-g 2 - l21 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l21 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 11
 )
 }
@@ -174,31 +176,31 @@ public bulletSpeedAngle 1 = 120
 public bulletSpeedAngle 2 = 240
 public startTime 0 = 21 18 0 0 1 0 0 0 0
 for 15 {
-g 1 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 3
 )
-g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 7
 )
-g 2 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 11
 )
-g 1 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p1 al0.2 - rel l0 l0 - standart 3
 )
-g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p1 al0.2 - rel l0 l0 - standart 7
 )
-g 2 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p1 al0.2 - rel l0 l0 - standart 11
 )
-g 1 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p2 al0.2 - rel l0 l0 - standart 3
 )
-g 0 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p2 al0.2 - rel l0 l0 - standart 7
 )
-g 2 - p0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - p0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p2 al0.2 - rel l0 l0 - standart 11
 )
 public bulletSpeedAngle 0 + 8
@@ -210,13 +212,13 @@ public startTime 0 + 0 0 0 0 1 0 0 0 0
 public bulletSpeedAngle 0 = 0
 for 45 {
 public bulletSpeedAngle 0 + 8
-g 0 - l22 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 0 - l22 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 7
 )
-g 1 - l22 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 1 - l22 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 3
 )
-g 2 - l22 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb (
+g 2 - l22 18 0 0 0 0 0 0 0 - bullet_shoot - s l0 l0 l0 lb - 32 (
 switch - n - l16 - d - rel p0 al0.2 - rel l0 l0 - standart 11
 )
 }

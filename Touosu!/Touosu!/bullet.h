@@ -32,13 +32,13 @@ public:
 		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
 		destroyed = false;
 		isSpawned = false;
-		creatingAnimationEndTime = a->startTime + 32;
+		creatingAnimationEndTime = a->startTime + myPlan.animationTime;
 
 	}
 
 	vector<bulletsFromBullets> update(RenderWindow *window, float time, player *target) {
 		bulletsForShoot.resize(0);
-		if (current_beat < creatingAnimationEndTime && myPlan.isAnimated) startAnimationUpdate(window);
+		if (current_beat < creatingAnimationEndTime && myPlan.animationTime > 0) startAnimationUpdate(window);
 		else {
 			realUpdate(window, time, target);
 			if (!isSpawned) soundManager::bulletShootSound();
@@ -279,7 +279,7 @@ private:
 		nextBulletTypeId++;
 	}
 	void setRealHitboxSize() {
-		float realSize = size * 0.9f;
+		float realSize = size * 0.7f;
 		if (currentBulletSkin == "wave") realEllipseHitboxSize = Vector2f(realSize / 32 * 5, realSize / 32 * 9);
 		else if (currentBulletSkin == "circle") realEllipseHitboxSize = Vector2f(realSize / 32 * 14, realSize / 32 * 14);
 		else if (currentBulletSkin == "standart") realEllipseHitboxSize = Vector2f(realSize / 32 * 15, realSize / 32 * 15);

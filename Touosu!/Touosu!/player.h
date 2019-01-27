@@ -35,7 +35,7 @@ public:
 		trail_delta = 0;
 		trails.resize(0);
 
-		size = convertForGraphic(3.0f);
+		size = convertForGraphic(2.0f);
 
 		moveDirectionInfo = "";
 		prevMoveDirectionInfo = "";
