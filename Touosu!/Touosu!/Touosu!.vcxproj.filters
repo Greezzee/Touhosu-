@@ -96,15 +96,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="music.ogg">
-      <Filter>plans</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="plan_main.txt">
-      <Filter>plans</Filter>
-    </Text>
-    <Text Include="plan.txt">
+    <Text Include="samples.txt">
       <Filter>plans</Filter>
     </Text>
   </ItemGroup>

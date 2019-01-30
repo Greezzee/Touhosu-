@@ -18,8 +18,8 @@ public:
 		nextChildBulletID = 0;
 		coords.x = start_x;
 		coords.y = start_y;
-		prevBulletTypeTime = a->startTime + 32;
-		prevBulletShootTime = a->startTime + 32;
+		prevBulletTypeTime = a->startTime + myPlan.animationTime;
+		prevBulletShootTime = a->startTime + myPlan.animationTime;
 		startGunAngle = shoot_angle;
 
 		self_sprite = *b;
@@ -52,6 +52,7 @@ public:
 			a.info.startMovingType = bulletsForShoot[i].startMovingType;
 			a.info.spawnOffsetAngle = bulletsForShoot[i].spawnOffsetAngle;
 			a.info.startCoords = bulletsForShoot[i].startCoords;
+			a.info.startTime = current_beat;
 			a.angle = speedDirectionalAngleDegr;
 			a.coords = coords;
 			out.push_back(a);

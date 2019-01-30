@@ -47,11 +47,7 @@
     <ClInclude Include="zone.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="plan.txt" />
-    <Text Include="plan_main.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="music.ogg" />
+    <Text Include="samples.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

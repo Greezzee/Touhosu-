@@ -83,6 +83,9 @@ private:
 	Texture herotexture, bullets_hitbox;
 	std::vector<trail> trails;
 
+	float healthBar, bombBar;
+	float healthMax, bombMax;
+
 	void Move(float time) {
 		Vector2f MoveCoef = getMoveCoef();
 		playerCoords.x += speed * MoveCoef.x * time;

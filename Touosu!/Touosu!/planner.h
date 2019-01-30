@@ -236,7 +236,6 @@ private:
 			remove(selfFileName.c_str());
 		}
 		else if (command_type == "start_pos") readStartPos(file);
-		std::cout << command_type << " ";
 		return command_type;
 	}
 
@@ -259,13 +258,13 @@ private:
 		else if (new_plan.commandType == "rotate") new_plan = readRotate(file, new_plan);
 		else if (new_plan.commandType == "laser_shoot") new_plan = readLaserShoot(file, new_plan);
 		else if (new_plan.commandType == "bullet_shoot") new_plan = readBulletShoot(file, new_plan);
-		std::cout << new_plan.commandType << " ";
 		return new_plan;
 	}
 
 	gunPlanExemplar readSet(ifstream *file, gunPlanExemplar new_plan) {
 		char p_or_l;
-		*file >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y;
+		string trash;
+		*file >> trash >> new_plan.endMovingCoords.x >> new_plan.endMovingCoords.y;
 		*file >> p_or_l;
 		if (p_or_l == 'l') *file >> new_plan.gunAngle;
 		else {
@@ -391,7 +390,10 @@ private:
 		new_plan.bulletInfo.spawnOffsetAngle = new_plan.spawnOffsetAngle;
 		new_plan.bulletInfo.startCoords = new_plan.startCoords;
 
-		*file >> public_or_local >> trash >> new_plan.bulletInfo.animationTime;
+		*file >> new_plan.bulletInfo.animationTime >> trash >> public_or_local;
+
+
+
 		if (public_or_local == "lb") {
 
 			new_plan.bulletInfo.timeType.resize(0);
@@ -458,8 +460,8 @@ private:
 						bulletSpeedAngle = publicInfo[ID].bulletInfo.bulletSpeedAngle[0];
 					}
 
-					if (speedAngleType != "abs" && speedAngleType != "rel" && speedAngleType != "rand")
-						*file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+					
+					*file >> speedOffsetCoord.x >> speedOffsetCoord.y;
 
 					*file >> speedChangeType >> p_or_l;
 					if (p_or_l == 'l') *file >> lineBulletSpeed;
@@ -474,8 +476,9 @@ private:
 						*file >> ID;
 						bulletAccelAngle = publicInfo[ID].bulletInfo.bulletAccelAngle[0];
 					}
-					if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel" && accelAngleType != "rand")
-						*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+					
+					*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+
 					*file >> p_or_l;
 					if (p_or_l == 'l') *file >> lineBulletAccel;
 					else {
@@ -557,7 +560,7 @@ private:
 
 			new_plan.childBullets = publicBullets[id].childBullets;
 		}
-		new_plan.startTime -= 32;
+		new_plan.startTime -= new_plan.bulletInfo.animationTime;
 		return new_plan;
 	}
 
@@ -786,6 +789,8 @@ private:
 	void setNewPublicBullet(ifstream *file) {
 		string trash;
 		int id;
+		char p_or_l;
+		int ID;
 		bulletPlanExemplar n;
 		*file >> id >> trash;
 		if (id == publicBullets.size()) publicBullets.resize(id + 1);
@@ -813,7 +818,7 @@ private:
 		int i = 0;
 		do {
 			string switchOrShoot;
-			*file >> switchOrShoot >> trash;
+			*file >> switchOrShoot;
 			if (switchOrShoot == "switch") {
 				int bulletColor, startTime;
 				char timeType, bulletActionWithWalls, speedChangeType;
@@ -821,10 +826,8 @@ private:
 				float bulletSize, bulletAccelAngle, bulletSpeedAngle, lineBulletSpeed, lineBulletAccel;
 				sf::Vector2f accelOffsetCoord, speedOffsetCoord;
 
-				char p_or_l;
-				int ID;
 
-				*file >> timeType;
+				*file >> trash >> timeType;
 
 
 				if (timeType != 'w' && i != 0) {
@@ -854,8 +857,8 @@ private:
 					bulletSpeedAngle = publicInfo[ID].bulletInfo.bulletSpeedAngle[0];
 				}
 
-				if (speedAngleType != "abs" && speedAngleType != "rel" && speedAngleType != "rand")
-					*file >> speedOffsetCoord.x >> speedOffsetCoord.y;
+
+				*file >> speedOffsetCoord.x >> speedOffsetCoord.y;
 
 				*file >> speedChangeType >> p_or_l;
 				if (p_or_l == 'l') *file >> lineBulletSpeed;
@@ -870,8 +873,9 @@ private:
 					*file >> ID;
 					bulletAccelAngle = publicInfo[ID].bulletInfo.bulletAccelAngle[0];
 				}
-				if (accelAngleType != "abs" && accelAngleType != "sabs" && accelAngleType != "rel" && accelAngleType != "srel" && accelAngleType != "rand")
-					*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+
+				*file >> accelOffsetCoord.x >> accelOffsetCoord.y;
+
 				*file >> p_or_l;
 				if (p_or_l == 'l') *file >> lineBulletAccel;
 				else {
@@ -883,8 +887,6 @@ private:
 
 
 				publicBullets[id].bulletInfo.startTime.push_back(startTime);
-
-
 				publicBullets[id].bulletInfo.timeType.push_back(timeType);
 				publicBullets[id].bulletInfo.bulletActionWithWalls.push_back(bulletActionWithWalls);
 				publicBullets[id].bulletInfo.bulletSize.push_back(bulletSize);
@@ -903,26 +905,31 @@ private:
 
 				publicBullets[id].bulletInfo.bulletColor.push_back(bulletColor);
 				publicBullets[id].bulletInfo.bulletSkin.push_back(bulletSkin);
-
 				*file >> trash;
 				i++;
 			}
 			else if (switchOrShoot == "shoot") {
 				gunPlanExemplar ChildPlan;
-				char p_or_l;
+				char p_or_l, timeType;
 				*file >> trash;
-				*file >> p_or_l;
-				int t, ID;
-				if (p_or_l == 'l') t = read_time(file);
-				else {
-					*file >> ID;
-					t = publicInfo[ID].startTime;
+				*file >> timeType;
+				int t = -1;
+				if (timeType != 'w') {
+					*file >> p_or_l;
+					int ID;
+					if (p_or_l == 'l') t = read_time(file);
+					else {
+						*file >> ID;
+						t = publicInfo[ID].startTime;
+					}
 				}
-				ChildPlan.bulletInfo.startTime.push_back(t);
 				ChildPlan = readBulletShoot(file, ChildPlan);
+				ChildPlan.bulletInfo.startTime[0] = t;
+				ChildPlan.bulletInfo.timeType[0] = timeType;
 				publicBullets[id].childBullets.push_back(ChildPlan.bulletInfo);
+				*file >> trash;
 			}
-		} while (trash != "}");
+		} while (trash != ")");
 
 	}
 

@@ -60,6 +60,7 @@ private:
 		}
 	}
 	bool action(int i, bool new_tick, float player_x, float player_y, RenderWindow *window, float time) {
+		//DON'T USE IT *****************************************************************
 		if (active_actions[i].type == "rotate") {
 			int delta = active_actions[i].endBeat - active_actions[i].startBeat;
 			float rotate;
@@ -81,6 +82,23 @@ private:
 					}
 					cam_angle = active_actions[i].endAngle;
 					cam.setRotation(-cam_angle);
+					return true;
+				}
+				else return false;
+			}
+			return false;
+		}
+		else if (active_actions[i].type == "zoom") {
+			int delta = active_actions[i].endBeat - active_actions[i].startBeat;
+			if (buffer_zoom == 0) buffer_zoom = (active_actions[i].zoom - zoom) / delta;
+			if (new_tick) {
+				zoom += buffer_zoom;
+				cam.setSize((SCREEN_W + BOARDER * SCREEN_W / SCREEN_H) / zoom, (SCREEN_H + BOARDER) / zoom);
+				if (active_actions[i].endBeat == current_beat)
+				{
+					cam.setSize((SCREEN_W + BOARDER * SCREEN_W / SCREEN_H) / active_actions[i].zoom, (SCREEN_H + BOARDER) / active_actions[i].zoom);
+					zoom = active_actions[i].zoom;
+					buffer_zoom = 0;
 					return true;
 				}
 				else return false;
@@ -114,23 +132,8 @@ private:
 			}
 			return false;
 		}
-		else if (active_actions[i].type == "zoom") {
-			int delta = active_actions[i].endBeat - active_actions[i].startBeat;
-			if (buffer_zoom == 0) buffer_zoom = (active_actions[i].zoom - zoom) / delta;
-			if (new_tick) {
-				zoom += buffer_zoom;
-				cam.setSize((SCREEN_W + BOARDER * SCREEN_W / SCREEN_H) / zoom, (SCREEN_H + BOARDER) / zoom);
-				if (active_actions[i].endBeat == current_beat)
-				{
-					cam.setSize((SCREEN_W + BOARDER * SCREEN_W / SCREEN_H) / active_actions[i].zoom, (SCREEN_H + BOARDER) / active_actions[i].zoom);
-					zoom = active_actions[i].zoom;
-					buffer_zoom = 0;
-					return true;
-				}
-				else return false;
-			}
-			return false;
-		}
+		//******************************************************************************
+
 
 		else if (active_actions[i].type == "flashlight") {
 
