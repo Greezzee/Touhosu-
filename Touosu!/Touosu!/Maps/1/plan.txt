@@ -3,27 +3,140 @@ new_bpm 458000 226;
 
 start_pos 16 0 0 0 0 0 0 0 -64
 
-zone safe - l16 0 0 0 0 0 0 0 0 - l18 0 0 0 0 0 0 0 0 - 200 200 - 400 400
+g 0 - l16 0 0 0 0 0 0 0 0 - set - 300 100 l270 0
 
-g 0 - l16 0 0 0 0 0 0 0 0 - set - 300 200 l270 0
-g 1 - l16 0 0 0 0 0 0 0 0 - set - 200 300 l270 1
-g 2 - l16 0 0 0 0 0 0 0 0 - set - 400 300 l270 2
-g 3 - l16 0 0 0 0 0 0 0 0 - set - 300 300 l270 2
-g 3 - l16 0 0 0 0 0 0 0 0 - del
 
-new_pb 0 (
-switch - n - l32 - d - rel l0 0 0 al0.1 - rel l0 0 0 l0 - standart 3;
-switch - r l0 1 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.6 - rel l0 0 0 l0 - standart 5;
-shoot - r l0 2 0 0 0 0 0 0 0 - r l0 l0 l0 32 - lb (
-	switch - n - l32 - d - rel l180 0 0 al0.1 - rel l0 0 0 l0 - standart 3;
-	switch - r l0 1 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.6 - rel l0 0 0 l0 - standart 5;
-	switch - r l0 1 0 0 0 0 0 0 0 - l32 - d - rel l90 0 0 al0.6 - rel l0 0 0 l0 - standart 7
+
+cam blink - l18 0 0 0 0 0 0 0 -8 - l18 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 255 255
+cam blink - l19 0 0 0 0 0 0 0 -8 - l19 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 255 0 0 255
+cam blink - l20 0 0 0 0 0 0 0 -8 - l20 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 255 255
+cam blink - l21 0 0 0 0 0 0 0 -8 - l21 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 255 0 0 255
+cam blink - l22 0 0 0 0 0 0 0 -8 - l22 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 255 255
+cam blink - l23 0 0 0 0 0 0 0 -8 - l23 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 0 0 0 0 0 0 0 0 8 - 255 0 0 255
+
+
+public startTime 0 = 17 0 0 0 0 0 0 0 0
+for 4 {
+public startTime 0 + 0 0 0 0 0 0 2 0 0
+public bulletSpeedAngle 0 = 0
+public startCoords.x 0 = 0
+public startCoords.x 0 ~ 0 - 50 - 1
+public spawnOffsetAngle 0 = 0
+public spawnOffsetAngle 0 ~ 0 - 360 - 1
+for 36 {
+	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
+	switch - n - l32 - d - rel p0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l18 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l19 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l20 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l21 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l22 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l23 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3
 	)
-)
+	public bulletSpeedAngle 0 + 10
+}
+}
 
-g 0 - l17 0 0 0 0 0 0 0 0 - bullet_shoot - r l0 l0 l0 32 - pb 0
+public startTime 0 = 19 0 0 0 0 0 0 0 0
+for 4 {
+public startTime 0 + 0 0 0 0 0 0 2 0 0
+public bulletSpeedAngle 0 = 0
+public startCoords.x 0 = 0
+public startCoords.x 0 ~ 0 - 50 - 1
+public spawnOffsetAngle 0 = 0
+public spawnOffsetAngle 0 ~ 0 - 360 - 1
+for 36 {
+	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
+	switch - n - l32 - d - rel p0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l18 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l19 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l20 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l21 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l22 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l23 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3
+	)
+	public bulletSpeedAngle 0 + 10
+}
+}
 
+public startTime 0 = 21 0 0 0 0 0 0 0 0
+for 4 {
+public startTime 0 + 0 0 0 0 0 0 2 0 0
+public bulletSpeedAngle 0 = 0
+public startCoords.x 0 = 0
+public startCoords.x 0 ~ 0 - 50 - 1
+public spawnOffsetAngle 0 = 0
+public spawnOffsetAngle 0 ~ 0 - 360 - 1
+for 36 {
+	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
+	switch - n - l32 - d - rel p0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l18 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l19 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l20 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l21 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3;
+	switch - a l22 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 3;
+	switch - a l23 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.3 - rel l0 0 0 l0 - standart 3
+	)
+	public bulletSpeedAngle 0 + 10
+}
+}
 
+public startTime 0 = 18 0 0 0 0 0 0 0 0
+for 16 {
+public startTime 0 + 0 0 0 0 0 0 0 1 0
+public bulletSpeedAngle 0 = 0
+public lineBulletSpeed 0 = 0.3
+public bulletSpeedAngle 0 ~ -80 - 80 - 1
+for 5 {
+	g 0 - p0 - bullet_shoot - s l0 l0 l0 8 - lb (
+	switch - n - l32 - d - rel p0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l19 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7;
+	switch - a l20 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l21 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7;
+	switch - a l22 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l23 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7
+	)
+	public lineBulletSpeed 0 + 0.02
+}
+}
+
+public startTime 0 = 20 0 0 0 0 0 0 0 0
+for 16 {
+public startTime 0 + 0 0 0 0 0 0 0 1 0
+public bulletSpeedAngle 0 = 0
+public lineBulletSpeed 0 = 0.3
+public bulletSpeedAngle 0 ~ -80 - 80 - 1
+for 5 {
+	g 0 - p0 - bullet_shoot - s l0 l0 l0 8 - lb (
+	switch - n - l32 - d - rel p0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l19 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7;
+	switch - a l20 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l21 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7;
+	switch - a l22 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l23 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7
+	)
+	public lineBulletSpeed 0 + 0.02
+}
+}
+
+public startTime 0 = 22 0 0 0 0 0 0 0 0
+for 16 {
+public startTime 0 + 0 0 0 0 0 0 0 1 0
+public bulletSpeedAngle 0 = 0
+public lineBulletSpeed 0 = 0.3
+public bulletSpeedAngle 0 ~ -80 - 80 - 1
+for 5 {
+	g 0 - p0 - bullet_shoot - s l0 l0 l0 8 - lb (
+	switch - n - l32 - d - rel p0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l19 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7;
+	switch - a l20 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l21 0 0 0 0 0 0 0 0 - l0 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7;
+	switch - a l22 0 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 ap0 - rel l0 0 0 l0 - standart 7;
+	switch - a l23 0 0 0 0 0 0 0 0 - l-1 - d - rel l0 0 0 al0.000001 - rel l0 0 0 l0 - standart 7
+	)
+	public lineBulletSpeed 0 + 0.02
+}
+}
 end
 
 

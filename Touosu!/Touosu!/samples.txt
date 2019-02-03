@@ -49,12 +49,26 @@ new_bpm 458000 226;
 start_pos 16 0 0 0 0 0 0 0 0
 
 7. Работа с глобальными переменными:
+
 а) Определение:
 public startTime 0 = 1 0 0 0 0 0 0 0 0
 б) Увеличение:
 public startTime 0 += 1 0 0 0 0 0 0 0 0
+Работает с:
+startTime endTime laserPreparingEndTime 
+laserSize gunAngle gunEndAngle laserShootAngle 
+startCoords.x startCoords.y spawnOffsetAngle 
+bulletAccelAngle bulletSize bulletSpeedAngle 
+lineBulletAccel lineBulletSpeed
+
+
 в) Увеличение на случайное число:
 public bulletSpeedAngle 0 ~ 0 - 180 - 5
+Работает с:
+laserSize gunAngle gunEndAngle laserShootAngle 
+startCoords.x startCoords.y spawnOffsetAngle 
+bulletAccelAngle bulletSize bulletSpeedAngle 
+lineBulletAccel lineBulletSpeed
 
 8. Циклы:
 for 10 {
@@ -62,7 +76,7 @@ for 10 {
 }
 
 9. Определение публичных пуль:
-new_pb 0 : (
+new_pb 0 (
 switch - n - l32 - b/d/i/t/c - rel l0 0 0 al0.1 - rel l0 0 0 l0 - standart 3;
 switch - a/r l0 1 0 0 0 0 0 0 0 - l32 - d - rel l0 0 0 al0.6 - rel l0 0 0 l0 - standart 5;
 shoot - a/r l0 2 0 0 0 0 0 0 0 - r l0 l0 l0 0 - lb (
