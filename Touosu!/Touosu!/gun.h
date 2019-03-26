@@ -14,7 +14,7 @@ public:
 		self_sprite.setTextureRect(sf::IntRect(48, 1383, 32, 32));
 		self_sprite.setOrigin(16, 16);
 		self_sprite.setPosition(0, 0);
-		self_sprite.setScale(convertForGraphic(1.5f), convertForGraphic(1.5f));
+		self_sprite.setScale(convertSizeForGraphic(1.f), convertSizeForGraphic(1.f));
 		coords.x = 0;
 		coords.y = 0;
 		shoot_angle = 0;
@@ -32,14 +32,14 @@ public:
 			if (spritePos >= 5) spritePos = 0;
 			if (spritePos >= 0) {
 				self_sprite.setTextureRect(sf::IntRect(48 + 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
-				self_sprite.setScale(convertForGraphic(1.5f), convertForGraphic(1.5f));
+				self_sprite.setScale(convertSizeForGraphic(1.f), convertSizeForGraphic(1.f));
 			}
 			else self_sprite.setTextureRect(sf::IntRect(208 - 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
 		}
 		else if (moveType == 'r') {
 			if (spritePos >= 7) spritePos = 3;
 			self_sprite.setTextureRect(sf::IntRect(176 + 32 * (int)spritePos, 1383 + 32 * textureColorID, 32, 32));
-			self_sprite.setScale(convertForGraphic(-1.5f), convertForGraphic(1.5f));
+			self_sprite.setScale(convertSizeForGraphic(-1.f), convertSizeForGraphic(1.f));
 		}
 		else {
 			if (spritePos >= 7) spritePos = 3;
@@ -129,7 +129,7 @@ private:
 	bool action(gunPlanExemplar current_action, bulletManager *manager, player *target, float time) {
 		if (current_action.commandType == "set") {
 			is_visible = true;
-			self_sprite.setPosition(convertForGraphic(current_action.endMovingCoords.x), convertForGraphic(current_action.endMovingCoords.y));
+			self_sprite.setPosition(convertPosForGraphic(current_action.endMovingCoords));
 			//self_sprite.setRotation(-current_action.gunAngle); Должен вращать "указатель" врага
 			shoot_angle = current_action.gunAngle;
 			coords.x = current_action.endMovingCoords.x;
@@ -147,10 +147,10 @@ private:
 			if (newTick) {
 				coords.x += current_action.gunSpeed.x;
 				coords.y += current_action.gunSpeed.y;
-				self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
+				self_sprite.setPosition(convertPosForGraphic(coords));
 			}
 			
-			else self_sprite.move(convertForGraphic(current_action.gunSpeed.x) / timePerBeat * time, convertForGraphic(current_action.gunSpeed.y) / timePerBeat * time);
+			else self_sprite.move(convertPosForGraphic(current_action.gunSpeed).x / timePerBeat * time, convertPosForGraphic(current_action.gunSpeed).y / timePerBeat * time);
 
 			if (current_action.endTime <= current_beat) {
 				moveType = 'n';

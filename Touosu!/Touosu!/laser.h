@@ -9,9 +9,9 @@ public:
 		directional_angle_rad = -angle / 360 * 2 * PI;
 		size = sz;
 		self_sprite = *l;
-		self_sprite.setOrigin(-32 / (convertForGraphic(size) / 32), 16);
-		self_sprite.setScale(convertForGraphic(size) / 32, convertForGraphic(size) / 32);
-		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
+		self_sprite.setOrigin(-32 / (convertSizeForGraphic(size) / 32), 16);
+		self_sprite.setScale(convertSizeForGraphic(size) / 32, convertSizeForGraphic(size) / 32);
+		self_sprite.setPosition(convertSizeForGraphic(coords.x), convertSizeForGraphic(coords.y));
 		self_sprite.rotate(-angle);
 		self_sprite.setColor(Color(255, 255, 255, 200));
 		is_active = false;

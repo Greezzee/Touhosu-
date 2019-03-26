@@ -10,32 +10,30 @@ public:
 	void init(float start_x, float start_y, string activeSkill) {
 		playerCoords.x = start_x;
 		playerCoords.y = start_y;
-		start_x = convertForGraphic(start_x);
-		start_y = convertForGraphic(start_y);
 
 		herotexture.loadFromFile(heroSpriteFile);
 		bullets_hitbox.loadFromFile(bulletsAndHitboxesFile);
 		herosprite.setTexture(herotexture);
 		herosprite.setTextureRect(IntRect(0, 0, 32, 48));
 		herosprite.setOrigin(16, 24);
-		herosprite.setPosition(start_x, start_y);
-		herosprite.setScale(convertForGraphic(1.2f), convertForGraphic(1.2f));
+		herosprite.setPosition(convertPosForGraphic(playerCoords));
+		herosprite.setScale(convertSizeForGraphic(1.f), convertSizeForGraphic(1.f));
 
 		bombSprite.setTexture(herotexture);
 		bombSprite.setOrigin(8, 8);
-		bombSprite.setScale(convertForGraphic(1.2f), convertForGraphic(1.2f));
+		bombSprite.setScale(convertSizeForGraphic(1.f), convertSizeForGraphic(1.f));
 
 		hero_hitbox_sprite.setTexture(bullets_hitbox);
 		hero_hitbox_sprite.setTextureRect(IntRect(843, 140, 38, 38));
 		hero_hitbox_sprite.setOrigin(19, 19);
-		hero_hitbox_sprite.setPosition(start_x, start_y);
-		hero_hitbox_sprite.setScale(convertForGraphic(0.4f), convertForGraphic(0.4f));
+		hero_hitbox_sprite.setPosition(convertPosForGraphic(playerCoords));
+		hero_hitbox_sprite.setScale(convertSizeForGraphic(0.3f), convertSizeForGraphic(0.3f));
 		isHitboxVisible = false;
 
 		trail_delta = 0;
 		trails.resize(0);
 
-		size = convertForGraphic(2.0f);
+		size = convertSizeForGraphic(2.0f);
 
 		moveDirectionInfo = "";
 		prevMoveDirectionInfo = "";
@@ -123,8 +121,8 @@ private:
 		return MoveCoef;
 	}
 	void setSpritePosition() {
-		herosprite.setPosition(convertForGraphic(playerCoords.x), convertForGraphic(playerCoords.y));
-		hero_hitbox_sprite.setPosition(convertForGraphic(playerCoords.x), convertForGraphic(playerCoords.y));
+		herosprite.setPosition(convertPosForGraphic(playerCoords));
+		hero_hitbox_sprite.setPosition(convertPosForGraphic(playerCoords));
 	}
 	void testForShift(float time) {
 		speed = 0.5f * (float)GAMEBOARD_H / (float)timePerBeat / 32 / 4;
@@ -197,13 +195,19 @@ private:
 		for (int i = 0; i < 6; i++) {
 			bombSprite.setTextureRect(IntRect(66 + 16 * (i % 3), 146, 16, 16));
 			bombSprite.setRotation((PI / 3 * (float)i + bombRotation) / PI * 180);
-			bombSprite.setPosition(convertForGraphic(playerCoords.x + bombCurrentRadius * cos(PI / 3 * (float)i + bombRotation)), convertForGraphic(playerCoords.y + bombCurrentRadius * sin(PI / 3 * (float)i + bombRotation)));
+			auto bombCoords = playerCoords;
+			bombCoords.x += bombCurrentRadius * cos(PI / 3 * (float)i + bombRotation);
+			bombCoords.y += bombCurrentRadius * sin(PI / 3 * (float)i + bombRotation);
+			bombSprite.setPosition(convertPosForGraphic(bombCoords));
 			window->draw(bombSprite);
 		}
 		for (int i = 0; i < 6; i++) {
 			bombSprite.setTextureRect(IntRect(66 + 16 * (i % 3), 146, 16, 16));
 			bombSprite.setRotation((PI / 3 * (float)i - bombRotation) / PI * 180);
-			bombSprite.setPosition(convertForGraphic(playerCoords.x + bombCurrentRadius * cos(PI / 3 * (float)i - bombRotation) / 2), convertForGraphic(playerCoords.y + bombCurrentRadius * sin(PI / 3 * (float)i - bombRotation) / 2));
+			auto bombCoords = playerCoords;
+			bombCoords.x += bombCurrentRadius * cos(PI / 3 * (float)i - bombRotation) / 2;
+			bombCoords.y += bombCurrentRadius * sin(PI / 3 * (float)i - bombRotation) / 2;
+			bombSprite.setPosition(convertPosForGraphic(bombCoords));
 			window->draw(bombSprite);
 		}
 	}

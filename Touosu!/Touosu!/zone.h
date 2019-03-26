@@ -42,8 +42,8 @@ private:
 		for (unsigned int i = 0; i < active_zones.size(); i++) {
 			if (zones[active_zones[i]].type == "safe") my_sprite.setColor(Color(0, 255, 0, 100));
 			else if (zones[active_zones[i]].type == "danger") my_sprite.setColor(Color(255, 0, 0, 100));
-			my_sprite.setScale(convertForGraphic(abs(zones[active_zones[i]].UpLeft.x - zones[active_zones[i]].DownRight.x)) / 32, convertForGraphic(abs(zones[active_zones[i]].UpLeft.y - zones[active_zones[i]].DownRight.y)) / 32);
-			my_sprite.setPosition(convertForGraphic(zones[active_zones[i]].UpLeft.x), convertForGraphic(zones[active_zones[i]].UpLeft.y));
+			my_sprite.setScale(convertSizeForGraphic(abs(zones[active_zones[i]].UpLeft.x - zones[active_zones[i]].DownRight.x)) / 32, convertSizeForGraphic(abs(zones[active_zones[i]].UpLeft.y - zones[active_zones[i]].DownRight.y)) / 32);
+			my_sprite.setPosition(convertPosForGraphic(zones[active_zones[i]].UpLeft));
 			window->draw(my_sprite);
 		}
 	}

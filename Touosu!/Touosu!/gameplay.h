@@ -16,8 +16,14 @@ public:
 		gunTexture.loadFromFile(turretsFile);
 		ZoneTexture.loadFromFile("Sprites/zone.png");
 		zoneSprite.setTexture(ZoneTexture);
-		gameboard.setSize(Vector2f(convertForGraphic(GAMEBOARD_W), convertForGraphic(GAMEBOARD_H)));
+		gameboard.setSize(Vector2f(convertSizeForGraphic(GAMEBOARD_W), convertSizeForGraphic(GAMEBOARD_H)));
+		gameboard.setPosition(convertPosForGraphic(sf::Vector2f(0, 0)));
 		gameboard.setFillColor(Color(200, 200, 200));
+		HUDTexture.loadFromFile("Sprites/HUD.png");
+		HUDSprite.setTexture(HUDTexture);
+		backgroundTexture.loadFromFile("Sprites/background.png");
+		backgroundTexture.setSmooth(true);
+		background.setTexture(backgroundTexture, true);
 		//setSmoothON();
 
 		restart();
@@ -58,8 +64,9 @@ public:
 				}
 			}
 		}
-		window.clear(Color(50, 50, 50));
-		window.draw(gameboard);
+		window.clear(Color(150, 150, 150));
+		//window.draw(gameboard);
+		drawBackground();
 		mainPlayer.update(&window, time);
 		if (current_time > start.startTime) {
 			
@@ -96,6 +103,8 @@ public:
 
 		mainPlayer.drawHitbox(&window);
 
+		drawHUD();
+
 		window.display();
 		return false;
 	}
@@ -109,16 +118,16 @@ private:
 	vector<BPMchangeExemplar> bpmChanges;
 	Music gameMusic;
 	Texture textur;
-	Sprite flash, zoneSprite;
+	Sprite flash, zoneSprite, HUDSprite, background;
 	camera cam;
 	Clock clock;
-	Texture heroTexture, bulletsHitboxTexture, gunTexture, ZoneTexture;
+	Texture heroTexture, bulletsHitboxTexture, gunTexture, ZoneTexture, HUDTexture, backgroundTexture;
 	player mainPlayer;
 	std::list<gun> allGuns;
 	zone zones;
 	RectangleShape gameboard;
 	int frames, last_beat = 0;
-	float secondTime, FPS, time;
+	float secondTime, FPS, time, backgroundAnimation;
 	unsigned int currentBPMid;
 	RenderWindow window;
 	menuScreens menu;
@@ -127,7 +136,7 @@ private:
 	void restart() {
 		soundManager::init();
 		GlobalMapPlan.restart();
-		mainPlayer.init(300, 500, "boost");
+		mainPlayer.init(192, 400, "boost");
 		manager.init();
 		allGuns.resize(0);
 		zones.init(zoneSprite, &GlobalMapPlan);
@@ -153,6 +162,7 @@ private:
 		current_time = -2000000 + start.startTime;
 		isBPMUpdated = false;
 		timer = 0;
+		backgroundAnimation = 0;
 		clock.restart();
 	}
 
@@ -167,6 +177,42 @@ private:
 		bulletsHitboxTexture.setSmooth(false);
 		gunTexture.setSmooth(false);
 		ZoneTexture.setSmooth(false);
+	}
+
+	void drawHUD() {
+		HUDSprite.setScale(convertSizeForGraphic(1), convertSizeForGraphic(1));
+		HUDSprite.setPosition(convertSizeForGraphic(0), convertSizeForGraphic(0));
+		HUDSprite.setTextureRect(sf::IntRect(32, 32, 32, 480));
+		window.draw(HUDSprite);
+		HUDSprite.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(0));
+		HUDSprite.setTextureRect(sf::IntRect(32, 512, 384, 16));
+		window.draw(HUDSprite);
+		HUDSprite.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(464));
+		HUDSprite.setTextureRect(sf::IntRect(32, 528, 384, 16));
+		window.draw(HUDSprite);
+		HUDSprite.setPosition(convertSizeForGraphic(416), convertSizeForGraphic(0));
+		HUDSprite.setTextureRect(sf::IntRect(64, 32, 224, 480));
+		window.draw(HUDSprite);
+	}
+	void drawBackground() {
+		/*
+		backgroundAnimation += time * 0.0001;
+		if (backgroundAnimation > 1) backgroundAnimation -= 1;
+
+		background.setScale(convertSizeForGraphic(384.f / 256.f), convertSizeForGraphic(384.f / 256.f));
+
+		background.setTextureRect(sf::IntRect(472, 56 + 256 * backgroundAnimation, 256, 256 - 256 * backgroundAnimation));
+		background.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(16));
+		window.draw(background);
+
+		background.setTextureRect(sf::IntRect(472, 56 + 256 * backgroundAnimation, 256, 256 - 256 * backgroundAnimation));
+		background.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(16));
+		window.draw(background);
+
+		background.setTextureRect(sf::IntRect(472, 56, 256, 256 - 256 * backgroundAnimation));
+		background.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(16 + 256 * backgroundAnimation));
+		window.draw(background);
+		*/
 	}
 };
 

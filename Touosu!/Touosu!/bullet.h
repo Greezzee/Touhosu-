@@ -29,7 +29,7 @@ public:
 		startAnglesSet(shoot_angle, gunCoords);
 		updateBulletSpeedAndAccel(0);
 
-		self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
+		self_sprite.setPosition(convertPosForGraphic(coords));
 		destroyed = false;
 		isSpawned = false;
 		creatingAnimationEndTime = a->startTime + myPlan.animationTime;
@@ -76,7 +76,7 @@ private:
 	void startAnimationUpdate(RenderWindow *window) {
 		float sizeCoof = (float)(creatingAnimationEndTime - current_beat) / 32.0f * 2.0f + 1;
 		float alphaCoof = 255.0f - pow((float)(creatingAnimationEndTime - current_beat - 1) / 32.0f, 0.5) * 255.0f;
-		self_sprite.setScale(convertForGraphic(size) / currentTextureRect.width * sizeCoof, convertForGraphic(size) / currentTextureRect.height * sizeCoof);
+		self_sprite.setScale(convertSizeForGraphic(size) / currentTextureRect.width * sizeCoof, convertSizeForGraphic(size) / currentTextureRect.height * sizeCoof);
 		self_sprite.setColor(Color(255, 255, 255, (int)alphaCoof));
 		window->draw(self_sprite);
 	}
@@ -103,7 +103,7 @@ private:
 
 			updateAccel();
 
-			self_sprite.setPosition(convertForGraphic(coords.x), convertForGraphic(coords.y));
+			self_sprite.setPosition(convertPosForGraphic(coords));
 			animation(time);
 
 			Vector2f NewPlayerCoords;
@@ -149,7 +149,7 @@ private:
 		self_sprite.setTextureRect(currentTextureRect);
 		setSpriteOrigin();
 		setAnimationStyle();
-		self_sprite.setScale(convertForGraphic(size) / currentTextureRect.width, convertForGraphic(size) / currentTextureRect.height);
+		self_sprite.setScale(convertSizeForGraphic(size) / currentTextureRect.width, convertSizeForGraphic(size) / currentTextureRect.height);
 	}
 	void setTextureRect() {
 		if (currentBulletSkin == "wave") currentTextureRect = IntRect(32 * colorID - 32, 32, 32, 32);

@@ -5,17 +5,24 @@ const float PI = 3.141592f;
 const std::string gameName = "Touhosu";
 float BPM;
 float timePerBeat;
-float SCREEN_W = 1920, SCREEN_H = 1080;
-float GAMEBOARD_W = 600, GAMEBOARD_H = 600;
+float SCREEN_H = 1080, SCREEN_W = SCREEN_H / 480 * 630;
+float GAMEBOARD_W = 384, GAMEBOARD_H = 448;
 float BOARDER = 200;
 std::string heroSpriteFile = "Sprites/sprite.png";
 std::string bulletsAndHitboxesFile = "Sprites/bullets.png";
 std::string turretsFile = "Sprites/enemy.png";
 std::string laserFile = "Sprites/laser.png";
 
-float convertForGraphic(float param) {
-	return param * SCREEN_H / GAMEBOARD_H;
+float convertSizeForGraphic(float param) {
+	return param * SCREEN_H / 480;
 }
+
+sf::Vector2f convertPosForGraphic(sf::Vector2f param) {
+	param.x = convertSizeForGraphic(param.x + 32);
+	param.y = convertSizeForGraphic(param.y + 16);
+	return param;
+}
+
 bool isBPMUpdated = false;
 float timer = 0;
 float current_time;
