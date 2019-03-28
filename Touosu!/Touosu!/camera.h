@@ -3,9 +3,10 @@
 class camera {
 public:
 	View cam;
-	void init(Sprite textur, planner *GlobalMapPlan) {
+	void init(planner *GlobalMapPlan) {
 		cam.reset(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H));
-		Flashlight = textur;
+		flashlightTexture.loadFromFile("Sprites/flashlight.png");
+		Flashlight.setTexture(flashlightTexture);
 		Flashlight.setOrigin(512, 512);
 		flashlight_alpha = 0;
 		isActionsEnd = false;
@@ -28,6 +29,7 @@ private:
 	std::vector<camPlanExemplar> active_actions;
 	camPlanExemplar next_action;
 	Sprite Flashlight;
+	Texture flashlightTexture;
 	bool isActionsEnd;
 	void set_new_actions(planner *GlobalMapPlan) {
 		if (!isActionsEnd) {

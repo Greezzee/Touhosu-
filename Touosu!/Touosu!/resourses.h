@@ -5,7 +5,7 @@ const float PI = 3.141592f;
 const std::string gameName = "Touhosu";
 float BPM;
 float timePerBeat;
-float SCREEN_H = 1080, SCREEN_W = SCREEN_H / 480 * 630;
+float SCREEN_H = 720, SCREEN_W = SCREEN_H / 480 * 630;
 float GAMEBOARD_W = 384, GAMEBOARD_H = 448;
 float BOARDER = 200;
 std::string heroSpriteFile = "Sprites/sprite.png";

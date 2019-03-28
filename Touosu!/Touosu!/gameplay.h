@@ -9,23 +9,10 @@ public:
 	void gameStart(std::string mapName) {
 		GlobalMapPlan.init(mapName);
 		gameMusic.openFromFile("Maps/" + mapName + "/music.ogg");
-		textur.loadFromFile("Sprites/flashlight.png");
-		flash.setTexture(textur);
-		heroTexture.loadFromFile(heroSpriteFile);
-		bulletsHitboxTexture.loadFromFile(bulletsAndHitboxesFile);
 		gunTexture.loadFromFile(turretsFile);
-		ZoneTexture.loadFromFile("Sprites/zone.png");
-		zoneSprite.setTexture(ZoneTexture);
-		gameboard.setSize(Vector2f(convertSizeForGraphic(GAMEBOARD_W), convertSizeForGraphic(GAMEBOARD_H)));
-		gameboard.setPosition(convertPosForGraphic(sf::Vector2f(0, 0)));
-		gameboard.setFillColor(Color(200, 200, 200));
 		HUDTexture.loadFromFile("Sprites/HUD.png");
-		HUDSprite.setTexture(HUDTexture);
 		backgroundTexture.loadFromFile("Sprites/background.png");
-		backgroundTexture.setSmooth(true);
-		background.setTexture(backgroundTexture, true);
-		//setSmoothON();
-
+		setTextures();
 		restart();
 	}
 	bool gameUpdate() {
@@ -65,7 +52,6 @@ public:
 			}
 		}
 		window.clear(Color(150, 150, 150));
-		//window.draw(gameboard);
 		drawBackground();
 		mainPlayer.update(&window, time);
 		if (current_time > start.startTime) {
@@ -83,11 +69,9 @@ public:
 				setNewTimePerBeat(BPM);
 				currentBPMid++;
 				isBPMUpdated = true;
-				//cout << BPM << " " << (int)current_time << " " << timePerBeat << endl;
 			}
 
 			if (last_beat != current_beat) {
-				//cout << current_beat << " " << (int)current_time << endl;
 				last_beat = current_beat;
 			}
 
@@ -117,15 +101,13 @@ private:
 	planner GlobalMapPlan;
 	vector<BPMchangeExemplar> bpmChanges;
 	Music gameMusic;
-	Texture textur;
-	Sprite flash, zoneSprite, HUDSprite, background;
+	Sprite HUDSprite, background;
 	camera cam;
 	Clock clock;
-	Texture heroTexture, bulletsHitboxTexture, gunTexture, ZoneTexture, HUDTexture, backgroundTexture;
+	Texture gunTexture, HUDTexture, backgroundTexture;
 	player mainPlayer;
 	std::list<gun> allGuns;
 	zone zones;
-	RectangleShape gameboard;
 	int frames, last_beat = 0;
 	float secondTime, FPS, time, backgroundAnimation;
 	unsigned int currentBPMid;
@@ -139,12 +121,12 @@ private:
 		mainPlayer.init(192, 400, "boost");
 		manager.init();
 		allGuns.resize(0);
-		zones.init(zoneSprite, &GlobalMapPlan);
+		zones.init(&GlobalMapPlan);
 		bpmChanges.resize(0);
 		bpmChanges = GlobalMapPlan.getBPMchangesPlan();
 		srand(GlobalMapPlan.getRandomSeed());
 		setNewTimePerBeat(BPM);
-		cam.init(flash, &GlobalMapPlan);
+		cam.init(&GlobalMapPlan);
 		start = GlobalMapPlan.getStartPos();
 		for (int i = 0; i < GlobalMapPlan.getNumberOfGuns(); i++) {
 			Sprite self_sprite;
@@ -166,18 +148,11 @@ private:
 		clock.restart();
 	}
 
-	void setSmoothON() {
-		heroTexture.setSmooth(true);
-		bulletsHitboxTexture.setSmooth(true);
-		gunTexture.setSmooth(true);
-		ZoneTexture.setSmooth(true);
+	void setTextures() {
+		HUDSprite.setTexture(HUDTexture);
+		background.setTexture(backgroundTexture, true);
 	}
-	void setSmoothOFF() {
-		heroTexture.setSmooth(false);
-		bulletsHitboxTexture.setSmooth(false);
-		gunTexture.setSmooth(false);
-		ZoneTexture.setSmooth(false);
-	}
+
 
 	void drawHUD() {
 		HUDSprite.setScale(convertSizeForGraphic(1), convertSizeForGraphic(1));
@@ -195,24 +170,29 @@ private:
 		window.draw(HUDSprite);
 	}
 	void drawBackground() {
+
+		sf::RectangleShape back;
+		back.setFillColor(sf::Color::Black);
+		back.setSize({ 384, 480 });
+		back.setScale(convertSizeForGraphic(1), convertSizeForGraphic(1));
+		back.setPosition(convertPosForGraphic({ 0, 0 }));
+		window.draw(back);
 		/*
 		backgroundAnimation += time * 0.0001;
 		if (backgroundAnimation > 1) backgroundAnimation -= 1;
-
 		background.setScale(convertSizeForGraphic(384.f / 256.f), convertSizeForGraphic(384.f / 256.f));
 
-		background.setTextureRect(sf::IntRect(472, 56 + 256 * backgroundAnimation, 256, 256 - 256 * backgroundAnimation));
-		background.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(16));
+		background.setTextureRect(sf::IntRect(472, 56, 256, 256));
+		background.setPosition(convertPosForGraphic({ 0, 0 }));
 		window.draw(background);
 
-		background.setTextureRect(sf::IntRect(472, 56 + 256 * backgroundAnimation, 256, 256 - 256 * backgroundAnimation));
-		background.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(16));
-		window.draw(background);
-
-		background.setTextureRect(sf::IntRect(472, 56, 256, 256 - 256 * backgroundAnimation));
-		background.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(16 + 256 * backgroundAnimation));
+		background.setTextureRect(sf::IntRect(472, 56, 256, 256));
+		background.setPosition(convertPosForGraphic({ 0, 384 }));
 		window.draw(background);
 		*/
+	}
+	void drawInformation() {
+
 	}
 };
 

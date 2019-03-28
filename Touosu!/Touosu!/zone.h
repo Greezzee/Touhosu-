@@ -4,10 +4,11 @@ using namespace sf;
 class zone
 {
 public:
-	void init(Sprite t, planner *GlobalMapPlan) {
+	void init(planner *GlobalMapPlan) {
 		zones.resize(0);
 		active_zones.resize(0);
-		my_sprite = t;
+		myTexture.loadFromFile("Sprites/zone.png");
+		my_sprite.setTexture(myTexture);
 		point = 0;
 
 		zones = GlobalMapPlan->getZonePlan();
@@ -23,6 +24,7 @@ private:
 	vector<zonePlanExemplar> zones;
 	std::vector<int> active_zones;
 	Sprite my_sprite;
+	Texture myTexture;
 	unsigned int point;
 
 	void activate_zone() {

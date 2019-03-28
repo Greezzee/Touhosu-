@@ -6,8 +6,8 @@ public:
 	void init() {
 		allBullets.resize(0);
 		allLasers.resize(0);
-		example.loadFromFile(bulletsAndHitboxesFile);
-		l_example.loadFromFile(laserFile);
+		bulletTexture.loadFromFile(bulletsAndHitboxesFile);
+		lasetTexture.loadFromFile(laserFile);
 	}
 	void updateAll(RenderWindow *window, float time, player *mainPlayer) {
 		vector<bulletsFromBullets> bulletsForShoot(0), a(0);
@@ -27,7 +27,7 @@ public:
 	}
 	void createBullet(gunPlanExemplar *current_action, float shoot_angle, Vector2f coords, player *target) {
 		Sprite s;
-		s.setTexture(example);
+		s.setTexture(bulletTexture);
 		s.setTextureRect(IntRect(64, 96, 32, 32));
 		s.setOrigin(16, 16);
 		bullet new_bullet;
@@ -39,7 +39,7 @@ public:
 	}
 	void createLaser(gunPlanExemplar *current_action, float shoot_angle, Vector2f coords, player *target) {
 		Sprite s;
-		s.setTexture(l_example);
+		s.setTexture(lasetTexture);
 		laser actual_laser;
 		float laserAngle;
 		if (current_action->angleType == 'a') laserAngle = current_action->laserShootAngle;
@@ -63,5 +63,5 @@ private:
 
 	std::list<bullet> allBullets;
 	std::list<laser> allLasers;
-	sf::Texture l_example, example;
+	sf::Texture lasetTexture, bulletTexture;
 };

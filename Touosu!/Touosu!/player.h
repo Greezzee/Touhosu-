@@ -43,6 +43,7 @@ public:
 		bombStartTime = 0;
 		mySkill = activeSkill;
 		bombRotation = 0;
+		points = 0;
 	}
 	void update(RenderWindow *window, float time) {
 		if (Keyboard::isKeyPressed(Keyboard::Q)) herosprite.setColor(Color(255, 255, 255, 255));;
@@ -63,11 +64,15 @@ public:
 	void set_hit() {
 		herosprite.setColor(Color(255, 0, 0, 255));
 	}
+	int getPoints() {
+		return points;
+	}
 private:
 	float speed;
 	float shift_speed;
 	float trail_delta;
 	float currentFrame;
+	int points;
 	/*
 	"" for stop
 	"r" for right
