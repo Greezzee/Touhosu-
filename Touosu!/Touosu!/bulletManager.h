@@ -22,7 +22,7 @@ public:
 		}
 		allLasers.clear();
 		
-		for (int i = 0; i < bulletsForShoot.size(); i++) 
+		for (unsigned int i = 0; i < bulletsForShoot.size(); i++) 
 			createBullet(&bulletsForShoot[i].info, bulletsForShoot[i].angle, bulletsForShoot[i].coords, mainPlayer);
 	}
 	void createBullet(gunPlanExemplar *current_action, float shoot_angle, Vector2f coords, player *target) {

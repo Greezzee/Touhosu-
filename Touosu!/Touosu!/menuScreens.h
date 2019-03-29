@@ -52,7 +52,7 @@ public:
 			window->draw(playground);
 			window->draw(backgroundDim);
 
-			float time = menuClock.getElapsedTime().asMicroseconds();
+			float time = (float)menuClock.getElapsedTime().asMicroseconds();
 			menuClock.restart();
 
 			if (continueButton.update(window, time)) return 1;

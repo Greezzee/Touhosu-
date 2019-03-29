@@ -46,7 +46,7 @@ public:
 		}
 		window->draw(self_sprite);
 		vector<bulletsFromBullets> out(0);
-		for (int i = 0; i < bulletsForShoot.size(); i++) {
+		for (unsigned int i = 0; i < bulletsForShoot.size(); i++) {
 			bulletsFromBullets a;
 			a.info.bulletInfo = bulletsForShoot[i];
 			a.info.startMovingType = bulletsForShoot[i].startMovingType;
@@ -67,7 +67,8 @@ private:
 	Vector2f speed, acceleration, playerCoords, realEllipseHitboxSize;
 	Sprite self_sprite;
 	bulletPlanExemplar myPlan;
-	unsigned int nextBulletTypeId, prevBulletTypeTime, prevBulletShootTime, colorID, nextChildBulletID, creatingAnimationEndTime;
+	unsigned int nextBulletTypeId, prevBulletTypeTime, prevBulletShootTime, colorID, nextChildBulletID;
+	int creatingAnimationEndTime;
 	char actionWithWallID;
 	string currentBulletSkin;
 	IntRect currentTextureRect;
@@ -75,7 +76,7 @@ private:
 
 	void startAnimationUpdate(RenderWindow *window) {
 		float sizeCoof = (float)(creatingAnimationEndTime - current_beat) / 32.0f * 2.0f + 1;
-		float alphaCoof = 255.0f - pow((float)(creatingAnimationEndTime - current_beat - 1) / 32.0f, 0.5) * 255.0f;
+		float alphaCoof = 255.0f - pow((float)(creatingAnimationEndTime - current_beat - 1) / 32.0f, 0.5f) * 255.0f;
 		self_sprite.setScale(convertSizeForGraphic(size) / currentTextureRect.width * sizeCoof, convertSizeForGraphic(size) / currentTextureRect.height * sizeCoof);
 		self_sprite.setColor(Color(255, 255, 255, (int)alphaCoof));
 		window->draw(self_sprite);

@@ -22,7 +22,7 @@ protected:
 		}
 		else {
 			currentFrame -= time * 0.0004f;
-			if (currentFrame < 0) currentFrame = 0;
+			if (currentFrame < 0.f) currentFrame = 0.f;
 		}
 
 		float scale = buttonHeightScale / 10.f * (10.f - 1.f / 100.f * currentFrame);
@@ -50,7 +50,7 @@ public:
 		buttonTexture.loadFromFile(fileName);
 		buttonTexture.setSmooth(true);
 		buttonSprite.setTexture(buttonTexture);
-		buttonSprite.setOrigin(buttonTexture.getSize().x * 0.5, buttonTexture.getSize().y * 0.5);
+		buttonSprite.setOrigin(buttonTexture.getSize().x * 0.5f, buttonTexture.getSize().y * 0.5f);
 		buttonSprite.setPosition(startCoords);
 		buttonSprite.setScale(SCREEN_H / buttonHeightScale / buttonTexture.getSize().y, SCREEN_H / buttonHeightScale / buttonTexture.getSize().y);
 		currentFrame = 0.f;

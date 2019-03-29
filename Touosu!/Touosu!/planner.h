@@ -661,7 +661,7 @@ private:
 				BPMchangePlanList.erase(BPMchangePlanList.begin());
 			}
 		}
-		for (int i = 0; i < gunPlanList.size(); i++) while (true) {
+		for (unsigned int i = 0; i < gunPlanList.size(); i++) while (true) {
 			if (gunPlanList[i].size() == 0 || gunPlanList[i][0].startTime >= startPos.beatStartTime) break;
 			else gunPlanList[i].erase(gunPlanList[i].begin());
 		}
