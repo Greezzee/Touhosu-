@@ -7,6 +7,8 @@
 #include <utility>
 #include <cstdio>
 #include <list>
+#include <thread>
+#include <mutex>
 #include "soundManager.h"
 #include "resourses.h"
 #include "planner.h"

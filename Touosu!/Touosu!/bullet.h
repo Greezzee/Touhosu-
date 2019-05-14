@@ -1,6 +1,6 @@
 #pragma once
 using namespace sf;
-struct bulletsFromBullets
+struct bulletCreationInfo
 {
 	gunPlanExemplar info;
 	float angle;
@@ -36,18 +36,18 @@ public:
 
 	}
 
-	vector<bulletsFromBullets> update(RenderWindow *window, float time, player *target) {
+	vector<bulletCreationInfo> update(RenderWindow *window, float time, player *target) {
 		bulletsForShoot.resize(0);
-		if (current_beat < creatingAnimationEndTime && myPlan.animationTime > 0) startAnimationUpdate(window);
+		if (current_beat < creatingAnimationEndTime && myPlan.animationTime > 0) 
+			startAnimationUpdate(window);
 		else {
 			realUpdate(window, time, target);
 			if (!isSpawned) soundManager::bulletShootSound();
 			isSpawned = true;
 		}
-		window->draw(self_sprite);
-		vector<bulletsFromBullets> out(0);
+		vector<bulletCreationInfo> out(0);
 		for (unsigned int i = 0; i < bulletsForShoot.size(); i++) {
-			bulletsFromBullets a;
+			bulletCreationInfo a;
 			a.info.bulletInfo = bulletsForShoot[i];
 			a.info.startMovingType = bulletsForShoot[i].startMovingType;
 			a.info.spawnOffsetAngle = bulletsForShoot[i].spawnOffsetAngle;
@@ -105,6 +105,8 @@ private:
 			updateAccel();
 
 			self_sprite.setPosition(convertPosForGraphic(coords));
+			self_sprite.setScale(convertSizeForGraphic(size) / currentTextureRect.width, convertSizeForGraphic(size) / currentTextureRect.height);
+			self_sprite.setColor(Color(255, 255, 255, 255));
 			animation(time);
 
 			Vector2f NewPlayerCoords;

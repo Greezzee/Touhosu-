@@ -62,7 +62,7 @@ public:
 							isActionsEnd = true;
 							break;
 						}
-						if (actionsThisFrame >= 5) break;
+						if (actionsThisFrame >= 100000) break;
 					}
 					if (current_beat - j < next_action.startTime) break;
 				}
@@ -161,13 +161,13 @@ private:
 			
 		}
 		else if (current_action.commandType == "laser_shoot") {
-			manager->createLaser(&current_action, shoot_angle, coords, target);
+			manager->addLaser(&current_action, shoot_angle, coords);
 			if (current_action.endTime <= current_beat) return true;
 			else return false;
 		}
 
 		else if (current_action.commandType == "bullet_shoot") {
-			manager->createBullet(&current_action, shoot_angle, coords, target);
+			manager->addBullet(&current_action, shoot_angle, coords);
 			return true;
 			
 		}
