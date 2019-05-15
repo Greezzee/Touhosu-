@@ -30,8 +30,8 @@ public:
 		self_sprite.setColor(Color(255, 255, 255, 200));
 	}
 
-	void update(RenderWindow *window, player *target) {
-		window->draw(self_sprite);
+	void update(vector<vector<sf::Sprite>>& bufferSpriteMap, player *target) {
+		bufferSpriteMap[3].push_back(self_sprite);
 		if (is_active && testForHit(target)) target->set_hit();
 	}
 	Vector2f coords;

@@ -13,10 +13,10 @@ public:
 
 		zones = GlobalMapPlan->getZonePlan();
 	}
-	void update(RenderWindow *window, float time) {
+	void update(vector<vector<sf::Sprite>>& bufferSpriteMap, float time) {
 		if (newTick) activate_zone();
 		test_for_end();
-		draw(window);
+		bufferSpriteMap[1].push_back(my_sprite);
 	}
 
 

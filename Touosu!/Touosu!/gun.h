@@ -26,7 +26,7 @@ public:
 		current_actions.resize(0);
 	}
 
-	void update(RenderWindow *window, float time, bulletManager *manager, player *target, planner *GlobalMapPlan) {
+	void update(vector<vector<sf::Sprite>>& bufferSpriteMap, float time, bulletManager *manager, player *target, planner *GlobalMapPlan) {
 		spritePos += time * 0.005f;
 		if (moveType == 'n') {
 			if (spritePos >= 5) spritePos = 0;
@@ -62,7 +62,7 @@ public:
 							isActionsEnd = true;
 							break;
 						}
-						if (actionsThisFrame >= 100000) break;
+						if (actionsThisFrame >= 5) break;
 					}
 					if (current_beat - j < next_action.startTime) break;
 				}
@@ -74,7 +74,7 @@ public:
 			else i++;
 		}
 		
-		if (is_visible) window->draw(self_sprite);
+		if (is_visible) bufferSpriteMap[2].push_back(self_sprite);
 	}
 
 private:

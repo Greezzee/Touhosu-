@@ -45,21 +45,21 @@ public:
 		bombRotation = 0;
 		points = 0;
 	}
-	void update(RenderWindow *window, float time) {
+	void update(vector<vector<sf::Sprite>>& bufferSpriteMap, float time) {
 		if (Keyboard::isKeyPressed(Keyboard::Q)) herosprite.setColor(Color(255, 255, 255, 255));;
 		testForShift(time);
-		trailUpdate(time, window);
+		trailUpdate(time, bufferSpriteMap);
 
 		skill(time);
 		if (currentActiveBomb == "none" && Keyboard::isKeyPressed(Keyboard::X)) bombLaunch();
-		if(currentActiveBomb != "none") bombActive(window, time);
+		if(currentActiveBomb != "none") bombActive(bufferSpriteMap, time);
 		Move(time);
 		updateAnimation(time);
 		setSpritePosition();
-		window->draw(herosprite);
+		bufferSpriteMap[2].push_back(herosprite);
 	}
-	void drawHitbox(RenderWindow *window) {
-		if (isHitboxVisible) window->draw(hero_hitbox_sprite);
+	void drawHitbox(vector<vector<sf::Sprite>>& bufferSpriteMap) {
+		if (isHitboxVisible) bufferSpriteMap[5].push_back(hero_hitbox_sprite);
 	}
 	void set_hit() {
 		herosprite.setColor(Color(255, 0, 0, 255));
@@ -137,8 +137,8 @@ private:
 			isHitboxVisible = true;
 		}
 	}
-	void trailUpdate(float time, RenderWindow *window) {
-		for (unsigned int i = 0; i < trails.size(); i++) if (trails[i].update(window, time)) trails.erase(trails.begin() + i);
+	void trailUpdate(float time, vector<vector<sf::Sprite>>& bufferSpriteMap) {
+		for (unsigned int i = 0; i < trails.size(); i++) if (trails[i].update(bufferSpriteMap, time)) trails.erase(trails.begin() + i);
 	}
 	void updateMoveDirectionInfo(Vector2f MoveCoef) {
 		moveDirectionInfo = "";
@@ -182,7 +182,7 @@ private:
 		currentActiveBomb = "std";
 		bombStartTime = current_time;
 	}
-	void bombActive(RenderWindow *window, float time) {
+	void bombActive(vector<vector<sf::Sprite>>& bufferSpriteMap, float time) {
 		if (current_time > bombStartTime + MaxBombActiveTime && bombStartTime != 0) {
 			currentActiveBomb = "none";
 			bombStartTime = 0;
@@ -204,7 +204,7 @@ private:
 			bombCoords.x += bombCurrentRadius * cos(PI / 3 * (float)i + bombRotation);
 			bombCoords.y += bombCurrentRadius * sin(PI / 3 * (float)i + bombRotation);
 			bombSprite.setPosition(convertPosForGraphic(bombCoords));
-			window->draw(bombSprite);
+			bufferSpriteMap[3].push_back(bombSprite);
 		}
 		for (int i = 0; i < 6; i++) {
 			bombSprite.setTextureRect(IntRect(66 + 16 * (i % 3), 146, 16, 16));
@@ -213,7 +213,7 @@ private:
 			bombCoords.x += bombCurrentRadius * cos(PI / 3 * (float)i - bombRotation) / 2;
 			bombCoords.y += bombCurrentRadius * sin(PI / 3 * (float)i - bombRotation) / 2;
 			bombSprite.setPosition(convertPosForGraphic(bombCoords));
-			window->draw(bombSprite);
+			bufferSpriteMap[3].push_back(bombSprite);
 		}
 	}
 };

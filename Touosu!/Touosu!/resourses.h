@@ -2,6 +2,7 @@
 const int timerCoof = 600;
 const float BPMtoMCSdiv600Converter = (float)pow(60 * 1000000 / timerCoof / 32, 1);
 const float PI = 3.141592f;
+bool FrameReady = false;
 const std::string gameName = "Touhosu";
 float BPM;
 float timePerBeat;

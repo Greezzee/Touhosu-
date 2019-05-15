@@ -27,10 +27,14 @@ using namespace sf;
 int main() {
 	gameplay game;
 	game.setWindow();
+	sf::RenderWindow window(sf::VideoMode((unsigned int)SCREEN_W, (unsigned int)SCREEN_H), gameName);
+	window.setActive(false);
+	thread drawThread(drawThreadFunc, &game, &window);
 	game.gameStart("1");
-	while (game.getWindowIsOpen()) {
-		bool needToClose = game.gameUpdate();
+	while (window.isOpen()) {
+		bool needToClose = Update(&game, &window);
 		if (needToClose) break;
 	}
+	if (drawThread.joinable()) drawThread.join();
 	return 0;
 }

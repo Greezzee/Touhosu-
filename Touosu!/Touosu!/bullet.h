@@ -36,12 +36,12 @@ public:
 
 	}
 
-	vector<bulletCreationInfo> update(RenderWindow *window, float time, player *target) {
+	vector<bulletCreationInfo> update(vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player *target) {
 		bulletsForShoot.resize(0);
 		if (current_beat < creatingAnimationEndTime && myPlan.animationTime > 0) 
-			startAnimationUpdate(window);
+			startAnimationUpdate(bufferSpriteMap);
 		else {
-			realUpdate(window, time, target);
+			realUpdate(bufferSpriteMap, time, target);
 			if (!isSpawned) soundManager::bulletShootSound();
 			isSpawned = true;
 		}
@@ -74,15 +74,15 @@ private:
 	IntRect currentTextureRect;
 	bool isRotate, isLookForward, isSpawned;
 
-	void startAnimationUpdate(RenderWindow *window) {
+	void startAnimationUpdate(vector<vector<sf::Sprite>>& bufferSpriteMap) {
 		float sizeCoof = (float)(creatingAnimationEndTime - current_beat) / 32.0f * 2.0f + 1;
 		float alphaCoof = 255.0f - pow((float)(creatingAnimationEndTime - current_beat - 1) / 32.0f, 0.5f) * 255.0f;
 		self_sprite.setScale(convertSizeForGraphic(size) / currentTextureRect.width * sizeCoof, convertSizeForGraphic(size) / currentTextureRect.height * sizeCoof);
 		self_sprite.setColor(Color(255, 255, 255, (int)alphaCoof));
-		window->draw(self_sprite);
+		bufferSpriteMap[4].push_back(self_sprite);
 	}
 
-	void realUpdate(RenderWindow *window, float time, player *target) {
+	void realUpdate(vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player *target) {
 		if (size == -1) destroyed = true;
 		if (destroyed == false) {
 
@@ -120,7 +120,7 @@ private:
 			}
 			if (target->currentActiveBomb == "std" && pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->bombCurrentRadius), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->bombCurrentRadius), 2) < pow((realEllipseHitboxSize.x + target->bombCurrentRadius) * (realEllipseHitboxSize.y + target->bombCurrentRadius), 2)) destroyed = true;
 			else if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
-			window->draw(self_sprite);
+			bufferSpriteMap[4].push_back(self_sprite);
 		}
 	}
 

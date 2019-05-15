@@ -13,16 +13,16 @@ public:
 		bulletTexture.loadFromFile(bulletsAndHitboxesFile);
 		lasetTexture.loadFromFile(laserFile);
 	}
-	void updateAll(RenderWindow *window, float time, player *mainPlayer) {
+	void updateAll(vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player *mainPlayer) {
 		vector<bulletCreationInfo> a(0);
 		for (list<bullet>::iterator i = allBullets.begin(); i != allBullets.end();) {
-			a = i->update(window, time, mainPlayer);
+			a = i->update(bufferSpriteMap, time, mainPlayer);
 			bulletsForShoot.insert(bulletsForShoot.end(), a.begin(), a.end());
 			if (i->destroyed) i = allBullets.erase(i);
 			else i++;
 		}
 		for (list<laser>::iterator i = allLasers.begin(); i != allLasers.end(); i++) {
-			i->update(window, mainPlayer);
+			i->update(bufferSpriteMap, mainPlayer);
 		}
 		createAll(this, mainPlayer);
 	}
@@ -70,7 +70,7 @@ void createBullet(bulletManager *manager, gunPlanExemplar *current_action, float
 	else if (current_action->startMovingType == 'r') new_bullet.create(current_action->startCoords.x + coords.x, current_action->startCoords.y + coords.y, shoot_angle, coords, current_action, &s, target);
 	else if (current_action->startMovingType == 's') new_bullet.create(current_action->startCoords.x * cos(-(shoot_angle + current_action->spawnOffsetAngle) / 180 * PI) + current_action->startCoords.y * sin(-(shoot_angle + current_action->spawnOffsetAngle) / 180 * PI) + coords.x, current_action->startCoords.x * cos(-(shoot_angle + current_action->spawnOffsetAngle + 90) / 180 * PI) + current_action->startCoords.y * sin(-(shoot_angle + current_action->spawnOffsetAngle + 90) / 180 * PI) + coords.y, shoot_angle, coords, current_action, &s, target);
 	bulletLock.lock();
-	cout << current_action->bulletInfo.bulletSize[0] << endl;
+	//cout << current_action->bulletInfo.bulletSize[0] << endl;
 	manager->allBullets.push_back(new_bullet);
 	bulletLock.unlock();
 }

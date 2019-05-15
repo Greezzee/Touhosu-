@@ -1,101 +1,7 @@
 #pragma once
+
 class gameplay
 {
-public:
-	void setWindow() {
-		window.create(sf::VideoMode((unsigned int)SCREEN_W, (unsigned int)SCREEN_H), gameName);
-		menu.menuInit();
-	}
-	void gameStart(std::string mapName) {
-		GlobalMapPlan.init(mapName);
-		gameMusic.openFromFile("Maps/" + mapName + "/music.ogg");
-		gunTexture.loadFromFile(turretsFile);
-		HUDTexture.loadFromFile("Sprites/HUD.png");
-		backgroundTexture.loadFromFile("Sprites/background.png");
-		setTextures();
-		restart();
-	}
-	bool gameUpdate() {
-		int couter = 1;
-		time = (float)clock.getElapsedTime().asMicroseconds();
-		secondTime += time;
-		frames++;
-		current_time += time;
-		clock.restart();
-		time = time / timerCoof;
-		Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == Event::Closed)
-				window.close();
-			else if (event.type == Event::KeyPressed) {
-				if (event.key.code == Keyboard::Escape) {
-					gameMusic.pause();
-					int command = menu.menuPause(&window);
-					if (command == 0) {
-						clock.restart();
-						return true;
-					}
-					else if (command == 1) {
-						gameMusic.play();
-						clock.restart();
-						window.setView(cam.cam);
-						return false;
-					}
-					else if (command == 2) {
-						gameMusic.stop();
-						clock.restart();
-						window.setView(cam.cam);
-						restart();
-						return false;
-					}
-				}
-			}
-		}
-		window.clear(Color(150, 150, 150));
-		drawBackground();
-		mainPlayer.update(&window, time);
-		if (current_time > start.startTime) {
-			
-			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
-				Time offsetTime(sf::microseconds((Int64)start.startTime));
-				gameMusic.play();
-				gameMusic.setPlayingOffset(offsetTime);
-				current_time = start.startTime;
-			}
-			
-			isBPMUpdated = false;
-			if (currentBPMid < bpmChanges.size() && current_time >= bpmChanges[currentBPMid].offset) {
-				BPM = bpmChanges[currentBPMid].bpm;
-				setNewTimePerBeat(BPM);
-				currentBPMid++;
-				isBPMUpdated = true;
-			}
-
-			if (last_beat != current_beat) {
-				last_beat = current_beat;
-			}
-
-			if (currentBPMid > 0) timeUpdate(time);
-			zones.update(&window, time);
-			for (list<gun>::iterator i = allGuns.begin(); i != allGuns.end(); i++) {
-				i->update(&window, time, &manager, &mainPlayer, &GlobalMapPlan);
-			}
-			manager.updateAll(&window, time, &mainPlayer);
-			cam.update(&window, time, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
-		}
-		else cam.update(&window, 0, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
-
-		mainPlayer.drawHitbox(&window);
-
-		drawHUD();
-
-		window.display();
-		return false;
-	}
-	bool getWindowIsOpen() {
-		return window.isOpen();
-	}
-
 private:
 	bulletManager manager;
 	planner GlobalMapPlan;
@@ -111,9 +17,9 @@ private:
 	int frames, last_beat = 0;
 	float secondTime, FPS, time, backgroundAnimation;
 	unsigned int currentBPMid;
-	RenderWindow window;
 	menuScreens menu;
 	startPosExemplar start;
+	vector<vector<sf::Sprite>> bufferSpriteMap, SpriteMap;
 
 	void restart() {
 		soundManager::init();
@@ -146,37 +52,37 @@ private:
 		timer = 0;
 		backgroundAnimation = 0;
 		clock.restart();
-	}
-
+		bufferSpriteMap.clear();
+		bufferSpriteMap.resize(6);
+		SpriteMap.clear();
+	}	
 	void setTextures() {
 		HUDSprite.setTexture(HUDTexture);
 		background.setTexture(backgroundTexture, true);
 	}
-
-
-	void drawHUD() {
+	void drawHUD(sf::RenderWindow *window) {
 		HUDSprite.setScale(convertSizeForGraphic(1), convertSizeForGraphic(1));
 		HUDSprite.setPosition(convertSizeForGraphic(0), convertSizeForGraphic(0));
 		HUDSprite.setTextureRect(sf::IntRect(32, 32, 32, 480));
-		window.draw(HUDSprite);
+		window->draw(HUDSprite);
 		HUDSprite.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(0));
 		HUDSprite.setTextureRect(sf::IntRect(32, 512, 384, 16));
-		window.draw(HUDSprite);
+		window->draw(HUDSprite);
 		HUDSprite.setPosition(convertSizeForGraphic(32), convertSizeForGraphic(464));
 		HUDSprite.setTextureRect(sf::IntRect(32, 528, 384, 16));
-		window.draw(HUDSprite);
+		window->draw(HUDSprite);
 		HUDSprite.setPosition(convertSizeForGraphic(416), convertSizeForGraphic(0));
 		HUDSprite.setTextureRect(sf::IntRect(64, 32, 224, 480));
-		window.draw(HUDSprite);
+		window->draw(HUDSprite);
 	}
-	void drawBackground() {
+	void drawBackground(sf::RenderWindow *window) {
 
 		sf::RectangleShape back;
 		back.setFillColor(sf::Color::Black);
 		back.setSize({ 384, 480 });
 		back.setScale(convertSizeForGraphic(1), convertSizeForGraphic(1));
 		back.setPosition(convertPosForGraphic({ 0, 0 }));
-		window.draw(back);
+		window->draw(back);
 		/*
 		backgroundAnimation += time * 0.0001;
 		if (backgroundAnimation > 1) backgroundAnimation -= 1;
@@ -194,7 +100,133 @@ private:
 	void drawInformation() {
 
 	}
+	friend void drawThreadFunc(gameplay* p, sf::RenderWindow* window);
+	friend bool Update(gameplay* p, sf::RenderWindow* window);
+public:
+	void setWindow() {
+		menu.menuInit();
+	}
+	void gameStart(std::string mapName) {
+		GlobalMapPlan.init(mapName);
+		gameMusic.openFromFile("Maps/" + mapName + "/music.ogg");
+		gunTexture.loadFromFile(turretsFile);
+		HUDTexture.loadFromFile("Sprites/HUD.png");
+		backgroundTexture.loadFromFile("Sprites/background.png");
+		setTextures();
+		restart();
+	}
+	bool logicUpdate() {
+		int couter = 1;
+		time = (float)clock.getElapsedTime().asMicroseconds();
+		secondTime += time;
+		frames++;
+		current_time += time;
+		clock.restart();
+		time = time / timerCoof;
+		mainPlayer.update(bufferSpriteMap, time);
+		if (current_time > start.startTime) {
+			
+			if (gameMusic.getStatus() == SoundSource::Status::Stopped) {
+				Time offsetTime(sf::microseconds((Int64)start.startTime));
+				gameMusic.play();
+				gameMusic.setPlayingOffset(offsetTime);
+				current_time = start.startTime;
+			}
+			
+			isBPMUpdated = false;
+			if (currentBPMid < bpmChanges.size() && current_time >= bpmChanges[currentBPMid].offset) {
+				BPM = bpmChanges[currentBPMid].bpm;
+				setNewTimePerBeat(BPM);
+				currentBPMid++;
+				isBPMUpdated = true;
+			}
+
+			if (last_beat != current_beat) {
+				last_beat = current_beat;
+			}
+
+			if (currentBPMid > 0) timeUpdate(time);
+			zones.update(bufferSpriteMap, time);
+			for (list<gun>::iterator i = allGuns.begin(); i != allGuns.end(); i++) {
+				i->update(bufferSpriteMap, time, &manager, &mainPlayer, &GlobalMapPlan);
+			}
+			manager.updateAll(bufferSpriteMap, time, &mainPlayer);
+			//cam.update(&window, time, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
+		}
+		//else cam.update(&window, 0, mainPlayer.playerCoords.x, mainPlayer.playerCoords.y, &GlobalMapPlan);
+
+		mainPlayer.drawHitbox(bufferSpriteMap);
+		return false;
+	}
 };
 
+mutex drawMutex;
+int FPS = 0, FTime = 0;
+void drawThreadFunc(gameplay* p, sf::RenderWindow *window) {
+	while (window->isOpen()) {
+		drawMutex.lock();
+		bool test = FrameReady;
+		drawMutex.unlock();
+		if (test) {
+			window->clear(Color(150, 150, 150));
+			p->drawBackground(window);
+			for (int i = 0; i < p->SpriteMap.size(); i++) for (int j = 0; j < p->SpriteMap[i].size(); j++) {
+				window->draw(p->SpriteMap[i][j]);
+			}
+			p->drawHUD(window);
+			drawMutex.lock();
+			p->SpriteMap.clear();
+			p->cam.update(window, p->time, p->mainPlayer.playerCoords.x, p->mainPlayer.playerCoords.y, &p->GlobalMapPlan);
+			FrameReady = false;
+			drawMutex.unlock();
+		}
+		window->display();
+	}
+	
+}
 
-
+bool Update (gameplay* p, sf::RenderWindow* window) {
+	Event event;
+	while (window->pollEvent(event)) {
+		if (event.type == Event::Closed)
+			window->close();
+		else if (event.type == Event::KeyPressed) {
+			if (event.key.code == Keyboard::Escape) {
+				drawMutex.lock();
+				window->setActive(true);
+				p->gameMusic.pause();
+				int command = p->menu.menuPause(window);
+				if (command == 0) {
+					p->clock.restart();
+					window->setActive(false);
+					drawMutex.unlock();
+					return true;
+				}
+				else if (command == 1) {
+					p->gameMusic.play();
+					p->clock.restart();
+					window->setView(p->cam.cam);
+					window->setActive(false);
+					drawMutex.unlock();
+					return false;
+				}
+				else if (command == 2) {
+					p->gameMusic.stop();
+					p->clock.restart();
+					window->setView(p->cam.cam);
+					p->restart();
+					window->setActive(false);
+					drawMutex.unlock();
+					return false;
+				}
+			}
+		}
+	}
+	while (FrameReady) {}
+	p->SpriteMap = p->bufferSpriteMap;
+	p->bufferSpriteMap.clear();
+	p->bufferSpriteMap.resize(6);
+	bool out = p->logicUpdate();
+	FrameReady = true;
+	return out;
+}

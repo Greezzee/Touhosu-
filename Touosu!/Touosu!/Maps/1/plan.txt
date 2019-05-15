@@ -16,14 +16,14 @@ g 0 - l16 0 0 0 0 0 0 0 0 - set - 300 100 l270 0
 
 
 public startTime 0 = 17 0 0 0 0 0 0 0 0
-for 1 {
+for 10 {
 public startTime 0 + 0 0 0 0 0 0 2 0 0
 public bulletSpeedAngle 0 = 0
 public startCoords.x 0 = 0
 public startCoords.x 0 ~ 0 - 50 - 1
 public spawnOffsetAngle 0 = 0
 public spawnOffsetAngle 0 ~ 0 - 360 - 1
-for 3600 {
+for 15 {
 	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
 	switch - n - l32 - d - rel p0 0 0 al0.3 - rel l0 0 0 l0 - standart 3
 	)

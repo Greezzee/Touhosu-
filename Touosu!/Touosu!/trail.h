@@ -8,11 +8,11 @@ public:
 		my_sprite = t;
 		my_sprite.setColor(Color(255, 255, 255, 50));
 	}
-	bool update(RenderWindow *window, double time) {
+	bool update(vector<vector<sf::Sprite>>& bufferSpriteMap, double time) {
 		lifetime -= time;
 		my_sprite.setColor(Color(255, 255, 255, (int)lifetime / 15));
 		if (lifetime < 0) return true;
-		window->draw(my_sprite);
+		bufferSpriteMap[3].push_back(my_sprite);
 		return false;
 	}
 
