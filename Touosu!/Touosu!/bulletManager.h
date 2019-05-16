@@ -14,10 +14,10 @@ public:
 		lasetTexture.loadFromFile(laserFile);
 	}
 	void updateAll(vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player *mainPlayer) {
+		//updateAllBullets(this, bufferSpriteMap, mainPlayer, time);
 		vector<bulletCreationInfo> a(0);
 		for (list<bullet>::iterator i = allBullets.begin(); i != allBullets.end();) {
-			a = i->update(bufferSpriteMap, time, mainPlayer);
-			bulletsForShoot.insert(bulletsForShoot.end(), a.begin(), a.end());
+			updateOneBullet(this, &*i, bufferSpriteMap, time, mainPlayer);
 			if (i->destroyed) i = allBullets.erase(i);
 			else i++;
 		}
@@ -27,8 +27,8 @@ public:
 		createAll(this, mainPlayer);
 	}
 
-	
-
+	friend void updateAllBullets(bulletManager* manager, vector<vector<sf::Sprite>>& bufferSpriteMap, player* mainPlayer, float time);
+	friend void updateOneBullet(bulletManager* manager, bullet* b, vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player* mainPlayer);
 	friend void createBullet(bulletManager *manager, gunPlanExemplar *current_action, float shoot_angle, Vector2f coords, player *target);
 	friend void createLaser(bulletManager *manager, gunPlanExemplar *current_action, float shoot_angle, Vector2f coords, player *target);
 	friend void createAll(bulletManager *manager, player *mainPlayer);
@@ -109,4 +109,20 @@ void createAll(bulletManager *manager, player *mainPlayer) {
 	for (auto& t : laserInitThread) if (t.joinable()) t.join();
 	manager->bulletsForShoot.clear();
 	manager->laserForShoot.clear();
+}
+void updateOneBullet(bulletManager* manager, bullet* b, vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player* mainPlayer) {
+	vector<bulletCreationInfo> a(0);
+	a = b->update(bufferSpriteMap, time, mainPlayer);
+	bulletMutex.lock();
+	manager->bulletsForShoot.insert(manager->bulletsForShoot.end(), a.begin(), a.end());
+	bulletMutex.unlock();
+}
+//bulletManager *manager, bullet *b, vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player* mainPlayer
+void updateAllBullets(bulletManager* manager, vector<vector<sf::Sprite>>& bufferSpriteMap, player* mainPlayer, float time) {
+	vector<thread> bulletUpdateThread;
+	for (auto i = manager->allBullets.begin(); i != manager->allBullets.end(); i++) {
+		bullet* b = &*i;
+		bulletUpdateThread.push_back(std::thread(updateOneBullet, manager, b, ref(bufferSpriteMap), time, mainPlayer));
+	}
+	for (auto& t : bulletUpdateThread) if (t.joinable()) t.join();
 }

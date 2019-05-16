@@ -161,28 +161,20 @@ public:
 };
 
 mutex drawMutex;
-int FPS = 0, FTime = 0;
 void drawThreadFunc(gameplay* p, sf::RenderWindow *window) {
 	while (window->isOpen()) {
 		drawMutex.lock();
-		bool test = FrameReady;
+		auto map = p->SpriteMap;
+		p->cam.update(window, p->time, p->mainPlayer.playerCoords.x, p->mainPlayer.playerCoords.y, &p->GlobalMapPlan);
 		drawMutex.unlock();
-		if (test) {
-			window->clear(Color(150, 150, 150));
-			p->drawBackground(window);
-			for (int i = 0; i < p->SpriteMap.size(); i++) for (int j = 0; j < p->SpriteMap[i].size(); j++) {
-				window->draw(p->SpriteMap[i][j]);
-			}
-			p->drawHUD(window);
-			drawMutex.lock();
-			p->SpriteMap.clear();
-			p->cam.update(window, p->time, p->mainPlayer.playerCoords.x, p->mainPlayer.playerCoords.y, &p->GlobalMapPlan);
-			FrameReady = false;
-			drawMutex.unlock();
+		window->clear(Color(150, 150, 150));
+		p->drawBackground(window);
+		for (int i = 0; i < map.size(); i++) for (int j = 0; j < map[i].size(); j++) {
+			window->draw(map[i][j]);
 		}
+		p->drawHUD(window);
 		window->display();
 	}
-	
 }
 
 bool Update (gameplay* p, sf::RenderWindow* window) {
@@ -222,11 +214,11 @@ bool Update (gameplay* p, sf::RenderWindow* window) {
 			}
 		}
 	}
-	while (FrameReady) {}
+	drawMutex.lock();
 	p->SpriteMap = p->bufferSpriteMap;
+	drawMutex.unlock();
 	p->bufferSpriteMap.clear();
 	p->bufferSpriteMap.resize(6);
 	bool out = p->logicUpdate();
-	FrameReady = true;
 	return out;
 }

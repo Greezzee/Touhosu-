@@ -1,5 +1,6 @@
 #pragma once
 using namespace sf;
+mutex bulletMutex;
 struct bulletCreationInfo
 {
 	gunPlanExemplar info;
@@ -42,7 +43,9 @@ public:
 			startAnimationUpdate(bufferSpriteMap);
 		else {
 			realUpdate(bufferSpriteMap, time, target);
+			bulletMutex.lock();
 			if (!isSpawned) soundManager::bulletShootSound();
+			bulletMutex.unlock();
 			isSpawned = true;
 		}
 		vector<bulletCreationInfo> out(0);
@@ -79,7 +82,9 @@ private:
 		float alphaCoof = 255.0f - pow((float)(creatingAnimationEndTime - current_beat - 1) / 32.0f, 0.5f) * 255.0f;
 		self_sprite.setScale(convertSizeForGraphic(size) / currentTextureRect.width * sizeCoof, convertSizeForGraphic(size) / currentTextureRect.height * sizeCoof);
 		self_sprite.setColor(Color(255, 255, 255, (int)alphaCoof));
+		bulletMutex.lock();
 		bufferSpriteMap[4].push_back(self_sprite);
+		bulletMutex.unlock();
 	}
 
 	void realUpdate(vector<vector<sf::Sprite>>& bufferSpriteMap, float time, player *target) {
@@ -118,9 +123,11 @@ private:
 				NewPlayerCoords.x = coords.x + (target->playerCoords.x - coords.x) * cos(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1])) - (target->playerCoords.y - coords.y) * sin(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1]));
 				NewPlayerCoords.y = coords.y + (target->playerCoords.y - coords.y) * cos(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1])) + (target->playerCoords.x - coords.x) * sin(-degrToRad(myPlan.bulletSpeedAngle[nextBulletTypeId - 1]));
 			}
+			bulletMutex.lock();
 			if (target->currentActiveBomb == "std" && pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->bombCurrentRadius), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->bombCurrentRadius), 2) < pow((realEllipseHitboxSize.x + target->bombCurrentRadius) * (realEllipseHitboxSize.y + target->bombCurrentRadius), 2)) destroyed = true;
 			else if (pow((coords.x - NewPlayerCoords.x) * (realEllipseHitboxSize.x + target->size), 2) + pow((coords.y - NewPlayerCoords.y) * (realEllipseHitboxSize.y + target->size), 2) < pow((realEllipseHitboxSize.x + target->size) * (realEllipseHitboxSize.y + target->size), 2) && size > 0) target->set_hit();
 			bufferSpriteMap[4].push_back(self_sprite);
+			bulletMutex.unlock();
 		}
 	}
 

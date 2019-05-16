@@ -9,6 +9,7 @@
 #include <list>
 #include <thread>
 #include <mutex>
+//#include <amp.h>
 #include "soundManager.h"
 #include "resourses.h"
 #include "planner.h"

@@ -62,7 +62,7 @@ public:
 							isActionsEnd = true;
 							break;
 						}
-						if (actionsThisFrame >= 5) break;
+						if (actionsThisFrame >= 10) break;
 					}
 					if (current_beat - j < next_action.startTime) break;
 				}

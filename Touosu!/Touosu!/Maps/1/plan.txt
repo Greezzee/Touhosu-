@@ -3,7 +3,7 @@ new_bpm 458000 226;
 
 start_pos 16 0 0 0 0 0 0 0 -64
 
-g 0 - l16 0 0 0 0 0 0 0 0 - set - 300 100 l270 0
+g 0 - l16 0 0 0 0 0 0 0 0 - set - 192 100 l270 0
 
 
 
@@ -16,21 +16,51 @@ g 0 - l16 0 0 0 0 0 0 0 0 - set - 300 100 l270 0
 
 
 public startTime 0 = 17 0 0 0 0 0 0 0 0
-for 10 {
-public startTime 0 + 0 0 0 0 0 0 2 0 0
 public bulletSpeedAngle 0 = 0
+public bulletSpeedAngle 1 = 0
+public bulletSpeedAngle 2 = 0
+public bulletSpeedAngle 3 = 0
+for 50 {
+public startTime 0 + 0 0 0 0 0 0 0 0 20
 public startCoords.x 0 = 0
-public startCoords.x 0 ~ 0 - 50 - 1
 public spawnOffsetAngle 0 = 0
-public spawnOffsetAngle 0 ~ 0 - 360 - 1
-for 15 {
+for 18 {
 	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
-	switch - n - l32 - d - rel p0 0 0 al0.3 - rel l0 0 0 l0 - standart 3
+	switch - n - l16 - d - rel p0 0 0 al0.4 - rel l0 0 0 l0 - standart 3
 	)
-	public bulletSpeedAngle 0 + 1
+	public bulletSpeedAngle 0 + 20
 }
+public bulletSpeedAngle 0 + 1
+for 18 {
+	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
+	switch - n - l16 - d - rel p1 0 0 al0.4 - rel l0 0 0 l0 - standart 3
+	)
+	public bulletSpeedAngle 1 + 20
+}
+public bulletSpeedAngle 1 + -1
+public startTime 0 + 0 0 0 0 0 0 0 0 20
+for 18 {
+	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
+	switch - n - l16 - d - rel p2 0 0 al0.4 - rel l0 0 0 l0 - standart 7
+	)
+	public bulletSpeedAngle 2 + 20
+}
+
+public bulletSpeedAngle 2 + -5
+
+for 18 {
+	g 0 - p0 - bullet_shoot - s p0 p0 p0 8 - lb (
+	switch - n - l16 - d - rel p3 0 0 al0.4 - rel l0 0 0 l0 - standart 7
+	)
+	public bulletSpeedAngle 3 + 20
+}
+
+public bulletSpeedAngle 3 + 5
+
 }
 end
+
+
 public startTime 0 = 19 0 0 0 0 0 0 0 0
 for 4 {
 public startTime 0 + 0 0 0 0 0 0 2 0 0
